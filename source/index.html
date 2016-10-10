@@ -4,9 +4,14 @@
     <meta charset="utf-8"/>
     <meta http-equiv="x-ua-compatible" content="ie=edge, chrome=1"/>
     <title>Application</title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
     <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css"
           rel="stylesheet">
     <link rel="stylesheet" href="./css/pageshare.css">
+    <meta name="viewport" content="width=device-width, 
+                                     initial-scale=1.0, 
+                                     maximum-scale=1.0, 
+                                     user-scalable=no">
 </head>
 <body oncontextmenu=self.event.returnValue=false>
 <!-- 导航 -->
@@ -16,8 +21,7 @@
         <li><img id='logo' src='img/pageshare.png' /></li>
         <li><a id='exist'> <span class="glyphicon glyphicon-home"></span>
         </a></li>
-        <li><a id="voice"> <span
-                class='glyphicon glyphicon-headphones'></span>
+        <li><a id="voice">
         </a></li>
         <li><a data-toggle="modal" data-target="#myModal" id="film">
             <span class="glyphicon glyphicon-facetime-video"></span>
@@ -34,7 +38,8 @@
 <div data-react-application>
     <h5 class="text-center text-muted">Loading application...</h5>
 </div>
-
+<audio id='myaudio'> </audio>
+<video id='myvideo' controls style="display:none;position:absolute;z-index:8;"></video>
 <script src="./js/app.js"></script>
 </body>
 </html>
