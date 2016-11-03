@@ -42,6 +42,13 @@ gulp.task('build-css-for-development', function () {
       .pipe(gulp.dest('./build/css'));
 });
 
+gulp.task('build-php-for-development', function () {
+  return gulp
+      .src('./source/php/*.*')
+      .pipe(gulp.dest('./build/php'));
+});
+
+
 gulp.task('build-html-for-production', function () {
   return gulp
         .src('./source/*.html')
@@ -53,9 +60,10 @@ gulp.task('watch', function () {
   gulp.watch('./source/js/**/*.{jsx,js}', ['build-js-for-development']);
   gulp.watch('./source/**/*.html', ['build-html-for-development']);
   gulp.watch('./source/css/*.css', ['build-css-for-development']);
+  gulp.watch('./source/php/*.php', ['build-php-for-development']);
 });
 
-gulp.task('build-for-development', ['build-js-for-development', 'build-html-for-development', 'build-img-for-development','build-css-for-development']);
+gulp.task('build-for-development', ['build-js-for-development', 'build-html-for-development', 'build-img-for-development','build-css-for-development','build-php-for-development']);
 gulp.task('build-for-production', ['build-js-for-production', 'build-html-for-production']);
 
 gulp.task('default', ['build-for-development', 'watch']);
