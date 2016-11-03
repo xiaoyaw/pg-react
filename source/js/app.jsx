@@ -14,16 +14,16 @@ if (is_weixin()) {
 	//微信端路由
 	ReactDOM.render(
  <Router history={browserHistory}>
- 	<Route path="/dev/build/" component={wxLogin}/>
-  	<Route path="/dev/build/join" component={AppJoin}/>
-   	<Route path="/dev/build/room/:id" component={AppRoom}/>
+ 	<Route path="dev/build/" component={wxLogin}/>
+  	<Route path="dev/build/join" component={AppJoin}/>
+   	<Route path="dev/build/room/:id" component={AppRoom}/>
 </Router>,document.getElementById('app'));
 }else{
 	//PC端路由
 ReactDOM.render(
  <Router history={browserHistory}>
-  	<Route path="/dev/build/" component={PAppJoin}/>
-   	<Route path="/dev/build/room/:id" component={AppRoom}/>
+  	<Route path="dev/build/" component={PAppJoin}/>
+   	<Route path="dev/build/room/:id" component={AppRoom}/>
 </Router>,document.getElementById('app'));	
 }
 
