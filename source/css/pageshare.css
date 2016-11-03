@@ -8,7 +8,7 @@
     border-color: #00FF7F;
 }
 
-#exist {
+#exit {
     border-style: outset;
     border-width: 1px;
     border-color: #FFFF00;
@@ -22,10 +22,10 @@
     margin: 3px;
 }
 
-#answer {
+#edit {
     border-style: outset;
     border-width: 1px;
-    border-color: #9C9C9C;
+    border-color: #00FF00;
     margin: 3px;
 }
 
@@ -53,14 +53,24 @@
     top: 50%;
 }
 
-#myvideo{
-    position: absolute;
-    left: 35%;
-    top: 50%;
-    z-index: 20;
-}
 
 body{
   
     background-color: #eee
+}
+#myvideo{
+
+    display:none;
+    position:absolute;
+    z-index:8;
+}
+#closed{
+    width:100%;
+    position: absolute;
+    z-index: 20;
+    top: 40%; 
+    display: none;
+}
+#roomid{
+text-transform: lowercase;
 }

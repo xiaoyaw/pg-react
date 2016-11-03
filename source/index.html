@@ -1,45 +1,24 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="x-ua-compatible" content="ie=edge, chrome=1"/>
-    <title>Application</title>
-    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+  <link rel="icon" href="img/pageshare.png" type="image/x-icon"/>
     <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css"
           rel="stylesheet">
     <link rel="stylesheet" href="./css/pageshare.css">
-    <meta name="viewport" content="width=device-width, 
-                                     initial-scale=1.0, 
-                                     maximum-scale=1.0, 
-                                     user-scalable=no">
+    <meta charset="utf-8"/>
+    <meta http-equiv="x-ua-compatible" content="ie=edge, chrome=1"/>
+    <title>pageshare</title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=3.0, minimum-scale=1.0">
 </head>
 <body oncontextmenu=self.event.returnValue=false>
-<!-- 导航 -->
-<div id="nnn"
-     style="z-index: 10; opacity: 0.7; position: absolute; left: 0px; top: 0px; width: 100%;">
-    <ul class='nav nav-pills' id="ol">
-        <li><img id='logo' src='img/pageshare.png' /></li>
-        <li><a id='exist'> <span class="glyphicon glyphicon-home"></span>
-        </a></li>
-        <li><a id="voice">
-        </a></li>
-        <li><a data-toggle="modal" data-target="#myModal" id="film">
-            <span class="glyphicon glyphicon-facetime-video"></span>
-        </a></li>
-        <li id='li_answer'><a id="answer"> <span
-                class='glyphicon glyphicon-pencil'></span>
-        </a></li>
-        <li id='li_help'><a id="help"> <span
-                class='glyphicon glyphicon-question-sign'></span>
-        </a></li>
-    </ul>
-</div>
 
-<div data-react-application>
-    <h5 class="text-center text-muted">Loading application...</h5>
-</div>
+<div id="app" align="center"></div>
+
 <audio id='myaudio'> </audio>
-<video id='myvideo' controls style="display:none;position:absolute;z-index:8;"></video>
+<video id='myvideo' controls ></video>
+<!-- Room End -->
 <script src="./js/app.js"></script>
 </body>
 </html>

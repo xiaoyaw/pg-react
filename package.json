@@ -28,6 +28,7 @@
     "vinyl-source-stream": "^1.0"
   },
   "dependencies": {
+    "history": "^4.4.0",
     "react": "^15",
     "react-dom": "^15"
   }
