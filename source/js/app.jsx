@@ -7,7 +7,7 @@ import wxLogin from './components/wxLogin.jsx';
 import {
 	Router,
 	Route,
-	browserHistory,
+	browserHistory
 } from 'react-router';
 
 if (is_weixin()) {
@@ -22,9 +22,10 @@ if (is_weixin()) {
 	//PC端路由
 ReactDOM.render(
  <Router history={browserHistory}>
-  	<Route path="/dev/build/" component={PAppJoin}/>
-   	<Route path="/dev/build/room/:id" component={AppRoom}/>
+  	<Route path="/" component={PAppJoin}/>
+   	<Route path="/room/:id" component={AppRoom}/>
 </Router>,document.getElementById('app'));	
+
 }
 
 function is_weixin() {
