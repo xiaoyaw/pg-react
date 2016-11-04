@@ -26930,6 +26930,7 @@ var wxLogin = React.createClass({
 	getInitialState: function getInitialState() {
 		$('#log').text($('#log').text() + "| begin");
 		return {
+			code: '',
 			isLogin: false
 		};
 	},
@@ -26940,6 +26941,7 @@ var wxLogin = React.createClass({
 		if (code != '' && code != undefined) {
 			$('#log').text($('#log').text() + "| code is ok");
 			this.setState({
+				code: code,
 				isLogin: true
 			});
 		};
