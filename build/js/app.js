@@ -43,8 +43,8 @@ if (is_weixin()) {
 	_reactDom2.default.render(_react2.default.createElement(
 		_reactRouter.Router,
 		{ history: _reactRouter.browserHistory },
-		_react2.default.createElement(_reactRouter.Route, { path: '/', component: _PAppJoin2.default }),
-		_react2.default.createElement(_reactRouter.Route, { path: '/room/:id', component: _AppRoom2.default })
+		_react2.default.createElement(_reactRouter.Route, { path: '/dev/build/', component: _PAppJoin2.default }),
+		_react2.default.createElement(_reactRouter.Route, { path: '/dev/build/room/:id', component: _AppRoom2.default })
 	), document.getElementById('app'));
 }
 
@@ -25550,7 +25550,7 @@ var JoinInput = React.createClass({
 				'div',
 				{ id: 'pageshare' },
 				React.createElement('img', { id: 'page',
-					src: 'http://pictoshare.net/dev/pageHTML/pic/pageshare.png',
+					src: 'http://pictoshare.net/dev/build/img/pageshare.png',
 					style: {
 						width: '20%',
 						height: '20%'
@@ -25591,7 +25591,7 @@ var JoinInput = React.createClass({
 							{ className: 'input-group-btn' },
 							React.createElement(
 								_reactRouter.Link,
-								{ to: '/room/' + text,
+								{ to: 'dev/build/room/' + text,
 									className: 'btn btn-default',
 									tabIndex: '-1',
 									id: 'go' },
@@ -25632,7 +25632,7 @@ var JoinNav = React.createClass({
 				nickname: sessionStorage.getItem("nickname")
 			});
 		} else {
-			_reactRouter.browserHistory.replace('/');
+			_reactRouter.browserHistory.replace('/dev/build/');
 		}
 	},
 	render: function render() {
@@ -25721,7 +25721,7 @@ var PJoinInput = React.createClass({
 				'div',
 				{ id: 'pageshare' },
 				React.createElement('img', { id: 'page',
-					src: 'http://pictoshare.net/dev/pageHTML/pic/pageshare.png',
+					src: 'http://pictoshare.net/dev/build/img/pageshare.png',
 					style: {
 						width: '20%',
 						height: '20%'
@@ -25762,7 +25762,7 @@ var PJoinInput = React.createClass({
 							{ className: 'input-group-btn' },
 							React.createElement(
 								_reactRouter.Link,
-								{ to: '/room/' + text,
+								{ to: '/dev/build/room/' + text,
 									className: 'btn btn-default',
 									tabIndex: '-1',
 									id: 'go' },
@@ -26013,7 +26013,7 @@ var Application = _react2.default.createClass({
         } else {
           //没有背景图计算并展示welcome
           src = this.state.src;
-          src = 'http://pictoshare.net/PageShare/pageHTML/pic/welcome.png';
+          src = 'http://pictoshare.net/dev/build/img/welcome.png';
           this.setState({
             src: src,
             data: null
@@ -26207,7 +26207,7 @@ var NavagationBar = React.createClass({
 					null,
 					' ',
 					React.createElement('img', { id: 'logo',
-						src: 'http://pictoshare.net/dev/pageHTML/pic/pageshare.png' }),
+						src: 'http://pictoshare.net/dev/build/img/pageshare.png' }),
 					' '
 				),
 				'  ',
@@ -26762,7 +26762,7 @@ var Home = React.createClass({
 		return React.createElement(
 			_reactRouter.IndexLink,
 			{ id: 'exit',
-				to: '/',
+				to: '/dev/build/',
 				ref: 'toexit' },
 			' ',
 			React.createElement(
@@ -26930,8 +26930,7 @@ var wxLogin = React.createClass({
 	getInitialState: function getInitialState() {
 		$('#log').text($('#log').text() + "| begin");
 		return {
-			isLogin: false,
-			devpath: 'dev'
+			isLogin: false
 		};
 	},
 	componentWillMount: function componentWillMount() {
@@ -26946,10 +26945,11 @@ var wxLogin = React.createClass({
 		};
 	},
 	componentDidMount: function componentDidMount() {
+		$('#log').text($('#log').text() + "| begin to get from php");
 		if (this.state.isLogin) {
 			$.ajax({
 				async: false,
-				url: "./php/oauth2_sub.php",
+				url: "http://pictoshare.net/dev/build/php/oauth2_sub.php",
 				type: "GET",
 				data: {
 					code: this.state.code

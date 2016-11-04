@@ -42,7 +42,7 @@ var PJoinInput = React.createClass({
 			< div id = 'pageshare' >
 
 			< img id = "page"
-			src = "http://pictoshare.net/dev/pageHTML/pic/pageshare.png"
+			src = "http://pictoshare.net/dev/build/img/pageshare.png"
 			style = {
 				{
 					width: '20%',
@@ -74,7 +74,7 @@ var PJoinInput = React.createClass({
 
 			< div className = "input-group-btn" >
 			< Link to = {
-				'/room/' + text
+				'/dev/build/room/' + text
 			}
 			className = "btn btn-default"
 			tabIndex = "-1"

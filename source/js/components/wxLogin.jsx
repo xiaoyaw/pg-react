@@ -9,8 +9,7 @@ var wxLogin = React.createClass({
 			getInitialState: function() {
 					$('#log').text($('#log').text()+"| begin");
 				return {
-					isLogin: false,
-					devpath: 'dev'
+					isLogin: false
 				};
 			},
 			componentWillMount: function() {
@@ -25,11 +24,12 @@ var wxLogin = React.createClass({
 				};
 			},
 			componentDidMount: function() {
+				$('#log').text($('#log').text()+"| begin to get from php");
 				if (this.state.isLogin) {
 					$
 						.ajax({
 							async: false,
-							url: "./php/oauth2_sub.php",
+							url: "http://pictoshare.net/dev/build/php/oauth2_sub.php",
 							type: "GET",
 							data: {
 								code: this.state.code

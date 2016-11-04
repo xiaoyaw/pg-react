@@ -18,7 +18,7 @@ var JoinNav = React.createClass({
 				nickname: sessionStorage.getItem("nickname")
 			});
 		} else {
-			browserHistory.replace('/');
+			browserHistory.replace('/dev/build/');
 		}
 	},
 	render: function() {

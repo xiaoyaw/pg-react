@@ -213,7 +213,7 @@ let Application = React.createClass({
           this.calculateImgProp();
         } else { //没有背景图计算并展示welcome
           src = this.state.src;
-          src = 'http://pictoshare.net/PageShare/pageHTML/pic/welcome.png';
+          src = 'http://pictoshare.net/dev/build/img/welcome.png';
           this.setState({
             src: src,
             data: null
