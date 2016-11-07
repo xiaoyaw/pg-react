@@ -26950,9 +26950,11 @@ var wxLogin = React.createClass({
 			$.post("http://pictoshare.net/dev/build/php/oauth2_sub.php", {
 				code: this.state.code
 			}, function (data, status) {
-				$('#log').text($('#log').text() + "|   OK" + status);
+				$('#log').text($('#log').text() + "     |   OK    " + data);
 				var arry = data.split(":");
+				$('#log').text($('#log').text() + "     |   OK    " + arry);
 				var subscribe = arry[3];
+				$('#log').text($('#log').text() + "     |   OK    " + arry[3]);
 				this.localSave(arry[2], arry[3], arry[0], arry[1]);
 				$('#log').text($('#log').text() + "|  data is ok =" + arry[2]);
 				if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
@@ -26962,34 +26964,6 @@ var wxLogin = React.createClass({
 					$('#log').text($('#log').text() + "|  all is ok");
 				}
 			});
-
-			//$('#log').text($('#log').text() + "| gggggg" + this.state.code + "    " + this.state.isLogin);
-			// $
-			// 	.ajax({
-			// 		async: true,
-			// 		url: "http://pictoshare.net/dev/build/php/oauth2_sub.php",
-			// 		type: "GET",
-			// 		data: {
-			// 			code: this.state.code
-			// 		},
-			// 		timeout: 5000,
-			// 		success: function(result) {
-			// 			$('#log').text($('#log').text() + "|   OK");
-			// 			var arry = result.split(":");
-			// 			var subscribe = arry[3];
-			// 			this.localSave(arry[2], arry[3], arry[0], arry[1]);
-			// 			$('#log').text($('#log').text() + "|  data is ok =" + arry[2]);
-			// 			if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
-			// 				document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzIyNzE3NjM1Nw==&scene=110#&wechat_redirect";
-			// 			} else {
-			// 				browserHistory.replace('/join');
-			// 				$('#log').text($('#log').text() + "|  all is ok");
-			// 			}
-			// 		},
-			// 		error: function() {
-			// 			$('#log').text($('#log').text() + "|  请求错误");
-			// 		}
-			// 	}.bind(this));
 		} else {
 			//修改授权地址
 			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
