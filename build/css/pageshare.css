@@ -59,7 +59,6 @@ body{
     background-color: #eee
 }
 #myvideo{
-
     display:none;
     position:absolute;
     z-index:8;

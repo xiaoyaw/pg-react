@@ -26760,7 +26760,7 @@ var Home = React.createClass({
 		return React.createElement(
 			_reactRouter.IndexLink,
 			{ id: 'exit',
-				to: '/',
+				to: '/dev/build/',
 				ref: 'toexit' },
 			' ',
 			React.createElement(
@@ -26925,49 +26925,29 @@ var React = require('react');
 var wxLogin = React.createClass({
 	displayName: 'wxLogin',
 
-	getInitialState: function getInitialState() {
-		$('#log').text($('#log').text() + "| begin");
-		return {
-			code: '',
-			isLogin: false
-		};
-	},
 	componentWillMount: function componentWillMount() {
 		var req = new Object();
 		req = this.getRequest();
 		var code = req['code'];
 		if (code != '' && code != undefined) {
-			$('#log').text($('#log').text() + "| code is ok");
-			this.setState({
-				code: code,
-				isLogin: true
-			});
+			this.getWXdata();
+		} else {
+			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 		};
 	},
-	componentDidMount: function componentDidMount() {
-		$('#log').text($('#log').text() + "| begin to get from php" + this.state.code + "    " + this.state.isLogin);
-		if (this.state.isLogin) {
-			$.post("http://pictoshare.net/dev/build/php/oauth2_sub.php", {
-				code: this.state.code
-			}, function (data, status) {
-				$('#log').text($('#log').text() + "     |   OK    " + data);
-				var arry = data.split(":");
-				$('#log').text($('#log').text() + "     |   OK    " + arry);
-				var subscribe = arry[3];
-				$('#log').text($('#log').text() + "     |   OK    " + arry[3]);
-				this.localSave(arry[2], arry[3], arry[0], arry[1]);
-				$('#log').text($('#log').text() + "|  data is ok =" + arry[2]);
-				if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
-					document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzIyNzE3NjM1Nw==&scene=110#&wechat_redirect";
-				} else {
-					_reactRouter.browserHistory.replace('/join');
-					$('#log').text($('#log').text() + "|  all is ok");
-				}
-			});
-		} else {
-			//修改授权地址
-			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
-		}
+	getWXdata: function getWXdata() {
+		$.post("http://pictoshare.net/dev/build/php/oauth2_sub.php", {
+			code: this.state.code
+		}, function (data, status) {
+			var arry = data.split(":");
+			var subscribe = arry[3];
+			this.localSave(arry[2], arry[3], arry[0], arry[1]);
+			if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
+				document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzIyNzE3NjM1Nw==&scene=110#&wechat_redirect";
+			} else {
+				_reactRouter.browserHistory.replace('/dev/build/join');
+			}
+		});
 	},
 	localSave: function localSave(n, s, o, t) {
 		if (typeof Storage !== "undefined") {
