@@ -29,7 +29,7 @@ var _reactRouter = require('react-router');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-if (!is_weixin()) {
+if (is_weixin()) {
 	//微信端路由
 	_reactDom2.default.render(_react2.default.createElement(
 		_reactRouter.Router,

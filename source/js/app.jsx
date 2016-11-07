@@ -10,7 +10,7 @@ import {
 	hashHistory
 } from 'react-router';
 
-if (!is_weixin()) {
+if (is_weixin()) {
 	//微信端路由
 	ReactDOM.render(
  <Router history={hashHistory}>
