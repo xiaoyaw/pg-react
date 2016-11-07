@@ -26943,7 +26943,6 @@ var wxLogin = React.createClass({
 		};
 	},
 	componentDidMount: function componentDidMount() {
-		console.log('begin');
 		if (this.state.isLogin && this.isMounted()) {
 			$.ajax({
 				async: false,
@@ -26964,21 +26963,6 @@ var wxLogin = React.createClass({
 					}
 				}
 			});
-
-			// $.post("php/oauth2_sub.php", {
-			// 		code: this.state.code
-			// 	},
-			// 	function(data, status) {	
-			// var arry = data.split(":");
-			// var subscribe = arry[3];
-			// this.localSave(arry[2], arry[3], arry[0], arry[1]);
-			// if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
-			// 	document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzIyNzE3NjM1Nw==&scene=110#&wechat_redirect";
-			// } else {
-			// 	browserHistory.replace('/dev/build/join');
-			// }
-			// 		console.log('success    '+data);
-			// });
 		} else {
 			//修改授权地址
 			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
