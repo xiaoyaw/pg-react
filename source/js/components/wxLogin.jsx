@@ -11,14 +11,14 @@ var wxLogin = React.createClass({
 		req = this.getRequest();
 		var code = req['code'];
 		if (code != '' && code != undefined) {
-			this.getWXdata();
+			this.getWXdata(code);
 		}else{
 			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 		};
 	},
-	getWXdata: function() {
+	getWXdata: function(cde) {
 			$.post("http://pictoshare.net/dev/build/php/oauth2_sub.php", {
-					code: this.state.code
+					code: cde
 				},
 				function(data, status) {
 						var arry = data.split(":");
