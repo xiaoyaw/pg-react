@@ -1,7 +1,7 @@
 import {
 	Router,
 	Route,
-	browserHistory,
+	hashHistory,
 } from 'react-router';
 var React = require('react');
 

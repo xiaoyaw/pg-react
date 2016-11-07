@@ -1,7 +1,7 @@
 import {
 	Router,
 	Route,
-	browserHistory
+	hashHistory
 } from 'react-router';
 var React = require('react');
 
@@ -26,11 +26,10 @@ var wxLogin = React.createClass({
 	componentDidMount: function() {
 		if (this.state.isLogin&&this.isMounted()) {
 			var cc=this.state.code;
-			console.log('cc  '+cc);
 			$
 				.ajax({
 					async : false,
-					url : "http://pictoshare.net/dev/build/php/oauth2_sub.php",
+					url : "php/oauth2_sub.php",
 					type : "GET",
 					data : {
 						code : cc
@@ -43,11 +42,12 @@ var wxLogin = React.createClass({
 						if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
 							document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzIyNzE3NjM1Nw==&scene=110#&wechat_redirect";
 						} else {
-							browserHistory.replace('/dev/build/join');
+							hashHistory.replace('/join');
 						}
 					},
 				});
 		} else {
+			
 			//修改授权地址
 			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 		}

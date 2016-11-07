@@ -2,7 +2,7 @@ import {
 	Link
 } from 'react-router';
 import {
-	browserHistory
+	hashHistory
 } from 'react-router';
 
 var React = require('react');
@@ -31,7 +31,7 @@ var JoinInput = React.createClass({
 			< div id = 'pageshare' >
 
 			< img id = "page"
-			src = "http://pictoshare.net/dev/build/img/pageshare.png"
+			src = "img/pageshare.png"
 			style = {
 				{
 					width: '20%',
@@ -62,7 +62,7 @@ var JoinInput = React.createClass({
 			width = "150px" / >
 
 			< div className = "input-group-btn" >
-			< Link to = {'/dev/build/room/'+text}
+			< Link to = {'/room/'+text}
 			className = "btn btn-default"
 			tabIndex = "-1"
 			id = "go" > Join < /Link> 

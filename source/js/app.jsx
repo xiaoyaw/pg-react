@@ -7,21 +7,21 @@ import wxLogin from './components/wxLogin.jsx';
 import {
 	Router,
 	Route,
-	browserHistory
+	hashHistory
 } from 'react-router';
 
-if (is_weixin()) {
+if (!is_weixin()) {
 	//微信端路由
 	ReactDOM.render(
- <Router history={browserHistory}>
- 	<Route path="/dev/build/" component={wxLogin}/>
-  	<Route path="/dev/build/join" component={AppJoin}/>
-   	<Route path="/dev/build/room/:id" component={AppRoom}/>
+ <Router history={hashHistory}>
+ 	<Route path="/" component={wxLogin}/>
+  	<Route path="/join" component={AppJoin}/>
+   	<Route path="/room/:id" component={AppRoom}/>
 </Router>,document.getElementById('app'));
 }else{
 	//PC端路由
 ReactDOM.render(
- <Router history={browserHistory}>
+ <Router history={hashHistory}>
   	<Route path="/" component={PAppJoin}/>
    	<Route path="/room/:id" component={AppRoom}/>
 </Router>,document.getElementById('app'));	

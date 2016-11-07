@@ -42,7 +42,7 @@ var PJoinInput = React.createClass({
 			< div id = 'pageshare' >
 
 			< img id = "page"
-			src = "http://pictoshare.net/dev/build/img/pageshare.png"
+			src = "img/pageshare.png"
 			style = {
 				{
 					width: '20%',
