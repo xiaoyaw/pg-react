@@ -5,11 +5,6 @@
  * 在handleMessage中播放video，audio。1、没有加入video子组件的原因是 导航栏按钮无法获取此子组件的DOM节点
  * 2、没有放在canvas中处理视频的原因是 此组件任何state变化都会导致render方法执行，从而导致视频或音频重复播放
  */
-import {
-  Router,
-  Route,
-  browserHistory,
-} from 'react-router';
 import React from 'react';
 import Canvas from './blackBoard/Canvas.jsx';
 import BgImage from './blackBoard/BgImage.jsx';

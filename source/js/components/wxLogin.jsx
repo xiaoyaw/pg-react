@@ -44,7 +44,7 @@ var wxLogin = React.createClass({
 						} else {
 							hashHistory.replace('/join');
 						}
-					},
+					}.bind(this),
 				});
 		} else {
 			
