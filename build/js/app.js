@@ -25786,8 +25786,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _reactRouter = require('react-router');
-
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -25802,13 +25800,6 @@ var _BgImage2 = _interopRequireDefault(_BgImage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*
- * 包裹canvas,bgimg的组件
- * 连接websocket，handleMessage
- * 计算尺寸大小位置以及resize以后重新计算
- * 在handleMessage中播放video，audio。1、没有加入video子组件的原因是 导航栏按钮无法获取此子组件的DOM节点
- * 2、没有放在canvas中处理视频的原因是 此组件任何state变化都会导致render方法执行，从而导致视频或音频重复播放
- */
 var Application = _react2.default.createClass({
   displayName: 'Application',
 
@@ -26150,11 +26141,16 @@ var Application = _react2.default.createClass({
     );
   }
 
-});
-
+}); /*
+     * 包裹canvas,bgimg的组件
+     * 连接websocket，handleMessage
+     * 计算尺寸大小位置以及resize以后重新计算
+     * 在handleMessage中播放video，audio。1、没有加入video子组件的原因是 导航栏按钮无法获取此子组件的DOM节点
+     * 2、没有放在canvas中处理视频的原因是 此组件任何state变化都会导致render方法执行，从而导致视频或音频重复播放
+     */
 exports.default = Application;
 
-},{"./blackBoard/BgImage.jsx":239,"./blackBoard/Canvas.jsx":240,"react":228,"react-router":30}],236:[function(require,module,exports){
+},{"./blackBoard/BgImage.jsx":239,"./blackBoard/Canvas.jsx":240,"react":228}],236:[function(require,module,exports){
 'use strict';
 
 var _MyAudio = require('./navBar/MyAudio.jsx');
@@ -26205,7 +26201,7 @@ var NavagationBar = React.createClass({
 					null,
 					' ',
 					React.createElement('img', { id: 'logo',
-						src: 'http://pictoshare.net/dev/build/img/pageshare.png' }),
+						src: 'img/pageshare.png' }),
 					' '
 				),
 				'  ',
@@ -26943,25 +26939,17 @@ var wxLogin = React.createClass({
 		};
 	},
 	componentDidMount: function componentDidMount() {
-		if (this.state.isLogin && this.isMounted()) {
-			var cc = this.state.code;
-			$.ajax({
-				async: false,
-				url: "php/oauth2_sub.php",
-				type: "GET",
-				data: {
-					code: cc
-				},
-				timeout: 5000,
-				success: function success(result) {
-					var arry = result.split(":");
-					var subscribe = arry[3];
-					this.localSave(arry[2], arry[3], arry[0], arry[1]);
-					if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
-						document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzIyNzE3NjM1Nw==&scene=110#&wechat_redirect";
-					} else {
-						_reactRouter.hashHistory.replace('/join');
-					}
+		if (this.state.isLogin) {
+			$.post("php/oauth2_sub.php", {
+				code: this.state.code
+			}, function (data, status) {
+				var arry = data.split(":");
+				var subscribe = arry[3];
+				this.localSave(arry[2], arry[3], arry[0], arry[1]);
+				if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
+					document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzIyNzE3NjM1Nw==&scene=110#&wechat_redirect";
+				} else {
+					_reactRouter.hashHistory.replace('/join');
 				}
 			});
 		} else {
