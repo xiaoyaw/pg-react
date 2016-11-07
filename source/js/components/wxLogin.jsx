@@ -6,21 +6,29 @@ import {
 var React = require('react');
 
 var wxLogin = React.createClass({
+	getInitialState: function() {
+		return {
+			code: '',
+			isLogin: false
+		};
+	},
 	componentWillMount: function() {
 		var req = new Object();
 		req = this.getRequest();
 		var code = req['code'];
 		if (code != '' && code != undefined) {
-			this.getWXdata(code);
-		}else{
-			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+			this.setState({
+				code: code,
+				isLogin: true
+			});
 		};
 	},
-	getWXdata: function(cde) {
+	componentDidMount: function() {
+		if (this.state.isLogin) {
 			$.post("http://pictoshare.net/dev/build/php/oauth2_sub.php", {
-					code: cde
+					code: this.state.code
 				},
-				function(data, status) {
+				function(data, status) {	
 						var arry = data.split(":");
 						var subscribe = arry[3];
 						this.localSave(arry[2], arry[3], arry[0], arry[1]);
@@ -30,13 +38,17 @@ var wxLogin = React.createClass({
 							browserHistory.replace('/dev/build/join');
 						}
 				});
+		} else {
+			//修改授权地址
+			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+		}
 	},
 	localSave: function(n, s, o, t) {
 		if (typeof(Storage) !== "undefined") {
 			sessionStorage.setItem("nickname", n);
 			sessionStorage.setItem("subscribe", s);
-			sessionStorage.setItem("openid", o);
-			sessionStorage.setItem("accesstoken", t);
+			sessionStorage.setItem("username", o);
+			sessionStorage.setItem("password", t);
 		}
 	},
 	getRequest: function() {

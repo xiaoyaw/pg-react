@@ -62,7 +62,7 @@ var JoinInput = React.createClass({
 			width = "150px" / >
 
 			< div className = "input-group-btn" >
-			< Link to = {'room/'+text}
+			< Link to = {'/dev/build/room/'+text}
 			className = "btn btn-default"
 			tabIndex = "-1"
 			id = "go" > Join < /Link> 
