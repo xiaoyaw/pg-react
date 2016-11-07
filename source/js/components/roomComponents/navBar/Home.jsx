@@ -9,7 +9,7 @@ var Home = React.createClass({
 
 	render: function() {
 		return ( < IndexLink id = 'exit'
-			to = "/dev/build/"
+			to = "/"
 			ref = 'toexit' > < span className = "glyphicon glyphicon-home" > < /span> </IndexLink >
 		);
 	}

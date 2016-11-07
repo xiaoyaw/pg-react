@@ -43,8 +43,8 @@ if (is_weixin()) {
 	_reactDom2.default.render(_react2.default.createElement(
 		_reactRouter.Router,
 		{ history: _reactRouter.browserHistory },
-		_react2.default.createElement(_reactRouter.Route, { path: '/dev/build/', component: _PAppJoin2.default }),
-		_react2.default.createElement(_reactRouter.Route, { path: '/dev/build/room/:id', component: _AppRoom2.default })
+		_react2.default.createElement(_reactRouter.Route, { path: '/', component: _PAppJoin2.default }),
+		_react2.default.createElement(_reactRouter.Route, { path: '/room/:id', component: _AppRoom2.default })
 	), document.getElementById('app'));
 }
 
@@ -25591,7 +25591,7 @@ var JoinInput = React.createClass({
 							{ className: 'input-group-btn' },
 							React.createElement(
 								_reactRouter.Link,
-								{ to: 'dev/build/room/' + text,
+								{ to: 'room/' + text,
 									className: 'btn btn-default',
 									tabIndex: '-1',
 									id: 'go' },
@@ -25631,8 +25631,6 @@ var JoinNav = React.createClass({
 			this.setState({
 				nickname: sessionStorage.getItem("nickname")
 			});
-		} else {
-			_reactRouter.browserHistory.replace('/dev/build/');
 		}
 	},
 	render: function render() {
@@ -25762,7 +25760,7 @@ var PJoinInput = React.createClass({
 							{ className: 'input-group-btn' },
 							React.createElement(
 								_reactRouter.Link,
-								{ to: '/dev/build/room/' + text,
+								{ to: 'room/' + text,
 									className: 'btn btn-default',
 									tabIndex: '-1',
 									id: 'go' },
@@ -26762,7 +26760,7 @@ var Home = React.createClass({
 		return React.createElement(
 			_reactRouter.IndexLink,
 			{ id: 'exit',
-				to: '/dev/build/',
+				to: '/',
 				ref: 'toexit' },
 			' ',
 			React.createElement(
@@ -26947,10 +26945,11 @@ var wxLogin = React.createClass({
 		};
 	},
 	componentDidMount: function componentDidMount() {
-		$('#log').text($('#log').text() + "| begin to get from php");
+		$('#log').text($('#log').text() + "| begin to get from php" + this.state.code + "    " + this.state.isLogin);
 		if (this.state.isLogin) {
+			$('#log').text($('#log').text() + "| gggggg" + this.state.code + "    " + this.state.isLogin);
 			$.ajax({
-				async: false,
+				async: true,
 				url: "http://pictoshare.net/dev/build/php/oauth2_sub.php",
 				type: "GET",
 				data: {
@@ -26966,9 +26965,12 @@ var wxLogin = React.createClass({
 					if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
 						document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzIyNzE3NjM1Nw==&scene=110#&wechat_redirect";
 					} else {
-						_reactRouter.browserHistory.replace('/dev/build/join');
+						_reactRouter.browserHistory.replace('/join');
 						$('#log').text($('#log').text() + "|  all is ok");
 					}
+				},
+				error: function error() {
+					$('#log').text($('#log').text() + "|  请求错误");
 				}
 			});
 		} else {

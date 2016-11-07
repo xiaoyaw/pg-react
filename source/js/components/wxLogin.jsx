@@ -26,11 +26,12 @@ var wxLogin = React.createClass({
 				};
 			},
 			componentDidMount: function() {
-				$('#log').text($('#log').text()+"| begin to get from php");
+				$('#log').text($('#log').text()+"| begin to get from php"+this.state.code+"    "+this.state.isLogin);
 				if (this.state.isLogin) {
+					$('#log').text($('#log').text()+"| gggggg"+this.state.code+"    "+this.state.isLogin);
 					$
 						.ajax({
-							async: false,
+							async: true,
 							url: "http://pictoshare.net/dev/build/php/oauth2_sub.php",
 							type: "GET",
 							data: {
@@ -46,10 +47,13 @@ var wxLogin = React.createClass({
 								if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
 									document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzIyNzE3NjM1Nw==&scene=110#&wechat_redirect";
 								} else {
-									browserHistory.replace('/dev/build/join');
+									browserHistory.replace('/join');
 										$('#log').text($('#log').text()+"|  all is ok");
 								}
 							},
+							error:function(){
+								$('#log').text($('#log').text()+"|  请求错误");
+							}
 						});
 				} else {
 					//修改授权地址

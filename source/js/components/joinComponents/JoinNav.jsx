@@ -17,9 +17,7 @@ var JoinNav = React.createClass({
 			this.setState({
 				nickname: sessionStorage.getItem("nickname")
 			});
-		} else {
-			browserHistory.replace('/dev/build/');
-		}
+		} 
 	},
 	render: function() {
 		return ( < nav className = "navbar navbar-default"

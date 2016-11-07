@@ -74,7 +74,7 @@ var PJoinInput = React.createClass({
 
 			< div className = "input-group-btn" >
 			< Link to = {
-				'/dev/build/room/' + text
+				'room/' + text
 			}
 			className = "btn btn-default"
 			tabIndex = "-1"
