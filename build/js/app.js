@@ -26944,12 +26944,14 @@ var wxLogin = React.createClass({
 	},
 	componentDidMount: function componentDidMount() {
 		if (this.state.isLogin && this.isMounted()) {
+			var cc = this.state.code;
+			console.log('cc  ' + cc);
 			$.ajax({
 				async: false,
 				url: "http://pictoshare.net/dev/build/php/oauth2_sub.php",
 				type: "GET",
 				data: {
-					code: this.state.code
+					code: cc
 				},
 				timeout: 5000,
 				success: function success(result) {
