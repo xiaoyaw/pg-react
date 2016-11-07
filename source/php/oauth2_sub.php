@@ -1,5 +1,5 @@
 <?php
-$code = $_GET['code'];//前端传来的code值
+$code = $_POST['code'];//前端传来的code值
 $appid = "wxe818778f16e4400d";
 $appsecret = "0f96dfcb79cf259c66217b7af95e20fe";//获取openid
 
