@@ -1,5 +1,5 @@
 <?php
-$code = $_POST['code'];//前端传来的code值
+$code = $_GET['code'];//前端传来的code值
 $appid = "wxe818778f16e4400d";
 $appsecret = "0f96dfcb79cf259c66217b7af95e20fe";//获取openid
 
@@ -9,8 +9,6 @@ $result = https_request($url);
 $jsoninfo = json_decode($result, true);
 $openid = $jsoninfo["openid"];//从返回json结果中读出openid
 
-
-$callback=$_GET['callback'];  // echo $callback."({result:'".$openid."'})";
 
 
 $url1="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=$appid&secret=$appsecret";
