@@ -118,11 +118,11 @@ let Application = React.createClass({
     };
 
   },
-  calculateImgProp: function() {
+  calculateImgProp: function(src) {
     var thiz = this;
     //预先获取图片的宽高
     var pic = new Image();
-    pic.src = this.state.src;
+    pic.src = src;
     //先计算图片长宽比例
     pic.onload = function() {
       var ratio = pic.width / pic.height;
@@ -168,6 +168,10 @@ let Application = React.createClass({
           });
         }
       }
+      thiz.setState({
+        src: src,
+        data: null
+      });
     }
   },
 
@@ -188,45 +192,21 @@ let Application = React.createClass({
         break;
       case "startSession":
         //不知道什么时候触发
-        src = this.state.src;
-        src = 'img/welcome.png';
-        this.setState({
-          src: src
-        });
-        this.calculateImgProp();
-
+        this.calculateImgProp('img/welcome.png');
         break;
       case "joinSession":
         //加入房间后触发，先判断有无历史记录背景图
         if (value.image != undefined) {
-          src = this.state.src;
-          src = 'data:image/png;base64,' + value.image;
-          this.setState({
-            src: src,
-            data: null
-          });
-          this.calculateImgProp();
+          this.calculateImgProp('data:image/png;base64,' + value.image);
         } else { //没有背景图计算并展示welcome
-          src = this.state.src;
-          src = 'img/welcome.png';
-          this.setState({
-            src: src,
-            data: null
-          });
-          this.calculateImgProp();
+          this.calculateImgProp('img/welcome.png');
         }
 
         break;
 
       case "image":
         //注意：换background的时候，需要将data置空
-        src = this.state.src;
-        src = 'data:image/png;base64,' + value.image;
-        this.setState({
-          src: src,
-          data: null
-        });
-        this.calculateImgProp();
+        this.calculateImgProp('data:image/png;base64,' + value.image);
         break;
 
       case "urlvoice":

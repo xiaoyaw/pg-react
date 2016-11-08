@@ -34,8 +34,8 @@ var JoinInput = React.createClass({
 			src = "img/pageshare.png"
 			style = {
 				{
-					width: '20%',
-					height: '20%'
+					width: '60%',
+					height: '60%'
 				}
 			}
 			/> < /div >

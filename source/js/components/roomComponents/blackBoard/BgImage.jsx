@@ -13,9 +13,7 @@ let BgImage = React.createClass({
     },
     
     render: function() {
-        return ( < img src = {
-                this.props._src
-            }
+        return ( < img 
             style = {
                 {
                     width:this.props._width,
@@ -25,6 +23,9 @@ let BgImage = React.createClass({
                     left:this.props._left,
                     top:this.props._top
                 }
+            }
+            src = {
+                this.props._src
             }
             />
             //<img  src="img/pageshare.png" />

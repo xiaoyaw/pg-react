@@ -25552,8 +25552,8 @@ var JoinInput = React.createClass({
 				React.createElement('img', { id: 'page',
 					src: 'img/pageshare.png',
 					style: {
-						width: '20%',
-						height: '20%'
+						width: '60%',
+						height: '60%'
 					}
 				}),
 				' '
@@ -25910,11 +25910,11 @@ var Application = _react2.default.createClass({
       window_height: wh
     };
   },
-  calculateImgProp: function calculateImgProp() {
+  calculateImgProp: function calculateImgProp(src) {
     var thiz = this;
     //预先获取图片的宽高
     var pic = new Image();
-    pic.src = this.state.src;
+    pic.src = src;
     //先计算图片长宽比例
     pic.onload = function () {
       var ratio = pic.width / pic.height;
@@ -25961,6 +25961,10 @@ var Application = _react2.default.createClass({
           });
         }
       }
+      thiz.setState({
+        src: src,
+        data: null
+      });
     };
   },
 
@@ -25981,46 +25985,22 @@ var Application = _react2.default.createClass({
         break;
       case "startSession":
         //不知道什么时候触发
-        src = this.state.src;
-        src = 'img/welcome.png';
-        this.setState({
-          src: src
-        });
-        this.calculateImgProp();
-
+        this.calculateImgProp('img/welcome.png');
         break;
       case "joinSession":
         //加入房间后触发，先判断有无历史记录背景图
         if (value.image != undefined) {
-          src = this.state.src;
-          src = 'data:image/png;base64,' + value.image;
-          this.setState({
-            src: src,
-            data: null
-          });
-          this.calculateImgProp();
+          this.calculateImgProp('data:image/png;base64,' + value.image);
         } else {
           //没有背景图计算并展示welcome
-          src = this.state.src;
-          src = 'img/welcome.png';
-          this.setState({
-            src: src,
-            data: null
-          });
-          this.calculateImgProp();
+          this.calculateImgProp('img/welcome.png');
         }
 
         break;
 
       case "image":
         //注意：换background的时候，需要将data置空
-        src = this.state.src;
-        src = 'data:image/png;base64,' + value.image;
-        this.setState({
-          src: src,
-          data: null
-        });
-        this.calculateImgProp();
+        this.calculateImgProp('data:image/png;base64,' + value.image);
         break;
 
       case "urlvoice":
@@ -26410,7 +26390,7 @@ var BgImage = _react2.default.createClass({
     },
 
     render: function render() {
-        return _react2.default.createElement('img', { src: this.props._src,
+        return _react2.default.createElement('img', {
             style: {
                 width: this.props._width,
                 height: this.props._height,
@@ -26418,7 +26398,8 @@ var BgImage = _react2.default.createClass({
                 zIndex: '-1',
                 left: this.props._left,
                 top: this.props._top
-            }
+            },
+            src: this.props._src
         })
         //<img  src="img/pageshare.png" />
         ;
@@ -26939,33 +26920,36 @@ var wxLogin = React.createClass({
 		};
 	},
 	componentDidMount: function componentDidMount() {
-		if (this.state.isLogin && this.isMounted()) {
-			var cc = this.state.code;
-			console.log('cc');
-			$.ajax({
-				async: false,
-				url: "php/oauth2_sub.php",
-				type: "GET",
-				data: {
-					code: cc
-				},
-				timeout: 5000,
-				success: function (result) {
-					var arry = result.split(":");
-					var subscribe = arry[3];
-					console.log(arry[3] + "   " + arry[0] + "   " + arry[1] + "   " + arry[2]);
-					this.localSave(arry[2], arry[3], arry[0], arry[1]);
-					if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
-						document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzIyNzE3NjM1Nw==&scene=110#&wechat_redirect";
-					} else {
-						_reactRouter.hashHistory.replace('/join');
-					}
-				}.bind(this)
-			});
+		if (sessionStorage.username) {
+			//本地有则为返回，跳转回/join，否则第一次加入，需请求数据
+			_reactRouter.hashHistory.replace('/join');
 		} else {
+			if (this.state.isLogin && this.isMounted()) {
+				var cc = this.state.code;
+				$.ajax({
+					async: false,
+					url: "php/oauth2_sub.php",
+					type: "GET",
+					data: {
+						code: cc
+					},
+					timeout: 5000,
+					success: function (result) {
+						var arry = result.split(":");
+						var subscribe = arry[3];
+						this.localSave(arry[2], arry[3], arry[0], arry[1]);
+						if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
+							document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzIyNzE3NjM1Nw==&scene=110#&wechat_redirect";
+						} else {
+							_reactRouter.hashHistory.replace('/join');
+						}
+					}.bind(this)
+				});
+			} else {
 
-			//修改授权地址
-			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+				//修改授权地址
+				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+			}
 		}
 	},
 	localSave: function localSave(n, s, o, t) {

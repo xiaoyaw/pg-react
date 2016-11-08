@@ -1,3 +1,20 @@
+/*join ui css*/
+
+
+#roomid{
+    text-transform: lowercase;
+}
+
+#pageshare{
+    margin: 30px;
+}
+
+body{
+  
+    background-color: #eee
+}
+
+/*room nav btn css*/
 #logo {
     border: 1px solid;
     border-style: outset;
@@ -43,21 +60,39 @@
     margin: 3px;
 }
 
-#play {
-    border-radius: 50%;
+/*on click btn css*/
+
+#exit:active {
+    border-style: inset;
+    border-width: 1px;
+    background-color: #BDBDBD;
 }
 
-#video_info {
-    position: absolute;
-    left: 35%;
-    top: 50%;
+#voice:active {
+    border-style: inset;
+    border-width: 1px;
+    background-color: #BDBDBD;
+}
+
+#film:active {
+    border-style: inset;
+    border-width: 1px;
+    background-color: #BDBDBD;
+}
+
+#share:active {
+    border-style: inset;
+    border-width: 1px;
+    background-color: #BDBDBD;
+}
+
+#edit:active {
+    border-style: inset;
+    border-width: 1px;
+    background-color: #BDBDBD;
 }
 
 
-body{
-  
-    background-color: #eee
-}
 #myvideo{
     display:none;
     position:absolute;
@@ -69,7 +104,4 @@ body{
     z-index: 20;
     top: 40%; 
     display: none;
-}
-#roomid{
-text-transform: lowercase;
 }

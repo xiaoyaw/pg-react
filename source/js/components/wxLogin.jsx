@@ -24,21 +24,22 @@ var wxLogin = React.createClass({
 		};
 	},
 	componentDidMount: function() {
-		if (this.state.isLogin&&this.isMounted()) {
-			var cc=this.state.code;
-			console.log('cc');
-			$.ajax({
-					async : false,
-					url : "php/oauth2_sub.php",
-					type : "GET",
-					data : {
-						code : cc
+		if (sessionStorage.username) {   //本地有则为返回，跳转回/join，否则第一次加入，需请求数据
+			hashHistory.replace('/join');
+		} else {
+			if (this.state.isLogin && this.isMounted()) {
+				var cc = this.state.code;
+				$.ajax({
+					async: false,
+					url: "php/oauth2_sub.php",
+					type: "GET",
+					data: {
+						code: cc
 					},
-					timeout : 5000,
-					success : function(result) {
+					timeout: 5000,
+					success: function(result) {
 						var arry = result.split(":");
 						var subscribe = arry[3];
-						console.log(arry[3]+"   "+arry[0]+"   "+arry[1]+"   "+arry[2]);
 						this.localSave(arry[2], arry[3], arry[0], arry[1]);
 						if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
 							document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzIyNzE3NjM1Nw==&scene=110#&wechat_redirect";
@@ -47,11 +48,13 @@ var wxLogin = React.createClass({
 						}
 					}.bind(this),
 				});
-		} else {
-			
-			//修改授权地址
-			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+			} else {
+
+				//修改授权地址
+				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+			}
 		}
+
 	},
 	localSave: function(n, s, o, t) {
 		if (typeof(Storage) !== "undefined") {

@@ -2,7 +2,7 @@ import {
 	Link
 } from 'react-router';
 import {
-	browserHistory
+	hashHistory
 } from 'react-router';
 
 var React = require('react');
