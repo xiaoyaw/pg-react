@@ -28,6 +28,9 @@ var PJoinInput = React.createClass({
 		if (this.isMounted()) {
 			var thiz = this;
 			var input = this.refs.textinput;
+			$('#go').on('click',function(){
+				thiz.handleClick();
+			});
 			$(input).bind('input propertychange', function() {
 				thiz.setState({
 					text: $(this).val().toLowerCase()
@@ -35,7 +38,14 @@ var PJoinInput = React.createClass({
 			});
 		}
 	},
-
+	handleClick:function(){
+		if(this.state.text==''){
+			$('#warn').fadeIn();
+			setTimeout(function() {
+				$('#warn').fadeOut();
+			}, 2000);
+		}
+	},
 	render: function() {
 		var text = this.state.text;
 		return ( < div id = "bigScreen" >
@@ -82,6 +92,16 @@ var PJoinInput = React.createClass({
 
 			< /div > < /div >
 			< /div > < /div >
+			< div style = {
+				{
+					textAlign: 'center',textShadow: '2px 2px 5px #9B30FF',marginTop: '35px',display: 'none'
+				}
+			}
+			id = "warn" > < font style = {
+				{
+					fontSize: '16px'
+				}
+			} > RoomID can not be empty！！！ < /font></div >
 			< /div>
 		);
 	}
