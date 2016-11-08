@@ -42,7 +42,7 @@ body{
 #edit {
     border-style: outset;
     border-width: 1px;
-    border-color: #00FF00;
+    border-color: #9C9C9C;
     margin: 3px;
 }
 
@@ -53,13 +53,12 @@ body{
     margin: 3px;
 }
 
-#help {
+#share {
     border-style: outset;
     border-width: 1px;
-    border-color: #9C9C9C;
+    border-color: #00FF00;
     margin: 3px;
 }
-
 /*on click btn css*/
 
 #exit:active {
@@ -91,7 +90,11 @@ body{
     border-width: 1px;
     background-color: #BDBDBD;
 }
-
+#share:active {
+    border-style: inset;
+    border-width: 1px;
+    background-color: #BDBDBD;
+}
 
 #myvideo{
     display:none;

@@ -8,17 +8,26 @@ import NetTip from './roomComponents/NetTip.jsx';
 
 var AppRoom = React.createClass({
 
+  componentWillMount: function() {
+
+  },
+  componentDidMount: function() {
+   //第二个页面授权
+  },
   render: function() {
-    var text=this.props.params.id;
-    return ( 
-      < div >
-      < Slider  _roomid={text}/ >
-      < Application  _roomid={text}  / >
-      < NavagationBar / >
-      < NetTip / >
+    var text = this.props.params.id;
+    return ( < div >
+      < Slider _roomid = {
+        text
+      }
+      / > < Application _roomid = {
+      text
+    }
+    / > < NavagationBar / >
+    < NetTip / >
       < /div>
-    );
-  }
+  );
+}
 
 });
 

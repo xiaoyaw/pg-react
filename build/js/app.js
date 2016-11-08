@@ -13,6 +13,10 @@ var _AppRoom = require('./components/AppRoom.jsx');
 
 var _AppRoom2 = _interopRequireDefault(_AppRoom);
 
+var _PAppRoom = require('./components/PAppRoom.jsx');
+
+var _PAppRoom2 = _interopRequireDefault(_PAppRoom);
+
 var _AppJoin = require('./components/AppJoin.jsx');
 
 var _AppJoin2 = _interopRequireDefault(_AppJoin);
@@ -44,7 +48,7 @@ if (is_weixin()) {
 		_reactRouter.Router,
 		{ history: _reactRouter.hashHistory },
 		_react2.default.createElement(_reactRouter.Route, { path: '/', component: _PAppJoin2.default }),
-		_react2.default.createElement(_reactRouter.Route, { path: '/room/:id', component: _AppRoom2.default })
+		_react2.default.createElement(_reactRouter.Route, { path: '/room/:id', component: _PAppRoom2.default })
 	), document.getElementById('app'));
 }
 
@@ -57,7 +61,7 @@ function is_weixin() {
 	}
 }
 
-},{"./components/AppJoin.jsx":229,"./components/AppRoom.jsx":230,"./components/PAppJoin.jsx":231,"./components/wxLogin.jsx":246,"react":228,"react-dom":3,"react-router":30}],2:[function(require,module,exports){
+},{"./components/AppJoin.jsx":229,"./components/AppRoom.jsx":230,"./components/PAppJoin.jsx":231,"./components/PAppRoom.jsx":232,"./components/wxLogin.jsx":248,"react":228,"react-dom":3,"react-router":30}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -25448,7 +25452,7 @@ var AppJoin = React.createClass({
 						if (signature != undefined && signature != "" && signature != 'undefined') {
 							//微信分享接口
 							wx.config({
-								debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+								debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 								appId: appid, // 必填，公众号的唯一标识
 								timestamp: timestamp, // 必填，生成签名的时间戳
 								nonceStr: noncestr, // 必填，生成签名的随机串
@@ -25555,7 +25559,7 @@ var AppJoin = React.createClass({
 
 module.exports = AppJoin;
 
-},{"./joinComponents/JoinInput.jsx":232,"./joinComponents/JoinNav.jsx":233,"react":228,"react-router":30}],230:[function(require,module,exports){
+},{"./joinComponents/JoinInput.jsx":233,"./joinComponents/JoinNav.jsx":234,"react":228,"react-router":30}],230:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -25588,13 +25592,21 @@ var AppRoom = _react2.default.createClass({
   displayName: 'AppRoom',
 
 
+  componentWillMount: function componentWillMount() {},
+  componentDidMount: function componentDidMount() {
+    //第二个页面授权
+  },
   render: function render() {
     var text = this.props.params.id;
     return _react2.default.createElement(
       'div',
       null,
-      _react2.default.createElement(_Slider2.default, { _roomid: text }),
-      _react2.default.createElement(_Application2.default, { _roomid: text }),
+      _react2.default.createElement(_Slider2.default, { _roomid: text
+      }),
+      ' ',
+      _react2.default.createElement(_Application2.default, { _roomid: text
+      }),
+      ' ',
       _react2.default.createElement(_NavagationBar2.default, null),
       _react2.default.createElement(_NetTip2.default, null)
     );
@@ -25604,7 +25616,7 @@ var AppRoom = _react2.default.createClass({
 
 module.exports = AppRoom;
 
-},{"./roomComponents/Application.jsx":235,"./roomComponents/NavagationBar.jsx":236,"./roomComponents/NetTip.jsx":237,"./roomComponents/Slider.jsx":238,"react":228,"react-dom":3}],231:[function(require,module,exports){
+},{"./roomComponents/Application.jsx":236,"./roomComponents/NavagationBar.jsx":237,"./roomComponents/NetTip.jsx":238,"./roomComponents/Slider.jsx":240,"react":228,"react-dom":3}],231:[function(require,module,exports){
 'use strict';
 
 var _PJoinInput = require('./joinComponents/PJoinInput.jsx');
@@ -25623,7 +25635,6 @@ var PAppJoin = React.createClass({
 	displayName: 'PAppJoin',
 
 
-	componentWillMount: function componentWillMount() {},
 	render: function render() {
 		return React.createElement(
 			'div',
@@ -25637,7 +25648,56 @@ var PAppJoin = React.createClass({
 
 module.exports = PAppJoin;
 
-},{"./joinComponents/JoinNav.jsx":233,"./joinComponents/PJoinInput.jsx":234,"react":228}],232:[function(require,module,exports){
+},{"./joinComponents/JoinNav.jsx":234,"./joinComponents/PJoinInput.jsx":235,"react":228}],232:[function(require,module,exports){
+'use strict';
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _Application = require('./roomComponents/Application.jsx');
+
+var _Application2 = _interopRequireDefault(_Application);
+
+var _Slider = require('./roomComponents/Slider.jsx');
+
+var _Slider2 = _interopRequireDefault(_Slider);
+
+var _PNavagationBar = require('./roomComponents/PNavagationBar.jsx');
+
+var _PNavagationBar2 = _interopRequireDefault(_PNavagationBar);
+
+var _NetTip = require('./roomComponents/NetTip.jsx');
+
+var _NetTip2 = _interopRequireDefault(_NetTip);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var PAppRoom = _react2.default.createClass({
+  displayName: 'PAppRoom',
+
+
+  render: function render() {
+    var text = this.props.params.id;
+    return _react2.default.createElement(
+      'div',
+      null,
+      _react2.default.createElement(_Slider2.default, { _roomid: text }),
+      _react2.default.createElement(_Application2.default, { _roomid: text }),
+      _react2.default.createElement(_PNavagationBar2.default, null),
+      _react2.default.createElement(_NetTip2.default, null)
+    );
+  }
+
+});
+
+module.exports = PAppRoom;
+
+},{"./roomComponents/Application.jsx":236,"./roomComponents/NetTip.jsx":238,"./roomComponents/PNavagationBar.jsx":239,"./roomComponents/Slider.jsx":240,"react":228,"react-dom":3}],233:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -25758,7 +25818,7 @@ var JoinInput = React.createClass({
 
 module.exports = JoinInput;
 
-},{"react":228,"react-router":30}],233:[function(require,module,exports){
+},{"react":228,"react-router":30}],234:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -25820,7 +25880,7 @@ var JoinNav = React.createClass({
 
 module.exports = JoinNav;
 
-},{"react":228,"react-router":30}],234:[function(require,module,exports){
+},{"react":228,"react-router":30}],235:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -25952,7 +26012,7 @@ var PJoinInput = React.createClass({
 
 module.exports = PJoinInput;
 
-},{"react":228,"react-router":30}],235:[function(require,module,exports){
+},{"react":228,"react-router":30}],236:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26303,7 +26363,7 @@ var Application = _react2.default.createClass({
      */
 exports.default = Application;
 
-},{"./blackBoard/BgImage.jsx":239,"./blackBoard/Canvas.jsx":240,"react":228}],236:[function(require,module,exports){
+},{"./blackBoard/BgImage.jsx":241,"./blackBoard/Canvas.jsx":242,"react":228}],237:[function(require,module,exports){
 'use strict';
 
 var _MyAudio = require('./navBar/MyAudio.jsx');
@@ -26322,9 +26382,9 @@ var _Edit = require('./navBar/Edit.jsx');
 
 var _Edit2 = _interopRequireDefault(_Edit);
 
-var _Help = require('./navBar/Help.jsx');
+var _Share = require('./navBar/Share.jsx');
 
-var _Help2 = _interopRequireDefault(_Help);
+var _Share2 = _interopRequireDefault(_Share);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26394,7 +26454,7 @@ var NavagationBar = React.createClass({
 					'li',
 					null,
 					' ',
-					React.createElement(_Help2.default, null),
+					React.createElement(_Share2.default, null),
 					' '
 				),
 				' '
@@ -26407,7 +26467,7 @@ var NavagationBar = React.createClass({
 
 module.exports = NavagationBar;
 
-},{"./navBar/Edit.jsx":241,"./navBar/Help.jsx":242,"./navBar/Home.jsx":243,"./navBar/MyAudio.jsx":244,"./navBar/MyVideo.jsx":245,"react":228}],237:[function(require,module,exports){
+},{"./navBar/Edit.jsx":243,"./navBar/Home.jsx":244,"./navBar/MyAudio.jsx":245,"./navBar/MyVideo.jsx":246,"./navBar/Share.jsx":247,"react":228}],238:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -26439,7 +26499,102 @@ var NetTip = React.createClass({
 
 module.exports = NetTip;
 
-},{"react":228}],238:[function(require,module,exports){
+},{"react":228}],239:[function(require,module,exports){
+'use strict';
+
+var _MyAudio = require('./navBar/MyAudio.jsx');
+
+var _MyAudio2 = _interopRequireDefault(_MyAudio);
+
+var _MyVideo = require('./navBar/MyVideo.jsx');
+
+var _MyVideo2 = _interopRequireDefault(_MyVideo);
+
+var _Home = require('./navBar/Home.jsx');
+
+var _Home2 = _interopRequireDefault(_Home);
+
+var _Edit = require('./navBar/Edit.jsx');
+
+var _Edit2 = _interopRequireDefault(_Edit);
+
+var _Share = require('./navBar/Share.jsx');
+
+var _Share2 = _interopRequireDefault(_Share);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var React = require('react');
+
+var PNavagationBar = React.createClass({
+	displayName: 'PNavagationBar',
+
+
+	render: function render() {
+		return React.createElement(
+			'div',
+			{ id: 'nnn',
+				style: {
+					zIndex: 10,
+					opacity: 0.7,
+					position: 'absolute',
+					left: '0px',
+					top: '0px',
+					width: '100%'
+				} },
+			React.createElement(
+				'ul',
+				{ className: 'nav nav-pills' },
+				React.createElement(
+					'li',
+					null,
+					' ',
+					React.createElement('img', { id: 'logo',
+						src: 'img/pageshare.png' }),
+					' '
+				),
+				'  ',
+				React.createElement(
+					'li',
+					null,
+					' ',
+					React.createElement(_Home2.default, null),
+					' '
+				),
+				' ',
+				React.createElement(
+					'li',
+					null,
+					' ',
+					React.createElement(_MyAudio2.default, null),
+					' '
+				),
+				'  ',
+				React.createElement(
+					'li',
+					null,
+					' ',
+					React.createElement(_MyVideo2.default, null),
+					' '
+				),
+				'   ',
+				React.createElement(
+					'li',
+					null,
+					' ',
+					React.createElement(_Edit2.default, null),
+					' '
+				),
+				' '
+			)
+		);
+	}
+
+});
+
+module.exports = PNavagationBar;
+
+},{"./navBar/Edit.jsx":243,"./navBar/Home.jsx":244,"./navBar/MyAudio.jsx":245,"./navBar/MyVideo.jsx":246,"./navBar/Share.jsx":247,"react":228}],240:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -26538,7 +26693,7 @@ var Slider = React.createClass({
 
 module.exports = Slider;
 
-},{"react":228}],239:[function(require,module,exports){
+},{"react":228}],241:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26582,7 +26737,7 @@ var BgImage = _react2.default.createClass({
      */
 exports.default = BgImage;
 
-},{"react":228}],240:[function(require,module,exports){
+},{"react":228}],242:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26841,7 +26996,7 @@ var Canvas = _react2.default.createClass({
      */
 exports.default = Canvas;
 
-},{"react":228}],241:[function(require,module,exports){
+},{"react":228}],243:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -26868,34 +27023,7 @@ var Edit = React.createClass({
 
 module.exports = Edit;
 
-},{"react":228}],242:[function(require,module,exports){
-'use strict';
-
-var React = require('react');
-
-var Help = React.createClass({
-	displayName: 'Help',
-
-
-	render: function render() {
-		return React.createElement(
-			'a',
-			{ id: 'help' },
-			' ',
-			React.createElement(
-				'span',
-				{ className: 'glyphicon glyphicon-question-sign' },
-				' '
-			),
-			' '
-		);
-	}
-
-});
-
-module.exports = Help;
-
-},{"react":228}],243:[function(require,module,exports){
+},{"react":228}],244:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -26926,7 +27054,7 @@ var Home = React.createClass({
 
 module.exports = Home;
 
-},{"react":228,"react-router":30}],244:[function(require,module,exports){
+},{"react":228,"react-router":30}],245:[function(require,module,exports){
 'use strict';
 
 /*
@@ -26995,7 +27123,7 @@ var MyAudio = React.createClass({
 
 module.exports = MyAudio;
 
-},{"react":228}],245:[function(require,module,exports){
+},{"react":228}],246:[function(require,module,exports){
 'use strict';
 
 /*
@@ -27065,7 +27193,225 @@ var MyVideo = React.createClass({
 
 module.exports = MyVideo;
 
-},{"react":228}],246:[function(require,module,exports){
+},{"react":228}],247:[function(require,module,exports){
+'use strict';
+
+var React = require('react');
+
+var Share = React.createClass({
+	displayName: 'Share',
+
+	getInitialState: function getInitialState() {
+		return {
+			title: '飞播云板',
+			desc: '邀请你点击进入课堂',
+			imgUrl: 'img/pageshare.png',
+			url_now: document.location.href,
+			type: '',
+			dataUrl: ''
+
+		};
+	},
+	componentWillMount: function componentWillMount() {},
+	componentDidMount: function componentDidMount() {
+		var thiz = this;
+		if (this.isMounted()) {
+			$('#share').click(function () {
+				$('#myInput').modal('toggle');
+			});
+
+			$('#sureMsg').click(function () {
+				var msg = $('#shareMsg').val();
+				if (msg != undefined) {
+					var strs = msg.split('&');
+					switch (strs.length) {
+						case 0:
+
+							break;
+
+						case 1:
+							this.setState({
+								desc: msg
+							});
+							thiz.deal_wx_interface();
+
+							break;
+						default:
+							var req = new Object();
+							for (var i = 0; i < strs.length; i++) {
+								req[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+							}
+							//防止赋空值
+							if (req['title'] != undefined) {
+								this.setState({
+									title: req['title']
+								});
+							}
+							if (strs[0] != undefined) {
+								this.setState({
+									desc: req['desc']
+								});
+							}
+							if (req['imgUrl'] != undefined) {
+								this.setState({
+									imgUrl: req['imgUrl']
+								});
+							}
+							if (req['type'] != undefined) {
+								this.setState({
+									type: req['type']
+								});
+							}
+							if (req['dataUrl'] != undefined) {
+								this.setState({
+									dataUrl: req['dataUrl']
+								});
+							}
+
+							thiz.deal_wx_interface();
+
+							break;
+					}
+				}
+			});
+		}
+	},
+	deal_wx_interface: function deal_wx_interface() {
+		$.ajax({
+			async: false,
+			url: "php/wx_share.php",
+			type: "GET",
+			data: {
+				urll: document.location.href
+			},
+			timeout: 5000,
+			success: function success(result) {
+				var url_now = document.location.href;
+				var arry = result.split(":");
+				var appid = arry[0],
+				    timestamp = arry[1],
+				    noncestr = arry[2],
+				    signature = arry[3];
+				//验证签名，监听分享
+				var title = this.state.title,
+				    desc = this.state.desc,
+				    imgurl = this.state.imgUrl,
+				    type = this.state.type,
+				    dataUrl = this.state.dataUrl;
+
+				var is_hasData = setInterval(function () {
+					if (signature != undefined && signature != "" && signature != 'undefined') {
+						//微信分享接口
+						wx.config({
+							debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+							appId: appid, // 必填，公众号的唯一标识
+							timestamp: timestamp, // 必填，生成签名的时间戳
+							nonceStr: noncestr, // 必填，生成签名的随机串
+							signature: signature, // 必填，签名，见附录1
+							jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone', 'onMenuShareWeibo'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+						});
+
+						wx.ready(function () {
+							// config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+							wx.onMenuShareAppMessage({
+								title: title, // 分享标题
+								desc: desc, // 分享描述
+								link: url_now, // 分享链接
+								imgUrl: imgurl, // 分享图标
+								type: type, // 分享类型,music、video或link，不填默认为link
+								dataUrl: dataUrl, // 如果type是music或video，则要提供数据链接，默认为空
+								success: function success() {
+									// 用户确认分享后执行的回调函数
+
+								},
+								cancel: function cancel() {
+									// 用户取消分享后执行的回调函数
+
+								}
+							});
+
+							wx.onMenuShareTimeline({
+								title: title, // 分享标题
+								link: url_now, // 分享链接
+								imgUrl: imgurl, // 分享图标
+								success: function success() {
+									// 用户确认分享后执行的回调函数
+								},
+								cancel: function cancel() {
+									// 用户取消分享后执行的回调函数
+								}
+							});
+
+							wx.onMenuShareQQ({
+								title: title, // 分享标题
+								desc: desc, // 分享描述
+								link: url_now, // 分享链接
+								imgUrl: imgurl, // 分享图标
+								success: function success() {
+									// 用户确认分享后执行的回调函数
+								},
+								cancel: function cancel() {
+									// 用户取消分享后执行的回调函数
+								}
+							});
+
+							wx.onMenuShareWeibo({
+								title: title, // 分享标题
+								desc: desc, // 分享描述
+								link: url_now, // 分享链接
+								imgUrl: imgurl, // 分享图标
+								success: function success() {
+									// 用户确认分享后执行的回调函数
+								},
+								cancel: function cancel() {
+									// 用户取消分享后执行的回调函数
+								}
+							});
+
+							wx.onMenuShareQZone({
+								title: title, // 分享标题
+								desc: desc, // 分享描述
+								link: url_now, // 分享链接
+								imgUrl: imgurl, // 分享图标
+								success: function success() {
+									// 用户确认分享后执行的回调函数
+								},
+								cancel: function cancel() {
+									// 用户取消分享后执行的回调函数
+								}
+							});
+						});
+						wx.error(function (res) {
+
+							console.log('签名失败');
+							// config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+						});
+
+						window.clearInterval(is_hasData);
+					}
+				}, 50);
+			}
+		});
+	},
+	render: function render() {
+		return React.createElement(
+			'a',
+			{ id: 'share' },
+			' ',
+			React.createElement(
+				'span',
+				{ className: 'glyphicon glyphicon-share' },
+				' '
+			),
+			' '
+		);
+	}
+
+});
+
+module.exports = Share;
+
+},{"react":228}],248:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -27119,7 +27465,6 @@ var wxLogin = React.createClass({
 					}.bind(this)
 				});
 			} else {
-
 				//修改授权地址
 				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 			}

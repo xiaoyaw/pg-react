@@ -4,10 +4,9 @@ import Home from './navBar/Home.jsx';
 import Edit from './navBar/Edit.jsx';
 import Share from './navBar/Share.jsx';
 
-
 var React = require('react');
 
-var NavagationBar = React.createClass({
+var PNavagationBar = React.createClass({
 
 	render: function() {
 		return ( < div id = 'nnn'
@@ -24,10 +23,11 @@ var NavagationBar = React.createClass({
 
 			< ul className = 'nav nav-pills' >
 			< li > < img id = 'logo'
-			src = 'img/pageshare.png' / > < /li>  < li > < Home / > < /li > < li > < MyAudio / > < /li>  < li > < MyVideo / > < /li>  < li > < Edit / > < /li > < li > < Share / > < /li > < /ul >  < /div>
+			src = 'img/pageshare.png' / > < /li>  < li > < Home / > < /li > < li > < MyAudio / > < /li>  < li > < MyVideo / > < /li>   < li > < Edit / > < /li > < /ul > 
+			 < /div>
 		);
 	}
 
 });
 
-module.exports = NavagationBar;
+module.exports = PNavagationBar;

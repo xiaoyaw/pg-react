@@ -1,17 +1,87 @@
-import JoinInput from './joinComponents/JoinInput.jsx';
-import JoinNav from './joinComponents/JoinNav.jsx';
-import {
-	Router,
-	Route,
-	hashHistory
-} from 'react-router';
-
 var React = require('react');
 
-var AppJoin = React.createClass({
+var Share = React.createClass({
+	getInitialState: function() {
+		return {
+			title:'飞播云板',
+			desc:'邀请你点击进入课堂',
+			imgUrl:'img/pageshare.png',
+			url_now:document.location.href,
+			type:'',
+			dataUrl:''
 
-	componentWillMount: function() {
-		if (sessionStorage.nickname) { 	//分享设置
+		};
+	},
+	componentWillMount:function(){
+
+	},
+	componentDidMount:function(){
+		var thiz=this;
+		if(this.isMounted()){
+			$('#share').click(function(){
+			$('#myInput').modal('toggle');
+		});
+
+			$('#sureMsg').click(
+				function() {
+					var msg = $('#shareMsg').val();
+					if (msg != undefined) {
+						var strs = msg.split('&');
+						switch (strs.length) {
+						case 0:
+
+							break;
+
+						case 1:
+							this.setState({
+								desc: msg
+							});
+							thiz.deal_wx_interface();
+
+							break;
+						default:
+							var req = new Object();
+							for (var i = 0; i < strs.length; i++) {
+								req[strs[i].split("=")[0]] = unescape(strs[i]
+										.split("=")[1]);
+							}
+							//防止赋空值
+							if (req['title'] != undefined) {
+								this.setState({
+									title: req['title']
+								});
+							}
+							if (strs[0] != undefined) {
+								this.setState({
+									desc: req['desc']
+								});
+							}
+							if (req['imgUrl'] != undefined) {
+								this.setState({
+									imgUrl: req['imgUrl']
+								});
+							}
+							if (req['type'] != undefined) {
+								this.setState({
+									type: req['type']
+								});
+							}
+							if (req['dataUrl'] != undefined) {
+								this.setState({
+								 	dataUrl:req['dataUrl'] 
+								 }); 
+							}
+
+							thiz.deal_wx_interface();
+
+							break;
+						}
+					}
+
+				});
+		}
+	},
+	deal_wx_interface:function(){
 			$.ajax({
 				async: false,
 				url: "php/wx_share.php",
@@ -28,9 +98,12 @@ var AppJoin = React.createClass({
 						noncestr = arry[2],
 						signature = arry[3];
 					//验证签名，监听分享
-					var title = '飞播云板',
-						desc = '我有东西show你!',
-						imgurl = 'http://pictoshare.net/dev/build/img/pageshare.png';
+					var title = this.state.title,
+						desc = this.state.desc,
+						imgurl = this.state.imgUrl,
+						type=this.state.type,
+						dataUrl=this.state.dataUrl;
+
 					var is_hasData = setInterval(
 						function() {
 							if (signature != undefined && signature != "" && signature != 'undefined') {
@@ -51,8 +124,8 @@ var AppJoin = React.createClass({
 										desc: desc, // 分享描述
 										link: url_now, // 分享链接
 										imgUrl: imgurl, // 分享图标
-										type: '', // 分享类型,music、video或link，不填默认为link
-										dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+										type: type, // 分享类型,music、video或link，不填默认为link
+										dataUrl: dataUrl, // 如果type是music或video，则要提供数据链接，默认为空
 										success: function() {
 											// 用户确认分享后执行的回调函数
 
@@ -130,20 +203,13 @@ var AppJoin = React.createClass({
 
 				},
 			});
-
-		} else {
-			//分享join界面url，先授权获取到username再跳/JOIN
-			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
-		}
 	},
 	render: function() {
-		return ( < div >
-			< JoinNav / >
-			< JoinInput / >
-			< /div>
+		return (
+			< a id = 'share' > < span className = 'glyphicon glyphicon-share' > < /span> < /a >		
 		);
 	}
 
 });
 
-module.exports = AppJoin;
+module.exports = Share;

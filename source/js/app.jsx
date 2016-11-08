@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import AppRoom from './components/AppRoom.jsx';
+import PAppRoom from './components/PAppRoom.jsx';
 import AppJoin from './components/AppJoin.jsx';
 import PAppJoin from './components/PAppJoin.jsx';
 import wxLogin from './components/wxLogin.jsx';
@@ -23,7 +24,7 @@ if (is_weixin()) {
 ReactDOM.render(
  <Router history={hashHistory}>
   	<Route path="/" component={PAppJoin}/>
-   	<Route path="/room/:id" component={AppRoom}/>
+   	<Route path="/room/:id" component={PAppRoom}/>
 </Router>,document.getElementById('app'));	
 
 }

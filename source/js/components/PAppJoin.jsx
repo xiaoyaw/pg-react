@@ -6,9 +6,7 @@ var React = require('react');
 
 var PAppJoin = React.createClass({
 
-	componentWillMount:function(){
 
-	},
 	render: function() {
 		return ( < div >
 			< JoinNav / >
