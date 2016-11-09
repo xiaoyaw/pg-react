@@ -24,7 +24,7 @@ var wxLogin = React.createClass({
 		};
 	},
 	componentDidMount: function() {
-		if (sessionStorage.username) {   //本地有则为返回，跳转回/join，否则第一次加入，需请求数据
+		if (sessionStorage.nickname) {   //本地有则为返回，跳转回/join，否则第一次加入，需请求数据
 			hashHistory.replace('/join');
 		} else {
 			if (this.state.isLogin && this.isMounted()) {

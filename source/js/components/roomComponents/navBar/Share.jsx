@@ -59,6 +59,7 @@ var Share = React.createClass({
 					var msg = $('#shareMsg').val();
 					if (msg != undefined) {
 						var strs = msg.split('&');
+						var des=strs[0];
 						switch (strs.length) {
 							case 0:
 
@@ -71,9 +72,6 @@ var Share = React.createClass({
 								thiz.deal_wx_interface();
 								break;
 							default:
-								thiz.setState({
-									desc: strs[0]
-								});
 								var req = new Object();
 								for (var i = 0; i < strs.length; i++) {
 									req[strs[i].split("=")[0]] = unescape(strs[i]
@@ -87,7 +85,7 @@ var Share = React.createClass({
 								}
 								if (strs[0] != undefined) {
 									thiz.setState({
-										desc: req['desc']
+										desc: strs[0]
 									});
 								}
 								if (req['imgUrl'] != undefined) {
