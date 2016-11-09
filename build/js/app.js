@@ -27280,6 +27280,7 @@ var Share = React.createClass({
 				var msg = $('#shareMsg').val();
 				if (msg != undefined) {
 					var strs = msg.split('&');
+					var des = strs[0];
 					switch (strs.length) {
 						case 0:
 
@@ -27292,9 +27293,6 @@ var Share = React.createClass({
 							thiz.deal_wx_interface();
 							break;
 						default:
-							thiz.setState({
-								desc: strs[0]
-							});
 							var req = new Object();
 							for (var i = 0; i < strs.length; i++) {
 								req[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
@@ -27307,7 +27305,7 @@ var Share = React.createClass({
 							}
 							if (strs[0] != undefined) {
 								thiz.setState({
-									desc: req['desc']
+									desc: strs[0]
 								});
 							}
 							if (req['imgUrl'] != undefined) {
@@ -27460,7 +27458,7 @@ var wxLogin = React.createClass({
 		};
 	},
 	componentDidMount: function componentDidMount() {
-		if (sessionStorage.username) {
+		if (sessionStorage.nickname) {
 			//本地有则为返回，跳转回/join，否则第一次加入，需请求数据
 			_reactRouter.hashHistory.replace('/join');
 		} else {
