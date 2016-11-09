@@ -5,7 +5,7 @@ var Share = React.createClass({
 		return {
 			title: '飞播云板',
 			desc: '邀请你点击进入课堂',
-			imgUrl: 'img/pageshare.png',
+			imgUrl: 'http://pictoshare.net/dev/build/img/pageshare.png',
 			url_now: document.location.href,
 			type: '',
 			dataUrl: ''
@@ -56,7 +56,6 @@ var Share = React.createClass({
 
 			$('#sureMsg').click(
 				function() {
-					console.log('sure');
 					var msg = $('#shareMsg').val();
 					if (msg != undefined) {
 						var strs = msg.split('&');
@@ -72,6 +71,9 @@ var Share = React.createClass({
 								thiz.deal_wx_interface();
 								break;
 							default:
+								thiz.setState({
+									desc: strs[0]
+								});
 								var req = new Object();
 								for (var i = 0; i < strs.length; i++) {
 									req[strs[i].split("=")[0]] = unescape(strs[i]

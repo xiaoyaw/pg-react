@@ -9,10 +9,19 @@ import NetTip from './roomComponents/NetTip.jsx';
 var AppRoom = React.createClass({
 
   componentWillMount: function() {
+    if (typeof(Storage) !== "undefined") {
+      if (sessionStorage.username) {
 
+      } else {
+        var username = "user_" + Math.random();
+        var password = "pass_" + Math.random();
+        sessionStorage.setItem("username", username);
+        sessionStorage.setItem("password", password);
+      }
+    }
   },
   componentDidMount: function() {
-   //第二个页面授权
+   
   },
   render: function() {
     var text = this.props.params.id;

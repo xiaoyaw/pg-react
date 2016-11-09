@@ -8,13 +8,29 @@ import NetTip from './roomComponents/NetTip.jsx';
 
 var PAppRoom = React.createClass({
 
+
+  componentWillMount: function() {
+    if (typeof(Storage) !== "undefined") {
+      if (sessionStorage.username) {
+
+      } else {
+        var username = "user_" + Math.random();
+        var password = "pass_" + Math.random();
+        sessionStorage.setItem("username", username);
+        sessionStorage.setItem("password", password);
+      }
+    }
+  },
   render: function() {
-    var text=this.props.params.id;
-    return ( 
-      < div >
-      < Slider  _roomid={text}/ >
-      < Application  _roomid={text}  / >
-      < PNavagationBar / >
+    var text = this.props.params.id;
+    return ( < div >
+      < Slider _roomid = {
+        text
+      }
+      / > < Application _roomid = {
+        text
+      }
+      / > < PNavagationBar / >
       < NetTip / >
       < /div>
     );

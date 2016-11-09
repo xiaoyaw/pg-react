@@ -25592,10 +25592,17 @@ var AppRoom = _react2.default.createClass({
   displayName: 'AppRoom',
 
 
-  componentWillMount: function componentWillMount() {},
-  componentDidMount: function componentDidMount() {
-    //第二个页面授权
+  componentWillMount: function componentWillMount() {
+    if (typeof Storage !== "undefined") {
+      if (sessionStorage.username) {} else {
+        var username = "user_" + Math.random();
+        var password = "pass_" + Math.random();
+        sessionStorage.setItem("username", username);
+        sessionStorage.setItem("password", password);
+      }
+    }
   },
+  componentDidMount: function componentDidMount() {},
   render: function render() {
     var text = this.props.params.id;
     return _react2.default.createElement(
@@ -25681,13 +25688,27 @@ var PAppRoom = _react2.default.createClass({
   displayName: 'PAppRoom',
 
 
+  componentWillMount: function componentWillMount() {
+    if (typeof Storage !== "undefined") {
+      if (sessionStorage.username) {} else {
+        var username = "user_" + Math.random();
+        var password = "pass_" + Math.random();
+        sessionStorage.setItem("username", username);
+        sessionStorage.setItem("password", password);
+      }
+    }
+  },
   render: function render() {
     var text = this.props.params.id;
     return _react2.default.createElement(
       'div',
       null,
-      _react2.default.createElement(_Slider2.default, { _roomid: text }),
-      _react2.default.createElement(_Application2.default, { _roomid: text }),
+      _react2.default.createElement(_Slider2.default, { _roomid: text
+      }),
+      ' ',
+      _react2.default.createElement(_Application2.default, { _roomid: text
+      }),
+      ' ',
       _react2.default.createElement(_PNavagationBar2.default, null),
       _react2.default.createElement(_NetTip2.default, null)
     );
@@ -27207,7 +27228,7 @@ var Share = React.createClass({
 		return {
 			title: '飞播云板',
 			desc: '邀请你点击进入课堂',
-			imgUrl: 'img/pageshare.png',
+			imgUrl: 'http://pictoshare.net/dev/build/img/pageshare.png',
 			url_now: document.location.href,
 			type: '',
 			dataUrl: ''
@@ -27256,7 +27277,6 @@ var Share = React.createClass({
 			});
 
 			$('#sureMsg').click(function () {
-				console.log('sure');
 				var msg = $('#shareMsg').val();
 				if (msg != undefined) {
 					var strs = msg.split('&');
@@ -27272,6 +27292,9 @@ var Share = React.createClass({
 							thiz.deal_wx_interface();
 							break;
 						default:
+							thiz.setState({
+								desc: strs[0]
+							});
 							var req = new Object();
 							for (var i = 0; i < strs.length; i++) {
 								req[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
