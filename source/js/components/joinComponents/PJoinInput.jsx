@@ -32,6 +32,7 @@ var PJoinInput = React.createClass({
 				thiz.handleClick();
 			});
 			$(input).bind('input propertychange', function() {
+				$(this).val($(this).val().replace(/\s/g,''));
 				thiz.setState({
 					text: $(this).val().toLowerCase()
 				});
