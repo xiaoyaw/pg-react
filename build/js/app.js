@@ -26162,18 +26162,20 @@ var Application = _react2.default.createClass({
     }
   },
   getWindowSize: function getWindowSize() {
-    var ww = $(document).width();
-    var wh = $(document).height();
-    // if (window.innerWidth) { // 兼容火狐，谷歌,safari等浏览器
-    //   ww = window.innerWidth;
-    // } else if ((document.body) && (document.body.clientWidth)) { // 兼容IE浏览器
-    //   ww = document.body.clientWidth;
-    // }
-    // if (window.innerHeight) {
-    //   wh = window.innerHeight;
-    // } else if ((document.body) && (document.body.clientHeight)) {
-    //   wh = document.body.clientHeight;
-    // }
+    var ww = window.innerWidth;
+    var wh = window.innerHeight;
+    if (window.innerWidth) {
+      // 兼容火狐，谷歌,safari等浏览器
+      ww = window.innerWidth;
+    } else if (document.body && document.body.clientWidth) {
+      // 兼容IE浏览器
+      ww = document.body.clientWidth;
+    }
+    if (window.innerHeight) {
+      wh = window.innerHeight;
+    } else if (document.body && document.body.clientHeight) {
+      wh = document.body.clientHeight;
+    }
     return {
       window_width: ww,
       window_height: wh
@@ -26414,10 +26416,6 @@ var _Home = require('./navBar/Home.jsx');
 
 var _Home2 = _interopRequireDefault(_Home);
 
-var _Edit = require('./navBar/Edit.jsx');
-
-var _Edit2 = _interopRequireDefault(_Edit);
-
 var _Share = require('./navBar/Share.jsx');
 
 var _Share2 = _interopRequireDefault(_Share);
@@ -26482,14 +26480,6 @@ var NavagationBar = React.createClass({
 					'li',
 					null,
 					' ',
-					React.createElement(_Edit2.default, null),
-					' '
-				),
-				' ',
-				React.createElement(
-					'li',
-					null,
-					' ',
 					React.createElement(_Share2.default, null),
 					' '
 				),
@@ -26503,7 +26493,7 @@ var NavagationBar = React.createClass({
 
 module.exports = NavagationBar;
 
-},{"./navBar/Edit.jsx":243,"./navBar/Home.jsx":244,"./navBar/MyAudio.jsx":245,"./navBar/MyVideo.jsx":246,"./navBar/Share.jsx":247,"react":228}],238:[function(require,module,exports){
+},{"./navBar/Home.jsx":244,"./navBar/MyAudio.jsx":245,"./navBar/MyVideo.jsx":246,"./navBar/Share.jsx":247,"react":228}],238:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
