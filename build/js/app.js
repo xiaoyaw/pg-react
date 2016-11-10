@@ -33,6 +33,10 @@ var _reactRouter = require('react-router');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/* 判断是微信或是PC，走不同的路由
+可直接加room
+*/
+
 if (is_weixin()) {
 	//微信端路由
 	_reactDom2.default.render(_react2.default.createElement(
@@ -25690,7 +25694,9 @@ var PAppRoom = _react2.default.createClass({
 
   componentWillMount: function componentWillMount() {
     if (typeof Storage !== "undefined") {
-      if (sessionStorage.username) {} else {
+      if (sessionStorage.username) {
+        //PC端 session中没有账号密码 加入room，便随机账号密码
+      } else {
         var username = "user_" + Math.random();
         var password = "pass_" + Math.random();
         sessionStorage.setItem("username", username);
@@ -25798,7 +25804,6 @@ var JoinInput = React.createClass({
 						React.createElement('input', { type: 'text',
 							ref: 'textinput',
 							className: 'form-control',
-							id: 'roomid',
 							placeholder: 'roomID',
 							width: '150px' }),
 						React.createElement(
@@ -25935,6 +25940,14 @@ var PJoinInput = React.createClass({
 			$('#go').on('click', function () {
 				thiz.handleClick();
 			});
+			$('#roomid').keydown(function (e) {
+				if (e.keyCode == "13") {
+					//keyCode=13是回车键
+					thiz.handleClick();
+					_reactRouter.hashHistory.replace('/room/' + thiz.state.text);
+				}
+			});
+
 			$(input).bind('input propertychange', function () {
 				$(this).val($(this).val().replace(/\s/g, ''));
 				thiz.setState({
@@ -25976,11 +25989,10 @@ var PJoinInput = React.createClass({
 					} },
 				' '
 			),
-			' ',
+			'  ',
 			React.createElement(
 				'div',
 				{ className: 'row' },
-				' ',
 				React.createElement(
 					'div',
 					{ id: 'input',
@@ -26016,7 +26028,10 @@ var PJoinInput = React.createClass({
 			React.createElement(
 				'div',
 				{ style: {
-						textAlign: 'center', textShadow: '2px 2px 5px #9B30FF', marginTop: '35px', display: 'none'
+						textAlign: 'center',
+						textShadow: '2px 2px 5px #9B30FF',
+						marginTop: '35px',
+						display: 'none'
 					},
 					id: 'warn' },
 				' ',
@@ -26147,20 +26162,18 @@ var Application = _react2.default.createClass({
     }
   },
   getWindowSize: function getWindowSize() {
-    var ww = window.innerWidth;
-    var wh = window.innerHeight;
-    if (window.innerWidth) {
-      // 兼容火狐，谷歌,safari等浏览器
-      ww = window.innerWidth;
-    } else if (document.body && document.body.clientWidth) {
-      // 兼容IE浏览器
-      ww = document.body.clientWidth;
-    }
-    if (window.innerHeight) {
-      wh = window.innerHeight;
-    } else if (document.body && document.body.clientHeight) {
-      wh = document.body.clientHeight;
-    }
+    var ww = $(document).width();
+    var wh = $(document).height();
+    // if (window.innerWidth) { // 兼容火狐，谷歌,safari等浏览器
+    //   ww = window.innerWidth;
+    // } else if ((document.body) && (document.body.clientWidth)) { // 兼容IE浏览器
+    //   ww = document.body.clientWidth;
+    // }
+    // if (window.innerHeight) {
+    //   wh = window.innerHeight;
+    // } else if ((document.body) && (document.body.clientHeight)) {
+    //   wh = document.body.clientHeight;
+    // }
     return {
       window_width: ww,
       window_height: wh
@@ -26865,7 +26878,7 @@ var Canvas = _react2.default.createClass({
                         canvas.beginPath();
                         // （Android系统色） 设置颜色先取补数 再转换为16进制
                         canvas.strokeStyle = this.getcolor(data.properties.color);
-                        canvas.lineWidth = 20;
+                        canvas.lineWidth = 15;
                         canvas.lineCap = 'round';
                         canvas.lineJoin = 'round';
                         canvas.globalCompositeOperation = 'destination-out';
@@ -26933,7 +26946,7 @@ var Canvas = _react2.default.createClass({
     drawLine: function drawLine(xl, yl, x2l, y2l) {
         var canvas = this.state.canvas;
         canvas.beginPath();
-        canvas.lineWidth = 4;
+        canvas.lineWidth = 3;
         canvas.strokeStyle = '#ff0000';
         if (xl < x2l) {
             canvas.moveTo(xl, yl);
@@ -26952,7 +26965,7 @@ var Canvas = _react2.default.createClass({
         var l = Math.abs(x1 - x2);
         var k = Math.abs(y1 - y2);
         canvas.beginPath();
-        canvas.lineWidth = 4;
+        canvas.lineWidth = 3;
         canvas.strokeStyle = '#ff0000';
         if (x1 < x2 && y1 < y2) {
             canvas.rect(x1, y1, l, k);
@@ -26976,7 +26989,7 @@ var Canvas = _react2.default.createClass({
         var y = (y1 + y2) / 2;
         var step = a > b ? 1 / a : 1 / b;
         canvas.beginPath();
-        canvas.lineWidth = 4;
+        canvas.lineWidth = 3;
         canvas.strokeStyle = '#ff0000';
         canvas.moveTo(x + a, y);
         for (var i = 0; i < 2 * Math.PI; i += step) {
@@ -27028,6 +27041,54 @@ var Edit = React.createClass({
 	displayName: 'Edit',
 
 
+	getInitialState: function getInitialState() {
+		return {
+			isAndroid: false,
+			isIOS: false
+		};
+	},
+	componentWillMount: function componentWillMount() {
+		this.checkAndroid_IOS();
+	},
+
+	componentDidMount: function componentDidMount() {
+		var thiz = this;
+		if (this.isMounted()) {
+			$('#edit').click(function () {
+				if (thiz.state.isIOS) {
+					var clickedAt = +new Date();
+					var the_href = 'itms-apps://itunes.apple.com/us/app/pageshare/id1135319277?mt=8'; // 获得下载链接
+					document.location = "pageshare://www.pictoshare.net/app?roomID=public3001"; // 打开某手机上的某个app应用
+					setTimeout(function () {
+						if (+new Date() - clickedAt < 2000) {
+							document.location = the_href;
+						}
+					}, 1000);
+				}
+				if (thiz.state.isAndroid) {
+					var the_href = 'http://pictoshare.net/download/'; // 获得下载链接
+					var clickedAt = +new Date();
+					document.location = "pageshare://pictoshare.net/app?roomID=public3001"; // 打开某手机上的某个app应用
+					setTimeout(function () {
+						if (+new Date() - clickedAt < 2000) {
+							document.location = the_href;
+						}
+					}, 1000);
+				}
+			});
+		}
+	},
+
+	checkAndroid_IOS: function checkAndroid_IOS() {
+		var u = navigator.userAgent;
+		var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1,
+		    //android终端
+		isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+		this.setState({
+			isAndroid: isAndroid,
+			isIOS: isiOS
+		});
+	},
 	render: function render() {
 		return React.createElement(
 			'a',
@@ -27280,7 +27341,6 @@ var Share = React.createClass({
 				var msg = $('#shareMsg').val();
 				if (msg != undefined) {
 					var strs = msg.split('&');
-					var des = strs[0];
 					switch (strs.length) {
 						case 0:
 
@@ -27435,7 +27495,9 @@ module.exports = Share;
 
 var _reactRouter = require('react-router');
 
-var React = require('react');
+var React = require('react'); /*
+                              微信授权，获取用户信息，并存入sessionStorage
+                              */
 
 var wxLogin = React.createClass({
 	displayName: 'wxLogin',

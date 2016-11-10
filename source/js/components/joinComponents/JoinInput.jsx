@@ -68,7 +68,6 @@ var JoinInput = React.createClass({
 			< input type = "text"
 			ref = "textinput"
 			className = "form-control"
-			id = "roomid"
 			placeholder = "roomID"
 			width = "150px" / >
 

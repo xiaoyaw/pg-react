@@ -12,7 +12,7 @@ var PAppRoom = React.createClass({
   componentWillMount: function() {
     if (typeof(Storage) !== "undefined") {
       if (sessionStorage.username) {
-
+        //PC端 session中没有账号密码 加入room，便随机账号密码
       } else {
         var username = "user_" + Math.random();
         var password = "pass_" + Math.random();

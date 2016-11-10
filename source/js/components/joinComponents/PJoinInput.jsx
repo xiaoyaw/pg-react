@@ -28,19 +28,26 @@ var PJoinInput = React.createClass({
 		if (this.isMounted()) {
 			var thiz = this;
 			var input = this.refs.textinput;
-			$('#go').on('click',function(){
+			$('#go').on('click', function() {
 				thiz.handleClick();
 			});
+			$('#roomid').keydown(function(e) {
+				if (e.keyCode == "13") { //keyCode=13是回车键
+					thiz.handleClick();
+					hashHistory.replace('/room/'+thiz.state.text);
+				}
+			});
+
 			$(input).bind('input propertychange', function() {
-				$(this).val($(this).val().replace(/\s/g,''));
+				$(this).val($(this).val().replace(/\s/g, ''));
 				thiz.setState({
 					text: $(this).val().toLowerCase()
 				});
 			});
 		}
 	},
-	handleClick:function(){
-		if(this.state.text==''){
+	handleClick: function() {
+		if (this.state.text == '') {
 			$('#warn').fadeIn();
 			setTimeout(function() {
 				$('#warn').fadeOut();
@@ -67,7 +74,8 @@ var PJoinInput = React.createClass({
 				{
 					textAlign: 'center'
 				}
-			} > < /div> < div className = "row" > < div id = 'input'
+			} > < /div>  < div className = "row" >
+			< div id = 'input'
 			style = {
 				{
 					width: '60%'
@@ -95,7 +103,10 @@ var PJoinInput = React.createClass({
 			< /div > < /div >
 			< div style = {
 				{
-					textAlign: 'center',textShadow: '2px 2px 5px #9B30FF',marginTop: '35px',display: 'none'
+					textAlign: 'center',
+					textShadow: '2px 2px 5px #9B30FF',
+					marginTop: '35px',
+					display: 'none'
 				}
 			}
 			id = "warn" > < font style = {

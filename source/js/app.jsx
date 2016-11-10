@@ -1,3 +1,7 @@
+/* 判断是微信或是PC，走不同的路由
+可直接加room
+*/
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import AppRoom from './components/AppRoom.jsx';

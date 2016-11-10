@@ -100,18 +100,18 @@ let Application = React.createClass({
     }
   },
   getWindowSize: function() {
-    var ww = window.innerWidth;
-    var wh = window.innerHeight;
-    if (window.innerWidth) { // 兼容火狐，谷歌,safari等浏览器
-      ww = window.innerWidth;
-    } else if ((document.body) && (document.body.clientWidth)) { // 兼容IE浏览器
-      ww = document.body.clientWidth;
-    }
-    if (window.innerHeight) {
-      wh = window.innerHeight;
-    } else if ((document.body) && (document.body.clientHeight)) {
-      wh = document.body.clientHeight;
-    }
+    var ww =  $(document).width();
+    var wh =  $(document).height();
+    // if (window.innerWidth) { // 兼容火狐，谷歌,safari等浏览器
+    //   ww = window.innerWidth;
+    // } else if ((document.body) && (document.body.clientWidth)) { // 兼容IE浏览器
+    //   ww = document.body.clientWidth;
+    // }
+    // if (window.innerHeight) {
+    //   wh = window.innerHeight;
+    // } else if ((document.body) && (document.body.clientHeight)) {
+    //   wh = document.body.clientHeight;
+    // }
     return {
       window_width: ww,
       window_height: wh

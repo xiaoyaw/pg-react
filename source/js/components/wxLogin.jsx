@@ -1,3 +1,7 @@
+/*
+微信授权，获取用户信息，并存入sessionStorage
+*/
+
 import {
 	Router,
 	Route,

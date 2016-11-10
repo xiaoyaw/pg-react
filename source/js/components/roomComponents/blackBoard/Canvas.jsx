@@ -95,7 +95,7 @@ let Canvas = React.createClass({
                         canvas.beginPath();
                         // （Android系统色） 设置颜色先取补数 再转换为16进制
                         canvas.strokeStyle = this.getcolor(data.properties.color);
-                        canvas.lineWidth = 20;
+                        canvas.lineWidth = 15;
                         canvas.lineCap = 'round';
                         canvas.lineJoin = 'round';
                         canvas.globalCompositeOperation = 'destination-out';
@@ -167,7 +167,7 @@ let Canvas = React.createClass({
     drawLine: function(xl, yl, x2l, y2l) {
         var canvas = this.state.canvas;
         canvas.beginPath();
-        canvas.lineWidth = 4;
+        canvas.lineWidth = 3;
         canvas.strokeStyle = '#ff0000';
         if (xl < x2l) {
             canvas.moveTo(xl, yl);
@@ -186,7 +186,7 @@ let Canvas = React.createClass({
         var l = Math.abs(x1 - x2);
         var k = Math.abs(y1 - y2);
         canvas.beginPath();
-        canvas.lineWidth = 4;
+        canvas.lineWidth = 3;
         canvas.strokeStyle = '#ff0000';
         if (x1 < x2 && y1 < y2) {
             canvas.rect(x1, y1, l, k);
@@ -210,7 +210,7 @@ let Canvas = React.createClass({
         var y = (y1 + y2) / 2;
         var step = (a > b) ? 1 / a : 1 / b;
         canvas.beginPath();
-        canvas.lineWidth = 4;
+        canvas.lineWidth = 3;
         canvas.strokeStyle = '#ff0000';
         canvas.moveTo(x + a, y);
         for (var i = 0; i < 2 * Math.PI; i += step) {

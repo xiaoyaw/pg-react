@@ -59,7 +59,6 @@ var Share = React.createClass({
 					var msg = $('#shareMsg').val();
 					if (msg != undefined) {
 						var strs = msg.split('&');
-						var des=strs[0];
 						switch (strs.length) {
 							case 0:
 
