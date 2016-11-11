@@ -25711,7 +25711,7 @@ var PAppRoom = _react2.default.createClass({
       null,
       _react2.default.createElement(_Slider2.default, { _roomid: text
       }),
-      ' ',
+      '  ',
       _react2.default.createElement(_Application2.default, { _roomid: text
       }),
       ' ',
@@ -25743,9 +25743,13 @@ var JoinInput = React.createClass({
 		if (this.isMounted()) {
 			var thiz = this;
 			var input = this.refs.textinput;
+			//处理input是否为空
 			$('#go').on('click', function () {
 				thiz.handleClick();
 			});
+			//获取焦点
+			$(input).focus();
+			//实时获取input值
 			$(input).bind('input propertychange', function () {
 				$(this).val($(this).val().replace(/\s/g, ''));
 				thiz.setState({
@@ -25781,52 +25785,52 @@ var JoinInput = React.createClass({
 			),
 			React.createElement(
 				'div',
-				{ className: 'render',
-					style: {
-						textAlign: 'center'
-					} },
-				' '
-			),
-			' ',
-			React.createElement(
-				'div',
-				{ className: 'row' },
-				' ',
+				{ className: 'container' },
 				React.createElement(
 					'div',
-					{ id: 'input',
-						style: {
-							width: '60%'
-						} },
+					{ className: 'row' },
+					' ',
 					React.createElement(
 						'div',
-						{ className: 'input-group' },
-						React.createElement('input', { type: 'text',
-							ref: 'textinput',
-							className: 'form-control',
-							placeholder: 'roomID',
-							width: '150px' }),
+						{ id: 'input',
+							style: {
+								width: '60%'
+							} },
 						React.createElement(
 							'div',
-							{ className: 'input-group-btn' },
+							{ className: 'input-group' },
+							React.createElement('input', { type: 'text',
+								ref: 'textinput',
+								className: 'form-control',
+								placeholder: 'roomID',
+								width: '150px' }),
 							React.createElement(
-								_reactRouter.Link,
-								{ to: '/room/' + text,
-									className: 'btn btn-default',
-									tabIndex: '-1',
-									id: 'go' },
-								' Join '
-							)
+								'div',
+								{ className: 'input-group-btn' },
+								React.createElement(
+									_reactRouter.Link,
+									{ to: '/room/' + text,
+										className: 'btn btn-default',
+										tabIndex: '-1',
+										id: 'go' },
+									' Join '
+								)
+							),
+							' '
 						),
 						' '
-					)
+					),
+					' '
 				),
 				' '
 			),
 			React.createElement(
 				'div',
 				{ style: {
-						textAlign: 'center', textShadow: '2px 2px 5px #9B30FF', marginTop: '35px', display: 'none'
+						textAlign: 'center',
+						textShadow: '2px 2px 5px #9B30FF',
+						marginTop: '35px',
+						display: 'none'
 					},
 					id: 'warn' },
 				' ',
@@ -25937,9 +25941,11 @@ var PJoinInput = React.createClass({
 		if (this.isMounted()) {
 			var thiz = this;
 			var input = this.refs.textinput;
+			//处理Input值是否为空
 			$('#go').on('click', function () {
 				thiz.handleClick();
 			});
+			//回车键提交
 			$('#roomid').keydown(function (e) {
 				if (e.keyCode == "13") {
 					//keyCode=13是回车键
@@ -25947,7 +25953,9 @@ var PJoinInput = React.createClass({
 					_reactRouter.hashHistory.replace('/room/' + thiz.state.text);
 				}
 			});
-
+			//获取焦点
+			$(input).focus();
+			//实时获取text
 			$(input).bind('input propertychange', function () {
 				$(this).val($(this).val().replace(/\s/g, ''));
 				thiz.setState({
@@ -25983,48 +25991,46 @@ var PJoinInput = React.createClass({
 			),
 			React.createElement(
 				'div',
-				{ className: 'render',
-					style: {
-						textAlign: 'center'
-					} },
-				' '
-			),
-			'  ',
-			React.createElement(
-				'div',
-				{ className: 'row' },
+				{ className: 'container' },
 				React.createElement(
 					'div',
-					{ id: 'input',
-						style: {
-							width: '60%'
-						} },
+					{ className: 'row' },
 					React.createElement(
 						'div',
-						{ className: 'input-group' },
-						React.createElement('input', { type: 'text',
-							ref: 'textinput',
-							className: 'form-control',
-							id: 'roomid',
-							placeholder: 'roomID',
-							width: '150px' }),
+						{ id: 'input',
+							style: {
+								width: '60%'
+							} },
 						React.createElement(
 							'div',
-							{ className: 'input-group-btn' },
+							{ className: 'input-group' },
+							React.createElement('input', { type: 'text',
+								ref: 'textinput',
+								className: 'form-control',
+								id: 'roomid',
+								placeholder: 'roomID',
+								width: '150px' }),
 							React.createElement(
-								_reactRouter.Link,
-								{ to: '/room/' + text,
-									className: 'btn btn-default',
-									tabIndex: '-1',
-									id: 'go' },
-								' Join '
-							)
+								'div',
+								{ className: 'input-group-btn' },
+								React.createElement(
+									_reactRouter.Link,
+									{ to: '/room/' + text,
+										className: 'btn btn-default',
+										tabIndex: '-1',
+										id: 'go' },
+									' Join '
+								)
+							),
+							'  '
 						),
 						' '
-					)
+					),
+					' '
 				),
 				' '
 			),
+			' ',
 			React.createElement(
 				'div',
 				{ style: {
@@ -26069,8 +26075,17 @@ var _BgImage = require('./blackBoard/BgImage.jsx');
 
 var _BgImage2 = _interopRequireDefault(_BgImage);
 
+var _reactRouter = require('react-router');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/*
+ * 包裹canvas,bgimg的组件
+ * 连接websocket，handleMessage
+ * 计算尺寸大小位置以及resize以后重新计算
+ * 在handleMessage中播放video，audio。1、没有加入video子组件的原因是 导航栏按钮无法获取此子组件的DOM节点
+ * 2、没有放在canvas中处理视频的原因是 此组件任何state变化都会导致render方法执行，从而导致视频或音频重复播放
+ */
 var Application = _react2.default.createClass({
   displayName: 'Application',
 
@@ -26090,8 +26105,11 @@ var Application = _react2.default.createClass({
     if (ws == null || ws.readyState != 1) {
       ws = new WebSocket('ws://203.195.173.135:9999/ws');
     }
-
+    var ww = this.getWindowSize().window_width;
+    var wh = this.getWindowSize().window_height;
     return {
+      winW: ww,
+      winH: wh,
       userName: null,
       webSocket: ws,
       hastouch: false,
@@ -26114,6 +26132,8 @@ var Application = _react2.default.createClass({
   connectWebSocket: function connectWebSocket(ws, user, pw, id) {
     ws.onerror = function (e) {
       // console.log("error");
+      alert('websocket连接有异常...');
+      _reactRouter.hashHistory.replace('/');
     };
     ws.onopen = function (e) {
       var UserMsg = {
@@ -26134,6 +26154,12 @@ var Application = _react2.default.createClass({
   componentWillUnmount: function componentWillUnmount() {
     var username = this.state.username;
     var ws = this.state.webSocket;
+    var audio = document.getElementById('myaudio');
+    var video = document.getElementById('myvideo');
+    audio.pause();
+    audio.src = '';
+    video.pause();
+    video.src = '';
     ws.close(1000, username);
   },
 
@@ -26190,8 +26216,8 @@ var Application = _react2.default.createClass({
     pic.onload = function () {
       var ratio = pic.width / pic.height;
       //获取屏幕宽高
-      var w = thiz.getWindowSize().window_width;
-      var h = thiz.getWindowSize().window_height;
+      var w = thiz.state.winW;
+      var h = thiz.state.winH;
       //按照高度缩放
       if (h * ratio <= w) {
         thiz.setState({
@@ -26252,6 +26278,9 @@ var Application = _react2.default.createClass({
         //账号密码为空时
         break;
       case "Error":
+        console.log(value);
+        alert('XMPP no response');
+        _reactRouter.hashHistory.replace('/');
         //roomID为空时
         break;
       case "startSession":
@@ -26266,7 +26295,6 @@ var Application = _react2.default.createClass({
           //没有背景图计算并展示welcome
           this.calculateImgProp('img/welcome.png');
         }
-
         break;
 
       case "image":
@@ -26370,7 +26398,7 @@ var Application = _react2.default.createClass({
 
     return _react2.default.createElement(
       'div',
-      { className: 'container' },
+      null,
       _react2.default.createElement(_BgImage2.default, { _src: this.state.src,
         _width: this.state.width,
         _height: this.state.height,
@@ -26392,16 +26420,11 @@ var Application = _react2.default.createClass({
     );
   }
 
-}); /*
-     * 包裹canvas,bgimg的组件
-     * 连接websocket，handleMessage
-     * 计算尺寸大小位置以及resize以后重新计算
-     * 在handleMessage中播放video，audio。1、没有加入video子组件的原因是 导航栏按钮无法获取此子组件的DOM节点
-     * 2、没有放在canvas中处理视频的原因是 此组件任何state变化都会导致render方法执行，从而导致视频或音频重复播放
-     */
+});
+
 exports.default = Application;
 
-},{"./blackBoard/BgImage.jsx":241,"./blackBoard/Canvas.jsx":242,"react":228}],237:[function(require,module,exports){
+},{"./blackBoard/BgImage.jsx":241,"./blackBoard/Canvas.jsx":242,"react":228,"react-router":30}],237:[function(require,module,exports){
 'use strict';
 
 var _MyAudio = require('./navBar/MyAudio.jsx');
@@ -26685,14 +26708,15 @@ var Slider = React.createClass({
 		}
 	},
 	render: function render() {
+		var shadow = this.state.isMouseDown ? '0px 0px 10px #1E90FF' : '';
 		var roomid = this.props._roomid;
 		return React.createElement(
 			"div",
 			{ ref: "slider",
 				style: {
+					boxShadow: shadow,
 					borderRadius: '7px',
-					border: '1px solid #FF3030',
-					background: '#98F5FF',
+					border: '1.5px solid #00BFFF',
 					textAlign: 'center',
 					lineHeight: '60px',
 					width: '60px',
@@ -26707,9 +26731,15 @@ var Slider = React.createClass({
 			React.createElement(
 				"h5",
 				null,
-				" 课号： ",
-				roomid,
-				" "
+				" ",
+				React.createElement(
+					"font",
+					{ color: "#A020F0" },
+					"课号： ",
+					roomid,
+					" "
+				),
+				"  "
 			),
 			" "
 		);
@@ -27006,6 +27036,7 @@ var Canvas = _react2.default.createClass({
                 width: this.props._width,
                 height: this.props._height,
                 style: {
+                    cursor: 'url("img/"),auto',
                     opacity: 0.6,
                     position: 'absolute',
                     zIndex: '2',

@@ -60,37 +60,7 @@ body{
     margin: 3px;
 }
 /*on click btn css*/
-
-#exit:active {
-    border-style: inset;
-    border-width: 1px;
-    background-color: #BDBDBD;
-}
-
-#voice:active {
-    border-style: inset;
-    border-width: 1px;
-    background-color: #BDBDBD;
-}
-
-#film:active {
-    border-style: inset;
-    border-width: 1px;
-    background-color: #BDBDBD;
-}
-
-#share:active {
-    border-style: inset;
-    border-width: 1px;
-    background-color: #BDBDBD;
-}
-
-#edit:active {
-    border-style: inset;
-    border-width: 1px;
-    background-color: #BDBDBD;
-}
-#share:active {
+#voice:active,#film:active,#share:active,#edit:active,#exit:active{
     border-style: inset;
     border-width: 1px;
     background-color: #BDBDBD;

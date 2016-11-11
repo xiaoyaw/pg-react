@@ -8,7 +8,9 @@
 import React from 'react';
 import Canvas from './blackBoard/Canvas.jsx';
 import BgImage from './blackBoard/BgImage.jsx';
-
+import {
+  hashHistory
+} from 'react-router';
 let Application = React.createClass({
   getInitialState: function() {
 
@@ -27,8 +29,11 @@ let Application = React.createClass({
     if (ws == null || ws.readyState != 1) {
       ws = new WebSocket('ws://203.195.173.135:9999/ws');
     }
-
+    var ww=this.getWindowSize().window_width;
+    var wh=this.getWindowSize().window_height;
     return {
+      winW:ww,
+      winH:wh,
       userName: null,
       webSocket: ws,
       hastouch: false,
@@ -51,6 +56,8 @@ let Application = React.createClass({
   connectWebSocket: function(ws, user, pw, id) {
     ws.onerror = function(e) {
       // console.log("error");
+      alert('websocket连接有异常...');
+      hashHistory.replace('/');
     }
     ws.onopen = function(e) {
       var UserMsg = {
@@ -68,11 +75,17 @@ let Application = React.createClass({
   },
   //搁置
   handleResize: function(e) {
-    
+
   },
   componentWillUnmount() {
     var username = this.state.username;
     var ws = this.state.webSocket;
+    var audio=document.getElementById('myaudio');
+    var video=document.getElementById('myvideo');
+    audio.pause();
+    audio.src='';
+    video.pause();
+    video.src='';
     ws.close(1000, username);
   },
   //渲染以后？ 设置为以前收不到Message
@@ -127,8 +140,8 @@ let Application = React.createClass({
     pic.onload = function() {
       var ratio = pic.width / pic.height;
       //获取屏幕宽高
-      var w = thiz.getWindowSize().window_width;
-      var h = thiz.getWindowSize().window_height;
+      var w = thiz.state.winW;
+      var h = thiz.state.winH;
       //按照高度缩放
       if (h * ratio <= w) {
         thiz.setState({
@@ -188,6 +201,9 @@ let Application = React.createClass({
         //账号密码为空时
         break;
       case "Error":
+        console.log(value);
+        alert('XMPP no response');
+         hashHistory.replace('/');
         //roomID为空时
         break;
       case "startSession":
@@ -201,7 +217,6 @@ let Application = React.createClass({
         } else { //没有背景图计算并展示welcome
           this.calculateImgProp('img/welcome.png');
         }
-
         break;
 
       case "image":
@@ -299,7 +314,7 @@ let Application = React.createClass({
     video.style.left = this.state.left + 'px';
     video.style.top = this.state.top + 'px';
 
-    return ( < div className = "container" >
+    return ( < div >
 
       < BgImage _src = {
         this.state.src
@@ -316,8 +331,7 @@ let Application = React.createClass({
       _top = {
         this.state.top
       }
-      />    
-
+      />  
       < Canvas _img_width = {
         this.state.img_width
       }

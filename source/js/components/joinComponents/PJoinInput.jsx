@@ -28,16 +28,20 @@ var PJoinInput = React.createClass({
 		if (this.isMounted()) {
 			var thiz = this;
 			var input = this.refs.textinput;
+			//处理Input值是否为空
 			$('#go').on('click', function() {
 				thiz.handleClick();
 			});
+			//回车键提交
 			$('#roomid').keydown(function(e) {
 				if (e.keyCode == "13") { //keyCode=13是回车键
 					thiz.handleClick();
-					hashHistory.replace('/room/'+thiz.state.text);
+					hashHistory.replace('/room/' + thiz.state.text);
 				}
 			});
-
+			//获取焦点
+			$(input).focus();
+			//实时获取text
 			$(input).bind('input propertychange', function() {
 				$(this).val($(this).val().replace(/\s/g, ''));
 				thiz.setState({
@@ -68,13 +72,8 @@ var PJoinInput = React.createClass({
 				}
 			}
 			/> < /div >
-
-			< div className = "render"
-			style = {
-				{
-					textAlign: 'center'
-				}
-			} > < /div>  < div className = "row" >
+			< div className = "container" >
+			< div className = "row" >
 			< div id = 'input'
 			style = {
 				{
@@ -99,9 +98,7 @@ var PJoinInput = React.createClass({
 			tabIndex = "-1"
 			id = "go" > Join < /Link> 
 
-			< /div > < /div >
-			< /div > < /div >
-			< div style = {
+			< /div >  < /div > < /div > < /div > < /div > < div style = {
 				{
 					textAlign: 'center',
 					textShadow: '2px 2px 5px #9B30FF',

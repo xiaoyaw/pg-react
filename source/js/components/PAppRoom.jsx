@@ -27,10 +27,10 @@ var PAppRoom = React.createClass({
       < Slider _roomid = {
         text
       }
-      / > < Application _roomid = {
+      / >  < Application _roomid = {
         text
       }
-      / > < PNavagationBar / >
+      /> < PNavagationBar / >
       < NetTip / >
       < /div>
     );

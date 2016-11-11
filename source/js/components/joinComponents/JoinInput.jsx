@@ -17,19 +17,23 @@ var JoinInput = React.createClass({
 		if (this.isMounted()) {
 			var thiz = this;
 			var input = this.refs.textinput;
+			//处理input是否为空
 			$('#go').on('click', function() {
 				thiz.handleClick();
 			});
+			//获取焦点
+			$(input).focus();
+			//实时获取input值
 			$(input).bind('input propertychange', function() {
-				$(this).val($(this).val().replace(/\s/g,''));
+				$(this).val($(this).val().replace(/\s/g, ''));
 				thiz.setState({
 					text: $(this).val().toLowerCase()
 				});
 			});
 		}
 	},
-	handleClick:function(){
-		if(this.state.text==''){
+	handleClick: function() {
+		if (this.state.text == '') {
 			$('#warn').fadeIn();
 			setTimeout(function() {
 				$('#warn').fadeOut();
@@ -50,13 +54,8 @@ var JoinInput = React.createClass({
 				}
 			}
 			/> < /div >
-
-			< div className = "render"
-			style = {
-				{
-					textAlign: 'center'
-				}
-			} > < /div> < div className = "row" > < div id = 'input'
+			< div className = "container" >
+			< div className = "row" > < div id = 'input'
 			style = {
 				{
 					width: '60%'
@@ -79,11 +78,13 @@ var JoinInput = React.createClass({
 			tabIndex = "-1"
 			id = "go" > Join < /Link> 
 
-			< /div > < /div >
-			< /div > < /div >
-				< div style = {
+			< /div > < /div> < /div > < /div > < /div >
+			< div style = {
 				{
-					textAlign: 'center',textShadow: '2px 2px 5px #9B30FF',marginTop: '35px',display: 'none'
+					textAlign: 'center',
+					textShadow: '2px 2px 5px #9B30FF',
+					marginTop: '35px',
+					display: 'none'
 				}
 			}
 			id = "warn" > < font style = {

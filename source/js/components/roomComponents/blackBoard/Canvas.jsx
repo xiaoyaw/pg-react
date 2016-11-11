@@ -9,28 +9,28 @@ let Canvas = React.createClass({
     getInitialState: function() {
         return {
             canvas: null,
-             clicked: false //监听状态隐藏显示导航栏
+            clicked: false //监听状态隐藏显示导航栏
         };
     },
 
-      //隐藏/显示导航栏
-  handleClick: function(e) {
-    this.setState({
-      clicked: !this.state.clicked
-    });
+    //隐藏/显示导航栏
+    handleClick: function(e) {
+        this.setState({
+            clicked: !this.state.clicked
+        });
 
-    if (this.state.clicked) {
-      $('#nnn').fadeOut();
-    } else {
-      $('#nnn').fadeIn();
-    }
-  },
+        if (this.state.clicked) {
+            $('#nnn').fadeOut();
+        } else {
+            $('#nnn').fadeIn();
+        }
+    },
 
     //获取Context('2d')
     componentDidMount: function() {
-        if (this.isMounted()) {        
-            var can=this.refs.myCanvas;
-             can.addEventListener('click', this.handleClick);
+        if (this.isMounted()) {
+            var can = this.refs.myCanvas;
+            can.addEventListener('click', this.handleClick);
             var canvas = this.refs.myCanvas.getContext('2d');
             this.setState({
                 canvas: canvas
@@ -239,6 +239,7 @@ let Canvas = React.createClass({
             }
             style = {
                 {
+                    cursor: 'url("img/"),auto',
                     opacity: 0.6,
                     position: 'absolute',
                     zIndex: '2',
