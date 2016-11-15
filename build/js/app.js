@@ -25740,6 +25740,9 @@ var JoinInput = React.createClass({
 			width: ''
 		};
 	},
+	componentWillMount: function componentWillMount() {
+		this.calLogoSize();
+	},
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
 			var thiz = this;
@@ -25748,7 +25751,6 @@ var JoinInput = React.createClass({
 			$('#go').on('click', function () {
 				thiz.handleClick();
 			});
-
 			//回车键提交
 			$('#roomid').keydown(function (e) {
 				var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;

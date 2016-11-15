@@ -11,8 +11,11 @@ var JoinInput = React.createClass({
 	getInitialState: function() {
 		return {
 			text: '',
-			width:''
+			width: ''
 		};
+	},
+	componentWillMount: function() {
+		this.calLogoSize();
 	},
 	componentDidMount: function() {
 		if (this.isMounted()) {
@@ -22,7 +25,6 @@ var JoinInput = React.createClass({
 			$('#go').on('click', function() {
 				thiz.handleClick();
 			});
-
 			//回车键提交
 			$('#roomid').keydown(function(e) {
 				var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
@@ -45,13 +47,13 @@ var JoinInput = React.createClass({
 	calLogoSize: function() {
 		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-		if(w>h){
+		if (w > h) {
 			this.setState({
-				width:h*0.4,
+				width: h * 0.4,
 			});
-		}else{
+		} else {
 			this.setState({
-				width:w*0.6, 
+				width: w * 0.6,
 			});
 		}
 	},
@@ -101,23 +103,22 @@ var JoinInput = React.createClass({
 			tabIndex = "-1"
 			id = "go" > Join < /Link> 
 
-			< /div > < /div > < /div > < /div > < /div > < div style = {
-				{
-					textAlign: 'center',
-					textShadow: '2px 2px 5px #9B30FF',
-					marginTop: '35px',
-					display: 'none'
-				}
+			< /div > < /div > < /div > < /div > < /div > < div style = { {
+				textAlign: 'center',
+				textShadow: '2px 2px 5px #9B30FF',
+				marginTop: '35px',
+				display: 'none'
 			}
-			id = "warn" > < font style = {
+		}
+		id = "warn" > < font style = {
 				{
 					fontSize: '16px'
 				}
 			} > RoomID can not be empty！！！ < /font></div >
 
 			< /div>
-		);
-	}
+	);
+}
 
 });
 
