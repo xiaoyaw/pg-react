@@ -25,8 +25,9 @@ var JoinInput = React.createClass({
 			$('#go').on('click', function() {
 				thiz.handleClick();
 			});
+
 			//回车键提交
-			$('#roomid').keydown(function(e) {
+			$(input).keydown(function(e) {
 				var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
 				if (eCode == "13") { //keyCode=13是回车键
 					thiz.handleClick();
