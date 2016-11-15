@@ -13,7 +13,7 @@ var Edit = React.createClass({
 	},
 
 	componentDidMount: function() {
-		var thiz=this;
+		var thiz = this;
 		if (this.isMounted()) {
 			$('#edit').click(function() {
 				if (thiz.state.isIOS) {
@@ -50,7 +50,7 @@ var Edit = React.createClass({
 		});
 	},
 	render: function() {
-		return ( < a id = 'edit' > < span className = 'glyphicon glyphicon-pencil' > < /span > < /a > );
+		return ( < a id = 'edit'> < span className = 'glyphicon glyphicon-pencil' > < /span > < /a > );
 	}
 
 });

@@ -30,6 +30,7 @@ body{
     border-width: 1px;
     border-color: #FFFF00;
     margin: 3px;
+    cursor:default;
 }
 
 #voice {
@@ -37,6 +38,7 @@ body{
     border-width: 1px;
     border-color: #A020F0;
     margin: 3px;
+    cursor:default;
 }
 
 #edit {
@@ -44,6 +46,7 @@ body{
     border-width: 1px;
     border-color: #00FF00;
     margin: 3px;
+    cursor:default;
 }
 
 #film {
@@ -51,6 +54,7 @@ body{
     border-width: 1px;
     border-color: #FF3030;
     margin: 3px;
+    cursor:default;
 }
 
 #share {
@@ -58,6 +62,7 @@ body{
     border-width: 1px;
     border-color: #00FF00;
     margin: 3px;
+    cursor:default;
 }
 /*on click btn css*/
 #voice:active,#film:active,#share:active,#edit:active,#exit:active{

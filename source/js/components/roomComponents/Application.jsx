@@ -29,11 +29,8 @@ let Application = React.createClass({
     if (ws == null || ws.readyState != 1) {
       ws = new WebSocket('ws://203.195.173.135:9999/ws');
     }
-    var ww=this.getWindowSize().window_width;
-    var wh=this.getWindowSize().window_height;
     return {
-      winW:ww,
-      winH:wh,
+      interTime: '',
       userName: null,
       webSocket: ws,
       hastouch: false,
@@ -54,12 +51,14 @@ let Application = React.createClass({
 
   //发送data打开连接
   connectWebSocket: function(ws, user, pw, id) {
+    var thiz=this;
     ws.onerror = function(e) {
       // console.log("error");
       alert('websocket连接有异常...');
       hashHistory.replace('/');
     }
     ws.onopen = function(e) {
+      thiz.wsKeepConnect();
       var UserMsg = {
         'cmd': 'login',
         'userName': user,
@@ -80,12 +79,13 @@ let Application = React.createClass({
   componentWillUnmount() {
     var username = this.state.username;
     var ws = this.state.webSocket;
-    var audio=document.getElementById('myaudio');
-    var video=document.getElementById('myvideo');
+    var audio = document.getElementById('myaudio');
+    var video = document.getElementById('myvideo');
     audio.pause();
-    audio.src='';
+    audio.src = '';
     video.pause();
-    video.src='';
+    video.src = '';
+    window.clearInterval(this.state.interTime);
     ws.close(1000, username);
   },
   //渲染以后？ 设置为以前收不到Message
@@ -101,6 +101,8 @@ let Application = React.createClass({
       }
       var roomid = this.props._roomid;
       this.connectWebSocket(ws, un, pd, roomid);
+
+
       var hastouch = "ontouchstart" in window;
       this.setState({
         userName: un,
@@ -111,6 +113,17 @@ let Application = React.createClass({
         thiz.handleMessage(msg);
       }
     }
+  },
+  wsKeepConnect: function() {
+    var ws=this.state.webSocket;
+    var heart='';
+    var preventTimeOut = setInterval(
+      function() {
+        ws.send(JSON.stringify(heart));
+      }, 300000);
+    this.setState({
+      interTime: preventTimeOut
+    });
   },
   getWindowSize: function() {
     var ww = window.innerWidth;
@@ -140,8 +153,8 @@ let Application = React.createClass({
     pic.onload = function() {
       var ratio = pic.width / pic.height;
       //获取屏幕宽高
-      var w = thiz.state.winW;
-      var h = thiz.state.winH;
+      var w = thiz.getWindowSize().window_width;
+      var h = thiz.getWindowSize().window_height;
       //按照高度缩放
       if (h * ratio <= w) {
         thiz.setState({
@@ -201,9 +214,8 @@ let Application = React.createClass({
         //账号密码为空时
         break;
       case "Error":
-        console.log(value);
-        alert('XMPP no response');
-         hashHistory.replace('/');
+        //console.log('XMPP no response');
+        //hashHistory.replace('/');
         //roomID为空时
         break;
       case "startSession":
@@ -331,38 +343,37 @@ let Application = React.createClass({
       _top = {
         this.state.top
       }
-      />  
-      < Canvas _img_width = {
-        this.state.img_width
-      }
-      _img_height = {
-        this.state.img_height
-      }
+      />   < Canvas _img_width = {
+      this.state.img_width
+    }
+    _img_height = {
+      this.state.img_height
+    }
 
-      _scaleX = {
-        this.state.scaleX
-      }
-      _scaleY = {
-        this.state.scaleY
-      }
-      _data = {
-        this.state.data
-      }
-      _left = {
-        this.state.left
-      }
-      _top = {
-        this.state.top
-      }
-      _width = {
-        this.state.width
-      }
-      _height = {
-        this.state.height
-      }
-      / >   < /div >
-    );
-  }
+    _scaleX = {
+      this.state.scaleX
+    }
+    _scaleY = {
+      this.state.scaleY
+    }
+    _data = {
+      this.state.data
+    }
+    _left = {
+      this.state.left
+    }
+    _top = {
+      this.state.top
+    }
+    _width = {
+      this.state.width
+    }
+    _height = {
+      this.state.height
+    }
+    / >   < /div >
+  );
+}
 
 
 });

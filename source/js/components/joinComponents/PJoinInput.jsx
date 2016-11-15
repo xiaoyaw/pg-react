@@ -10,10 +10,13 @@ var PJoinInput = React.createClass({
 
 	getInitialState: function() {
 		return {
-			text: ''
+			text: '',
+			width: '',
+			inputWidth:''
 		};
 	},
 	componentWillMount: function() {
+		this.calLogoSize();
 		var username = "user_" + Math.random();
 		var password = "pass_" + Math.random();
 		this.localSave(username, password);
@@ -22,6 +25,21 @@ var PJoinInput = React.createClass({
 		if (typeof(Storage) !== "undefined") {
 			sessionStorage.setItem("username", u);
 			sessionStorage.setItem("password", p);
+		}
+	},
+	calLogoSize: function() {
+		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+		if(w>h){
+			this.setState({
+				width:h*0.4,
+				inputWidth:'60%' 
+			});
+		}else{
+			this.setState({
+				width:w*0.6, 
+				inputWidth:'80%'
+			});
 		}
 	},
 	componentDidMount: function() {
@@ -34,7 +52,8 @@ var PJoinInput = React.createClass({
 			});
 			//回车键提交
 			$('#roomid').keydown(function(e) {
-				if (e.keyCode == "13") { //keyCode=13是回车键
+				var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+				if (eCode == "13") { //keyCode=13是回车键
 					thiz.handleClick();
 					hashHistory.replace('/room/' + thiz.state.text);
 				}
@@ -67,8 +86,8 @@ var PJoinInput = React.createClass({
 			src = "img/pageshare.png"
 			style = {
 				{
-					width: '20%',
-					height: '20%'
+					width: this.state.width,
+					height: this.state.width
 				}
 			}
 			/> < /div >
@@ -77,7 +96,7 @@ var PJoinInput = React.createClass({
 			< div id = 'input'
 			style = {
 				{
-					width: '60%'
+					width: this.state.inputWidth
 				}
 			} >
 
@@ -87,8 +106,7 @@ var PJoinInput = React.createClass({
 			ref = "textinput"
 			className = "form-control"
 			id = "roomid"
-			placeholder = "roomID"
-			width = "150px" / >
+			placeholder = "roomID" / >
 
 			< div className = "input-group-btn" >
 			< Link to = {
@@ -98,22 +116,21 @@ var PJoinInput = React.createClass({
 			tabIndex = "-1"
 			id = "go" > Join < /Link> 
 
-			< /div >  < /div > < /div > < /div > < /div > < div style = {
-				{
-					textAlign: 'center',
-					textShadow: '2px 2px 5px #9B30FF',
-					marginTop: '35px',
-					display: 'none'
-				}
+			< /div >  < /div > < /div > < /div > < /div > < div style = { {
+				textAlign: 'center',
+				textShadow: '2px 2px 5px #9B30FF',
+				marginTop: '35px',
+				display: 'none'
 			}
-			id = "warn" > < font style = {
+		}
+		id = "warn" > < font style = {
 				{
 					fontSize: '16px'
 				}
 			} > RoomID can not be empty！！！ < /font></div >
 			< /div>
-		);
-	}
+	);
+}
 
 });
 

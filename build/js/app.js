@@ -25736,7 +25736,8 @@ var JoinInput = React.createClass({
 
 	getInitialState: function getInitialState() {
 		return {
-			text: ''
+			text: '',
+			width: ''
 		};
 	},
 	componentDidMount: function componentDidMount() {
@@ -25747,6 +25748,16 @@ var JoinInput = React.createClass({
 			$('#go').on('click', function () {
 				thiz.handleClick();
 			});
+
+			//回车键提交
+			$('#roomid').keydown(function (e) {
+				var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+				if (eCode == "13") {
+					//keyCode=13是回车键
+					thiz.handleClick();
+					_reactRouter.hashHistory.replace('/room/' + thiz.state.text);
+				}
+			});
 			//获取焦点
 			$(input).focus();
 			//实时获取input值
@@ -25755,6 +25766,19 @@ var JoinInput = React.createClass({
 				thiz.setState({
 					text: $(this).val().toLowerCase()
 				});
+			});
+		}
+	},
+	calLogoSize: function calLogoSize() {
+		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+		if (w > h) {
+			this.setState({
+				width: h * 0.4
+			});
+		} else {
+			this.setState({
+				width: w * 0.6
 			});
 		}
 	},
@@ -25777,8 +25801,8 @@ var JoinInput = React.createClass({
 				React.createElement('img', { id: 'page',
 					src: 'img/pageshare.png',
 					style: {
-						width: '60%',
-						height: '60%'
+						width: this.state.width,
+						height: this.state.width
 					}
 				}),
 				' '
@@ -25794,7 +25818,7 @@ var JoinInput = React.createClass({
 						'div',
 						{ id: 'input',
 							style: {
-								width: '60%'
+								width: '80%'
 							} },
 						React.createElement(
 							'div',
@@ -25824,6 +25848,7 @@ var JoinInput = React.createClass({
 				),
 				' '
 			),
+			' ',
 			React.createElement(
 				'div',
 				{ style: {
@@ -25923,10 +25948,13 @@ var PJoinInput = React.createClass({
 
 	getInitialState: function getInitialState() {
 		return {
-			text: ''
+			text: '',
+			width: '',
+			inputWidth: ''
 		};
 	},
 	componentWillMount: function componentWillMount() {
+		this.calLogoSize();
 		var username = "user_" + Math.random();
 		var password = "pass_" + Math.random();
 		this.localSave(username, password);
@@ -25935,6 +25963,21 @@ var PJoinInput = React.createClass({
 		if (typeof Storage !== "undefined") {
 			sessionStorage.setItem("username", u);
 			sessionStorage.setItem("password", p);
+		}
+	},
+	calLogoSize: function calLogoSize() {
+		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+		if (w > h) {
+			this.setState({
+				width: h * 0.4,
+				inputWidth: '60%'
+			});
+		} else {
+			this.setState({
+				width: w * 0.6,
+				inputWidth: '80%'
+			});
 		}
 	},
 	componentDidMount: function componentDidMount() {
@@ -25947,7 +25990,8 @@ var PJoinInput = React.createClass({
 			});
 			//回车键提交
 			$('#roomid').keydown(function (e) {
-				if (e.keyCode == "13") {
+				var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+				if (eCode == "13") {
 					//keyCode=13是回车键
 					thiz.handleClick();
 					_reactRouter.hashHistory.replace('/room/' + thiz.state.text);
@@ -25983,8 +26027,8 @@ var PJoinInput = React.createClass({
 				React.createElement('img', { id: 'page',
 					src: 'img/pageshare.png',
 					style: {
-						width: '20%',
-						height: '20%'
+						width: this.state.width,
+						height: this.state.width
 					}
 				}),
 				' '
@@ -25999,7 +26043,7 @@ var PJoinInput = React.createClass({
 						'div',
 						{ id: 'input',
 							style: {
-								width: '60%'
+								width: this.state.inputWidth
 							} },
 						React.createElement(
 							'div',
@@ -26008,8 +26052,7 @@ var PJoinInput = React.createClass({
 								ref: 'textinput',
 								className: 'form-control',
 								id: 'roomid',
-								placeholder: 'roomID',
-								width: '150px' }),
+								placeholder: 'roomID' }),
 							React.createElement(
 								'div',
 								{ className: 'input-group-btn' },
@@ -26105,11 +26148,8 @@ var Application = _react2.default.createClass({
     if (ws == null || ws.readyState != 1) {
       ws = new WebSocket('ws://203.195.173.135:9999/ws');
     }
-    var ww = this.getWindowSize().window_width;
-    var wh = this.getWindowSize().window_height;
     return {
-      winW: ww,
-      winH: wh,
+      interTime: '',
       userName: null,
       webSocket: ws,
       hastouch: false,
@@ -26130,12 +26170,14 @@ var Application = _react2.default.createClass({
 
   //发送data打开连接
   connectWebSocket: function connectWebSocket(ws, user, pw, id) {
+    var thiz = this;
     ws.onerror = function (e) {
       // console.log("error");
       alert('websocket连接有异常...');
       _reactRouter.hashHistory.replace('/');
     };
     ws.onopen = function (e) {
+      thiz.wsKeepConnect();
       var UserMsg = {
         'cmd': 'login',
         'userName': user,
@@ -26160,6 +26202,7 @@ var Application = _react2.default.createClass({
     audio.src = '';
     video.pause();
     video.src = '';
+    window.clearInterval(this.state.interTime);
     ws.close(1000, username);
   },
 
@@ -26176,6 +26219,7 @@ var Application = _react2.default.createClass({
       }
       var roomid = this.props._roomid;
       this.connectWebSocket(ws, un, pd, roomid);
+
       var hastouch = "ontouchstart" in window;
       this.setState({
         userName: un,
@@ -26186,6 +26230,16 @@ var Application = _react2.default.createClass({
         thiz.handleMessage(msg);
       };
     }
+  },
+  wsKeepConnect: function wsKeepConnect() {
+    var ws = this.state.webSocket;
+    var heart = '';
+    var preventTimeOut = setInterval(function () {
+      ws.send(JSON.stringify(heart));
+    }, 300000);
+    this.setState({
+      interTime: preventTimeOut
+    });
   },
   getWindowSize: function getWindowSize() {
     var ww = window.innerWidth;
@@ -26216,8 +26270,8 @@ var Application = _react2.default.createClass({
     pic.onload = function () {
       var ratio = pic.width / pic.height;
       //获取屏幕宽高
-      var w = thiz.state.winW;
-      var h = thiz.state.winH;
+      var w = thiz.getWindowSize().window_width;
+      var h = thiz.getWindowSize().window_height;
       //按照高度缩放
       if (h * ratio <= w) {
         thiz.setState({
@@ -26278,9 +26332,8 @@ var Application = _react2.default.createClass({
         //账号密码为空时
         break;
       case "Error":
-        console.log(value);
-        alert('XMPP no response');
-        _reactRouter.hashHistory.replace('/');
+        //console.log('XMPP no response');
+        //hashHistory.replace('/');
         //roomID为空时
         break;
       case "startSession":
@@ -26405,6 +26458,7 @@ var Application = _react2.default.createClass({
         _left: this.state.left,
         _top: this.state.top
       }),
+      '   ',
       _react2.default.createElement(_Canvas2.default, { _img_width: this.state.img_width,
         _img_height: this.state.img_height,
 
@@ -26450,7 +26504,11 @@ var React = require('react');
 var NavagationBar = React.createClass({
 	displayName: 'NavagationBar',
 
-
+	componentWillMount: function componentWillMount() {
+		document.body.addEventListener('touchstart', function () {
+			//绑定touch  IOS按钮active兼容性
+		});
+	},
 	render: function render() {
 		return React.createElement(
 			'div',

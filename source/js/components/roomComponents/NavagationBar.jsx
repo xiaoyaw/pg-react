@@ -7,7 +7,11 @@ import Share from './navBar/Share.jsx';
 var React = require('react');
 
 var NavagationBar = React.createClass({
-
+	componentWillMount:function(){
+		document.body.addEventListener('touchstart', function () {
+			//绑定touch  IOS按钮active兼容性
+		});
+	},
 	render: function() {
 		return ( < div id = 'nnn'
 			style = {

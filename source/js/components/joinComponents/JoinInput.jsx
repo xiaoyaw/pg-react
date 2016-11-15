@@ -10,7 +10,8 @@ var JoinInput = React.createClass({
 
 	getInitialState: function() {
 		return {
-			text: ''
+			text: '',
+			width:''
 		};
 	},
 	componentDidMount: function() {
@@ -21,6 +22,15 @@ var JoinInput = React.createClass({
 			$('#go').on('click', function() {
 				thiz.handleClick();
 			});
+
+			//回车键提交
+			$('#roomid').keydown(function(e) {
+				var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+				if (eCode == "13") { //keyCode=13是回车键
+					thiz.handleClick();
+					hashHistory.replace('/room/' + thiz.state.text);
+				}
+			});
 			//获取焦点
 			$(input).focus();
 			//实时获取input值
@@ -29,6 +39,19 @@ var JoinInput = React.createClass({
 				thiz.setState({
 					text: $(this).val().toLowerCase()
 				});
+			});
+		}
+	},
+	calLogoSize: function() {
+		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+		if(w>h){
+			this.setState({
+				width:h*0.4,
+			});
+		}else{
+			this.setState({
+				width:w*0.6, 
 			});
 		}
 	},
@@ -49,8 +72,8 @@ var JoinInput = React.createClass({
 			src = "img/pageshare.png"
 			style = {
 				{
-					width: '60%',
-					height: '60%'
+					width: this.state.width,
+					height: this.state.width
 				}
 			}
 			/> < /div >
@@ -58,7 +81,7 @@ var JoinInput = React.createClass({
 			< div className = "row" > < div id = 'input'
 			style = {
 				{
-					width: '60%'
+					width: '80%'
 				}
 			} >
 
@@ -78,8 +101,7 @@ var JoinInput = React.createClass({
 			tabIndex = "-1"
 			id = "go" > Join < /Link> 
 
-			< /div > < /div> < /div > < /div > < /div >
-			< div style = {
+			< /div > < /div > < /div > < /div > < /div > < div style = {
 				{
 					textAlign: 'center',
 					textShadow: '2px 2px 5px #9B30FF',
