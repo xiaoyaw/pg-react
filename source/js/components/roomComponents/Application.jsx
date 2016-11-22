@@ -19,10 +19,6 @@ let Application = React.createClass({
     if (typeof(document.onselectstart) != "undefined") {
       // IE下禁止元素被选取        
       document.onselectstart = new Function("return false");
-    } else {
-      // firefox下禁止元素被选取的变通办法        
-      document.onmousedown = new Function("return false");
-      document.onmouseup = new Function("return true");
     }
 
     var ws;
@@ -51,7 +47,7 @@ let Application = React.createClass({
 
   //发送data打开连接
   connectWebSocket: function(ws, user, pw, id) {
-    var thiz=this;
+    var thiz = this;
     ws.onerror = function(e) {
       // console.log("error");
       alert('websocket连接有异常...');
@@ -74,7 +70,9 @@ let Application = React.createClass({
   },
   //搁置
   handleResize: function(e) {
-
+    if (this.isMounted()) {
+      this.calculateImgProp(this.state.src);
+    }
   },
   componentWillUnmount() {
     var username = this.state.username;
@@ -115,8 +113,8 @@ let Application = React.createClass({
     }
   },
   wsKeepConnect: function() {
-    var ws=this.state.webSocket;
-    var heart='';
+    var ws = this.state.webSocket;
+    var heart = '';
     var preventTimeOut = setInterval(
       function() {
         ws.send(JSON.stringify(heart));
@@ -195,8 +193,7 @@ let Application = React.createClass({
         }
       }
       thiz.setState({
-        src: src,
-        data: null
+        src: src
       });
     }
   },
@@ -233,7 +230,11 @@ let Application = React.createClass({
 
       case "image":
         //注意：换background的时候，需要将data置空
+        this.setState({
+          data: null
+        });
         this.calculateImgProp('data:image/png;base64,' + value.image);
+
         break;
 
       case "urlvoice":
@@ -310,10 +311,8 @@ let Application = React.createClass({
         break;
 
       default:
-        data = this.state.data;
-        data = value;
         this.setState({
-          data: data
+          data: value
         });
     }
   },

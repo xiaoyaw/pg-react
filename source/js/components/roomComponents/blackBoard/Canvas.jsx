@@ -1,6 +1,6 @@
 /**
  * Created by qiangswa on 16-9-19.
- * 处理和canvas有关的Message from server
+ * 处理和canvas有关的Message from websocket
  * click to hide or show nav
  */
 import React from 'react';
@@ -29,6 +29,7 @@ let Canvas = React.createClass({
     //获取Context('2d')
     componentDidMount: function() {
         if (this.isMounted()) {
+            var thiz = this;
             var can = this.refs.myCanvas;
             can.addEventListener('click', this.handleClick);
             var canvas = this.refs.myCanvas.getContext('2d');
@@ -39,7 +40,6 @@ let Canvas = React.createClass({
     },
 
     handleData: function(data) {
-        var isResize = this.props._isResize;
         var canvas = this.state.canvas;
         var sX = this.props._scaleX;
         var sY = this.props._scaleY;
@@ -229,7 +229,7 @@ let Canvas = React.createClass({
             //console.log('速度擦黑板');
             this.handleData('clearAll');
         }
-        return ( < canvas id = "bgcanvas"
+        return ( < canvas
             ref = 'myCanvas'
             width = {
                 this.props._width

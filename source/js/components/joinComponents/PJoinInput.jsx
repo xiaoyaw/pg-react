@@ -67,6 +67,12 @@ var PJoinInput = React.createClass({
 					text: $(this).val().toLowerCase()
 				});
 			});
+			window.addEventListener('resize',thiz.handleResize);
+		}
+	},
+	handleResize:function(){
+		if(this.isMounted()){
+				this.calLogoSize();
 		}
 	},
 	handleClick: function() {

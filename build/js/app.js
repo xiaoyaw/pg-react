@@ -25595,7 +25595,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var AppRoom = _react2.default.createClass({
   displayName: 'AppRoom',
 
-
   componentWillMount: function componentWillMount() {
     if (typeof Storage !== "undefined") {
       if (sessionStorage.username) {} else {
@@ -25644,7 +25643,6 @@ var React = require('react');
 
 var PAppJoin = React.createClass({
 	displayName: 'PAppJoin',
-
 
 	render: function render() {
 		return React.createElement(
@@ -26009,6 +26007,12 @@ var PJoinInput = React.createClass({
 					text: $(this).val().toLowerCase()
 				});
 			});
+			window.addEventListener('resize', thiz.handleResize);
+		}
+	},
+	handleResize: function handleResize() {
+		if (this.isMounted()) {
+			this.calLogoSize();
 		}
 	},
 	handleClick: function handleClick() {
@@ -26141,10 +26145,6 @@ var Application = _react2.default.createClass({
     if (typeof document.onselectstart != "undefined") {
       // IE下禁止元素被选取        
       document.onselectstart = new Function("return false");
-    } else {
-      // firefox下禁止元素被选取的变通办法        
-      document.onmousedown = new Function("return false");
-      document.onmouseup = new Function("return true");
     }
 
     var ws;
@@ -26195,7 +26195,11 @@ var Application = _react2.default.createClass({
     };
   },
   //搁置
-  handleResize: function handleResize(e) {},
+  handleResize: function handleResize(e) {
+    if (this.isMounted()) {
+      this.calculateImgProp(this.state.src);
+    }
+  },
   componentWillUnmount: function componentWillUnmount() {
     var username = this.state.username;
     var ws = this.state.webSocket;
@@ -26316,8 +26320,7 @@ var Application = _react2.default.createClass({
         }
       }
       thiz.setState({
-        src: src,
-        data: null
+        src: src
       });
     };
   },
@@ -26355,7 +26358,11 @@ var Application = _react2.default.createClass({
 
       case "image":
         //注意：换background的时候，需要将data置空
+        this.setState({
+          data: null
+        });
         this.calculateImgProp('data:image/png;base64,' + value.image);
+
         break;
 
       case "urlvoice":
@@ -26436,10 +26443,8 @@ var Application = _react2.default.createClass({
         break;
 
       default:
-        data = this.state.data;
-        data = value;
         this.setState({
-          data: data
+          data: value
         });
     }
   },
@@ -26893,6 +26898,7 @@ var Canvas = _react2.default.createClass({
     //获取Context('2d')
     componentDidMount: function componentDidMount() {
         if (this.isMounted()) {
+            var thiz = this;
             var can = this.refs.myCanvas;
             can.addEventListener('click', this.handleClick);
             var canvas = this.refs.myCanvas.getContext('2d');
@@ -26903,7 +26909,6 @@ var Canvas = _react2.default.createClass({
     },
 
     handleData: function handleData(data) {
-        var isResize = this.props._isResize;
         var canvas = this.state.canvas;
         var sX = this.props._scaleX;
         var sY = this.props._scaleY;
@@ -27092,7 +27097,7 @@ var Canvas = _react2.default.createClass({
         }
         return _react2.default.createElement(
             'canvas',
-            { id: 'bgcanvas',
+            {
                 ref: 'myCanvas',
                 width: this.props._width,
                 height: this.props._height,
@@ -27109,7 +27114,7 @@ var Canvas = _react2.default.createClass({
     }
 }); /**
      * Created by qiangswa on 16-9-19.
-     * 处理和canvas有关的Message from server
+     * 处理和canvas有关的Message from websocket
      * click to hide or show nav
      */
 exports.default = Canvas;

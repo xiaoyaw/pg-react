@@ -7,11 +7,9 @@ import NetTip from './roomComponents/NetTip.jsx';
 
 
 var AppRoom = React.createClass({
-
   componentWillMount: function() {
     if (typeof(Storage) !== "undefined") {
       if (sessionStorage.username) {
-
       } else {
         var username = "user_" + Math.random();
         var password = "pass_" + Math.random();
@@ -21,7 +19,7 @@ var AppRoom = React.createClass({
     }
   },
   componentDidMount: function() {
-   
+    
   },
   render: function() {
     var text = this.props.params.id;
