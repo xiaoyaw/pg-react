@@ -1,16 +1,21 @@
 import {
-	IndexLink
+	hashHistory
 } from 'react-router';
 
 var React = require('react');
 
 var Home = React.createClass({
 
-
+	componentDidMount:function(){
+		if(this.isMounted()){
+			$('#exit').on('click',function(){
+				hashHistory.replace('/');
+			})
+		}
+	},
 	render: function() {
-		return ( < IndexLink id = 'exit'
-			to = "/"
-			ref = 'toexit' > < span className = "glyphicon glyphicon-home" > < /span> </IndexLink >
+		return ( < a id = 'exit'
+			ref = 'toexit' > < span className = "glyphicon glyphicon-home" > < /span> </a >
 		);
 	}
 

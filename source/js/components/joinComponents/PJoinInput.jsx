@@ -12,7 +12,7 @@ var PJoinInput = React.createClass({
 		return {
 			text: '',
 			width: '',
-			inputWidth:''
+			inputWidth: ''
 		};
 	},
 	componentWillMount: function() {
@@ -30,15 +30,15 @@ var PJoinInput = React.createClass({
 	calLogoSize: function() {
 		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-		if(w>h){
+		if (w > h) {
 			this.setState({
-				width:h*0.4,
-				inputWidth:'60%' 
+				width: h * 0.4,
+				inputWidth: '60%'
 			});
-		}else{
+		} else {
 			this.setState({
-				width:w*0.6, 
-				inputWidth:'80%'
+				width: w * 0.6,
+				inputWidth: '80%'
 			});
 		}
 	},
@@ -55,40 +55,40 @@ var PJoinInput = React.createClass({
 				var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
 				if (eCode == "13") { //keyCode=13是回车键
 					thiz.handleClick();
-					hashHistory.replace('/room/' + thiz.state.text);
 				}
 			});
 			//获取焦点
 			$(input).focus();
 			//实时获取text
-			$(input).bind('input propertychange', function() {
-				$(this).val($(this).val().replace(/\s/g, ''));
+			$(input).on('input propertychange', function() {
 				thiz.setState({
-					text: $(this).val().toLowerCase()
+					text: $(this).val().toLowerCase().replace(/\s/g, '')
 				});
 			});
-			window.addEventListener('resize',thiz.handleResize);
+			window.addEventListener('resize', thiz.handleResize);
 		}
 	},
-	handleResize:function(){
-		if(this.isMounted()){
-				this.calLogoSize();
+	handleResize: function() {
+		if (this.isMounted()) {
+			this.calLogoSize();
 		}
 	},
 	handleClick: function() {
 		if (this.state.text == '') {
+
 			$('#warn').fadeIn();
 			setTimeout(function() {
 				$('#warn').fadeOut();
 			}, 2000);
-		}else{
+		} else {
+			$(this.refs.textinput).blur();
 			var audio = document.getElementById("myaudio");
-			audio.src='img/sure.mp3';
+			audio.src = 'img/sure.mp3';
 			audio.play();
+			hashHistory.replace('/room/' + this.state.text);
 		}
 	},
 	render: function() {
-		var text = this.state.text;
 		return ( < div id = "bigScreen" >
 			< div id = 'pageshare' >
 
@@ -119,27 +119,24 @@ var PJoinInput = React.createClass({
 			placeholder = "roomID" / >
 
 			< div className = "input-group-btn" >
-			< Link to = {
-				'/room/' + text
-			}
-			className = "btn btn-default"
+			< a className = "btn btn-default"
 			tabIndex = "-1"
-			id = "go" > Join < /Link> 
+			id = "go" > Join < /a> 
 
 			< /div >  < /div > < /div > < /div > < /div > < div style = { {
-				textAlign: 'center',
-				textShadow: '2px 2px 5px #9B30FF',
-				marginTop: '35px',
-				display: 'none'
-			}
+			textAlign: 'center',
+			textShadow: '2px 2px 5px #9B30FF',
+			marginTop: '35px',
+			display: 'none'
 		}
-		id = "warn" > < font style = {
-				{
-					fontSize: '16px'
-				}
-			} > RoomID can not be empty！！！ < /font></div >
-			< /div>
-	);
+	}
+	id = "warn" > < font style = {
+		{
+			fontSize: '16px'
+		}
+	} > RoomID can not be empty！！！ < /font></div >
+	< /div>
+);
 }
 
 });

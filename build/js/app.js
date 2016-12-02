@@ -25757,16 +25757,14 @@ var JoinInput = React.createClass({
 				if (eCode == "13") {
 					//keyCode=13是回车键
 					thiz.handleClick();
-					_reactRouter.hashHistory.replace('/room/' + thiz.state.text);
 				}
 			});
 			//获取焦点
 			$(input).focus();
 			//实时获取input值
 			$(input).bind('input propertychange', function () {
-				$(this).val($(this).val().replace(/\s/g, ''));
 				thiz.setState({
-					text: $(this).val().toLowerCase()
+					text: $(this).val().toLowerCase().replace(/\s/g, '')
 				});
 			});
 		}
@@ -25791,9 +25789,12 @@ var JoinInput = React.createClass({
 				$('#warn').fadeOut();
 			}, 2000);
 		} else {
+			$(this.refs.textinput).blur();
 			var audio = document.getElementById("myaudio");
 			audio.src = 'img/sure.mp3';
 			audio.play();
+
+			_reactRouter.hashHistory.replace('/room/' + this.state.text);
 		}
 	},
 	render: function render() {
@@ -25838,8 +25839,8 @@ var JoinInput = React.createClass({
 								'div',
 								{ className: 'input-group-btn' },
 								React.createElement(
-									_reactRouter.Link,
-									{ to: '/room/' + text,
+									'a',
+									{
 										className: 'btn btn-default',
 										tabIndex: '-1',
 										id: 'go' },
@@ -26000,16 +26001,14 @@ var PJoinInput = React.createClass({
 				if (eCode == "13") {
 					//keyCode=13是回车键
 					thiz.handleClick();
-					_reactRouter.hashHistory.replace('/room/' + thiz.state.text);
 				}
 			});
 			//获取焦点
 			$(input).focus();
 			//实时获取text
-			$(input).bind('input propertychange', function () {
-				$(this).val($(this).val().replace(/\s/g, ''));
+			$(input).on('input propertychange', function () {
 				thiz.setState({
-					text: $(this).val().toLowerCase()
+					text: $(this).val().toLowerCase().replace(/\s/g, '')
 				});
 			});
 			window.addEventListener('resize', thiz.handleResize);
@@ -26022,18 +26021,20 @@ var PJoinInput = React.createClass({
 	},
 	handleClick: function handleClick() {
 		if (this.state.text == '') {
+
 			$('#warn').fadeIn();
 			setTimeout(function () {
 				$('#warn').fadeOut();
 			}, 2000);
 		} else {
+			$(this.refs.textinput).blur();
 			var audio = document.getElementById("myaudio");
 			audio.src = 'img/sure.mp3';
 			audio.play();
+			_reactRouter.hashHistory.replace('/room/' + this.state.text);
 		}
 	},
 	render: function render() {
-		var text = this.state.text;
 		return React.createElement(
 			'div',
 			{ id: 'bigScreen' },
@@ -26073,9 +26074,8 @@ var PJoinInput = React.createClass({
 								'div',
 								{ className: 'input-group-btn' },
 								React.createElement(
-									_reactRouter.Link,
-									{ to: '/room/' + text,
-										className: 'btn btn-default',
+									'a',
+									{ className: 'btn btn-default',
 										tabIndex: '-1',
 										id: 'go' },
 									' Join '
@@ -27212,11 +27212,17 @@ var Home = React.createClass({
 	displayName: 'Home',
 
 
+	componentDidMount: function componentDidMount() {
+		if (this.isMounted()) {
+			$('#exit').on('click', function () {
+				_reactRouter.hashHistory.replace('/');
+			});
+		}
+	},
 	render: function render() {
 		return React.createElement(
-			_reactRouter.IndexLink,
+			'a',
 			{ id: 'exit',
-				to: '/',
 				ref: 'toexit' },
 			' ',
 			React.createElement(

@@ -31,16 +31,14 @@ var JoinInput = React.createClass({
 				var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
 				if (eCode == "13") { //keyCode=13是回车键
 					thiz.handleClick();
-					hashHistory.replace('/room/' + thiz.state.text);
 				}
 			});
 			//获取焦点
 			$(input).focus();
 			//实时获取input值
 			$(input).bind('input propertychange', function() {
-				$(this).val($(this).val().replace(/\s/g, ''));
 				thiz.setState({
-					text: $(this).val().toLowerCase()
+					text: $(this).val().toLowerCase().replace(/\s/g, '')
 				});
 			});
 		}
@@ -65,9 +63,12 @@ var JoinInput = React.createClass({
 				$('#warn').fadeOut();
 			}, 2000);
 		}else{
+			$(this.refs.textinput).blur();
 			var audio = document.getElementById("myaudio");
 			audio.src='img/sure.mp3';
 			audio.play();
+
+			hashHistory.replace('/room/'+this.state.text);
 		}
 	},
 	render: function() {
@@ -101,12 +102,10 @@ var JoinInput = React.createClass({
 			width = "150px" / >
 
 			< div className = "input-group-btn" >
-			< Link to = {
-				'/room/' + text
-			}
+			< a 
 			className = "btn btn-default"
 			tabIndex = "-1"
-			id = "go" > Join < /Link> 
+			id = "go" > Join < /a> 
 
 			< /div > < /div > < /div > < /div > < /div > < div style = { {
 				textAlign: 'center',
