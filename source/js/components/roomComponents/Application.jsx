@@ -29,7 +29,6 @@ let Application = React.createClass({
       interTime: '',
       userName: null,
       webSocket: ws,
-      hastouch: false,
       scaleX: null, //给canvas  X轴图片或笔迹伸缩量
       scaleY: null, //给canvas  Y轴图片或笔迹伸缩量
       src: null, //给imgae的
@@ -100,12 +99,6 @@ let Application = React.createClass({
       var roomid = this.props._roomid;
       this.connectWebSocket(ws, un, pd, roomid);
 
-
-      var hastouch = "ontouchstart" in window;
-      this.setState({
-        userName: un,
-        hastouch: hastouch
-      });
       window.addEventListener('resize', this.handleResize);
       ws.onmessage = function(msg) {
         thiz.handleMessage(msg);
@@ -241,34 +234,34 @@ let Application = React.createClass({
         var audio = document.getElementById("myaudio");
         audio.pause();
         audio.src = value.url;
-        if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
-          $('body').on('touchstart touchmove touchend click', function() {
-            audio.play();
-            $('body').unbind();
-          });
-          this.setState({
-            hastouch: false
-          });
-        } else {
-          audio.play();
-        }
+        // if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
+        //   $('body').on('touchstart touchmove touchend click', function() {
+        audio.play();
+        //     $('body').unbind();
+        //   });
+        //   this.setState({
+        //     hastouch: false
+        //   });
+        // } else {
+        //   audio.play();
+        // }
         break;
 
       case "voice":
         var audio = document.getElementById("myaudio");
         audio.pause();
         audio.src = "data:audio/mpeg;base64," + value.voice;
-        if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
-          $('body').on('touchstart touchmove touchend click', function() { //一次事件触发
+        // if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
+        //   $('body').on('touchstart touchmove touchend click', function() { //一次事件触发
             audio.play();
-            $('body').unbind();
-          });
-          this.setState({
-            hastouch: false
-          });
-        } else {
-          audio.play();
-        }
+        //    $('body').unbind();
+        //   });
+        //   this.setState({
+        //     hastouch: false
+        //   });
+        // } else {
+        //   audio.play();
+        // }
         break;
 
       case "urlvideo":
@@ -342,7 +335,8 @@ let Application = React.createClass({
       _top = {
         this.state.top
       }
-      />   < Canvas _img_width = {
+      />  
+       <Canvas _img_width = {
       this.state.img_width
     }
     _img_height = {

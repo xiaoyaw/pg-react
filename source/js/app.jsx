@@ -28,6 +28,7 @@ if (is_weixin()) {
 ReactDOM.render(
  <Router history={hashHistory}>
   	<Route path="/" component={PAppJoin}/>
+  	<Route path="/join" component={PAppJoin}/>
    	<Route path="/room/:id" component={PAppRoom}/>
 </Router>,document.getElementById('app'));	
 

@@ -64,6 +64,10 @@ var JoinInput = React.createClass({
 			setTimeout(function() {
 				$('#warn').fadeOut();
 			}, 2000);
+		}else{
+			var audio = document.getElementById("myaudio");
+			audio.src='img/sure.mp3';
+			audio.play();
 		}
 	},
 	render: function() {

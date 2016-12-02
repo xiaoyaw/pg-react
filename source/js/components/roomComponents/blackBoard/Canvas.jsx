@@ -70,21 +70,30 @@ let Canvas = React.createClass({
                         canvas.strokeStyle = this.getcolor(data.properties.color);
                         canvas.lineWidth = data.properties.weight / 2.5;
                         canvas.lineCap = 'round';
-                        canvas.lineJoin = 'round';
                         if (paths[0].path.length != 0) {
                             for (var i = 0; i < paths.length; i++) {
                                 var path = paths[i].path;
                                 var x1 = path[0].x * sX * oX;
                                 var y1 = path[0].y * sY * oY;
-                                canvas.moveTo(x1, y1);
-                                for (var j = 1; j < path.length; j++) {
+                                //path第一个点处理
+                                if (canvas.lineWidth % 2 === 0) {
+                                    canvas.moveTo(x1, y1);
+                                } else {
+                                    canvas.moveTo(x1 + 0.5, y1 + 0.5);
+                                }
+                                var ref = path.slice(1);
+                                for (var j = 0; j < ref.length; j++) {
                                     var lx = path[j].x * sX * oX;
                                     var ly = path[j].y * sY * oY;
-                                    canvas.lineTo(lx, ly);
-                                    canvas.stroke();
+                                    if (canvas.lineWidth % 2 === 0) {
+                                        canvas.lineTo(lx, ly);
+                                    } else {
+                                        canvas.lineTo(lx + 0.5, ly + 0.5);
+                                    }
                                 }
                             }
                         }
+                        canvas.stroke();
                         canvas.closePath();
                         break;
                     case "erase":
@@ -108,11 +117,11 @@ let Canvas = React.createClass({
                                 for (var j = 1; j < path.length; j++) {
                                     var lx = path[j].x * sX * oX;
                                     var ly = path[j].y * sY * oY;
-                                    canvas.lineTo(lx, ly);
-                                    canvas.stroke();
+                                    canvas.lineTo(lx, ly);       
                                 }
                             }
                         }
+                        canvas.stroke();
                         canvas.closePath();
                         canvas.globalCompositeOperation = 'source-over';
                         break;
@@ -229,8 +238,7 @@ let Canvas = React.createClass({
             //console.log('速度擦黑板');
             this.handleData('clearAll');
         }
-        return ( < canvas
-            ref = 'myCanvas'
+        return ( < canvas ref = 'myCanvas'
             width = {
                 this.props._width
             }

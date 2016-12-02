@@ -52,6 +52,7 @@ if (is_weixin()) {
 		_reactRouter.Router,
 		{ history: _reactRouter.hashHistory },
 		_react2.default.createElement(_reactRouter.Route, { path: '/', component: _PAppJoin2.default }),
+		_react2.default.createElement(_reactRouter.Route, { path: '/join', component: _PAppJoin2.default }),
 		_react2.default.createElement(_reactRouter.Route, { path: '/room/:id', component: _PAppRoom2.default })
 	), document.getElementById('app'));
 }
@@ -25789,6 +25790,10 @@ var JoinInput = React.createClass({
 			setTimeout(function () {
 				$('#warn').fadeOut();
 			}, 2000);
+		} else {
+			var audio = document.getElementById("myaudio");
+			audio.src = 'img/sure.mp3';
+			audio.play();
 		}
 	},
 	render: function render() {
@@ -26021,6 +26026,10 @@ var PJoinInput = React.createClass({
 			setTimeout(function () {
 				$('#warn').fadeOut();
 			}, 2000);
+		} else {
+			var audio = document.getElementById("myaudio");
+			audio.src = 'img/sure.mp3';
+			audio.play();
 		}
 	},
 	render: function render() {
@@ -26155,7 +26164,6 @@ var Application = _react2.default.createClass({
       interTime: '',
       userName: null,
       webSocket: ws,
-      hastouch: false,
       scaleX: null, //给canvas  X轴图片或笔迹伸缩量
       scaleY: null, //给canvas  Y轴图片或笔迹伸缩量
       src: null, //给imgae的
@@ -26227,11 +26235,6 @@ var Application = _react2.default.createClass({
       var roomid = this.props._roomid;
       this.connectWebSocket(ws, un, pd, roomid);
 
-      var hastouch = "ontouchstart" in window;
-      this.setState({
-        userName: un,
-        hastouch: hastouch
-      });
       window.addEventListener('resize', this.handleResize);
       ws.onmessage = function (msg) {
         thiz.handleMessage(msg);
@@ -26369,37 +26372,34 @@ var Application = _react2.default.createClass({
         var audio = document.getElementById("myaudio");
         audio.pause();
         audio.src = value.url;
-        if (this.state.hastouch) {
-          //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
-          $('body').on('touchstart touchmove touchend click', function () {
-            audio.play();
-            $('body').unbind();
-          });
-          this.setState({
-            hastouch: false
-          });
-        } else {
-          audio.play();
-        }
+        // if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
+        //   $('body').on('touchstart touchmove touchend click', function() {
+        audio.play();
+        //     $('body').unbind();
+        //   });
+        //   this.setState({
+        //     hastouch: false
+        //   });
+        // } else {
+        //   audio.play();
+        // }
         break;
 
       case "voice":
         var audio = document.getElementById("myaudio");
         audio.pause();
         audio.src = "data:audio/mpeg;base64," + value.voice;
-        if (this.state.hastouch) {
-          //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
-          $('body').on('touchstart touchmove touchend click', function () {
-            //一次事件触发
-            audio.play();
-            $('body').unbind();
-          });
-          this.setState({
-            hastouch: false
-          });
-        } else {
-          audio.play();
-        }
+        // if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
+        //   $('body').on('touchstart touchmove touchend click', function() { //一次事件触发
+        audio.play();
+        //    $('body').unbind();
+        //   });
+        //   this.setState({
+        //     hastouch: false
+        //   });
+        // } else {
+        //   audio.play();
+        // }
         break;
 
       case "urlvideo":
@@ -26466,7 +26466,6 @@ var Application = _react2.default.createClass({
         _left: this.state.left,
         _top: this.state.top
       }),
-      '   ',
       _react2.default.createElement(_Canvas2.default, { _img_width: this.state.img_width,
         _img_height: this.state.img_height,
 
@@ -26939,21 +26938,30 @@ var Canvas = _react2.default.createClass({
                         canvas.strokeStyle = this.getcolor(data.properties.color);
                         canvas.lineWidth = data.properties.weight / 2.5;
                         canvas.lineCap = 'round';
-                        canvas.lineJoin = 'round';
                         if (paths[0].path.length != 0) {
                             for (var i = 0; i < paths.length; i++) {
                                 var path = paths[i].path;
                                 var x1 = path[0].x * sX * oX;
                                 var y1 = path[0].y * sY * oY;
-                                canvas.moveTo(x1, y1);
-                                for (var j = 1; j < path.length; j++) {
+                                //path第一个点处理
+                                if (canvas.lineWidth % 2 === 0) {
+                                    canvas.moveTo(x1, y1);
+                                } else {
+                                    canvas.moveTo(x1 + 0.5, y1 + 0.5);
+                                }
+                                var ref = path.slice(1);
+                                for (var j = 0; j < ref.length; j++) {
                                     var lx = path[j].x * sX * oX;
                                     var ly = path[j].y * sY * oY;
-                                    canvas.lineTo(lx, ly);
-                                    canvas.stroke();
+                                    if (canvas.lineWidth % 2 === 0) {
+                                        canvas.lineTo(lx, ly);
+                                    } else {
+                                        canvas.lineTo(lx + 0.5, ly + 0.5);
+                                    }
                                 }
                             }
                         }
+                        canvas.stroke();
                         canvas.closePath();
                         break;
                     case "erase":
@@ -26978,10 +26986,10 @@ var Canvas = _react2.default.createClass({
                                     var lx = path[j].x * sX * oX;
                                     var ly = path[j].y * sY * oY;
                                     canvas.lineTo(lx, ly);
-                                    canvas.stroke();
                                 }
                             }
                         }
+                        canvas.stroke();
                         canvas.closePath();
                         canvas.globalCompositeOperation = 'source-over';
                         break;
@@ -27097,8 +27105,7 @@ var Canvas = _react2.default.createClass({
         }
         return _react2.default.createElement(
             'canvas',
-            {
-                ref: 'myCanvas',
+            { ref: 'myCanvas',
                 width: this.props._width,
                 height: this.props._height,
                 style: {
