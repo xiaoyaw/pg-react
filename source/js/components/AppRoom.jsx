@@ -32,6 +32,7 @@ var AppRoom = React.createClass({
       text
     }
     / > < NavagationBar / >
+    <LivInfo/>
     < NetTip / >
       < /div>
   );

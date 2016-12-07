@@ -66,7 +66,7 @@ function is_weixin() {
 	}
 }
 
-},{"./components/AppJoin.jsx":229,"./components/AppRoom.jsx":230,"./components/PAppJoin.jsx":231,"./components/PAppRoom.jsx":232,"./components/wxLogin.jsx":249,"react":228,"react-dom":3,"react-router":30}],2:[function(require,module,exports){
+},{"./components/AppJoin.jsx":229,"./components/AppRoom.jsx":230,"./components/PAppJoin.jsx":231,"./components/PAppRoom.jsx":232,"./components/wxLogin.jsx":250,"react":228,"react-dom":3,"react-router":30}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -25548,7 +25548,7 @@ var AppJoin = React.createClass({
 			});
 		} else {
 			//分享join界面url，先授权获取到username再跳/JOIN
-			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fPageShare%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 		}
 	},
 	render: function render() {
@@ -25623,6 +25623,7 @@ var AppRoom = _react2.default.createClass({
       }),
       ' ',
       _react2.default.createElement(_NavagationBar2.default, null),
+      _react2.default.createElement(_LivInfo2.default, null),
       _react2.default.createElement(_NetTip2.default, null)
     );
   }
@@ -25689,9 +25690,11 @@ var _NetTip = require('./roomComponents/NetTip.jsx');
 
 var _NetTip2 = _interopRequireDefault(_NetTip);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _LivInfo = require('./roomComponents/alertComponent/LivInfo.jsx');
 
-// import LivInfo from './roomComponents/alertComponent/LivInfo.jsx'; <LivInfo/>
+var _LivInfo2 = _interopRequireDefault(_LivInfo);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var PAppRoom = _react2.default.createClass({
   displayName: 'PAppRoom',
@@ -25721,6 +25724,7 @@ var PAppRoom = _react2.default.createClass({
       }),
       ' ',
       _react2.default.createElement(_PNavagationBar2.default, null),
+      _react2.default.createElement(_LivInfo2.default, null),
       _react2.default.createElement(_NetTip2.default, null)
     );
   }
@@ -25729,7 +25733,7 @@ var PAppRoom = _react2.default.createClass({
 
 module.exports = PAppRoom;
 
-},{"./roomComponents/Application.jsx":236,"./roomComponents/NetTip.jsx":238,"./roomComponents/PNavagationBar.jsx":239,"./roomComponents/Slider.jsx":240,"react":228,"react-dom":3}],233:[function(require,module,exports){
+},{"./roomComponents/Application.jsx":236,"./roomComponents/NetTip.jsx":238,"./roomComponents/PNavagationBar.jsx":239,"./roomComponents/Slider.jsx":240,"./roomComponents/alertComponent/LivInfo.jsx":241,"react":228,"react-dom":3}],233:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -26512,10 +26516,11 @@ var _Share = require('./navBar/Share.jsx');
 
 var _Share2 = _interopRequireDefault(_Share);
 
+var _PlayLiv = require('./navBar/PlayLiv.jsx');
+
+var _PlayLiv2 = _interopRequireDefault(_PlayLiv);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// import PlayLiv from './navBar/PlayLiv.jsx';  < li > < PlayLiv / > < /li>
-
 
 var React = require('react');
 
@@ -26574,7 +26579,15 @@ var NavagationBar = React.createClass({
 					React.createElement(_MyVideo2.default, null),
 					' '
 				),
-				'   ',
+				'  ',
+				React.createElement(
+					'li',
+					null,
+					' ',
+					React.createElement(_PlayLiv2.default, null),
+					' '
+				),
+				' ',
 				React.createElement(
 					'li',
 					null,
@@ -26592,7 +26605,7 @@ var NavagationBar = React.createClass({
 
 module.exports = NavagationBar;
 
-},{"./navBar/Home.jsx":245,"./navBar/MyAudio.jsx":246,"./navBar/MyVideo.jsx":247,"./navBar/Share.jsx":248,"react":228}],238:[function(require,module,exports){
+},{"./navBar/Home.jsx":245,"./navBar/MyAudio.jsx":246,"./navBar/MyVideo.jsx":247,"./navBar/PlayLiv.jsx":248,"./navBar/Share.jsx":249,"react":228}],238:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -26647,9 +26660,11 @@ var _Share = require('./navBar/Share.jsx');
 
 var _Share2 = _interopRequireDefault(_Share);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _PlayLiv = require('./navBar/PlayLiv.jsx');
 
-// import PlayLiv from './navBar/PlayLiv.jsx';
+var _PlayLiv2 = _interopRequireDefault(_PlayLiv);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var React = require('react');
 
@@ -26704,7 +26719,15 @@ var PNavagationBar = React.createClass({
 					React.createElement(_MyVideo2.default, null),
 					' '
 				),
-				'  ',
+				' ',
+				React.createElement(
+					'li',
+					null,
+					' ',
+					React.createElement(_PlayLiv2.default, null),
+					' '
+				),
+				' ',
 				React.createElement(
 					'li',
 					null,
@@ -26721,7 +26744,7 @@ var PNavagationBar = React.createClass({
 
 module.exports = PNavagationBar;
 
-},{"./navBar/Edit.jsx":244,"./navBar/Home.jsx":245,"./navBar/MyAudio.jsx":246,"./navBar/MyVideo.jsx":247,"./navBar/Share.jsx":248,"react":228}],240:[function(require,module,exports){
+},{"./navBar/Edit.jsx":244,"./navBar/Home.jsx":245,"./navBar/MyAudio.jsx":246,"./navBar/MyVideo.jsx":247,"./navBar/PlayLiv.jsx":248,"./navBar/Share.jsx":249,"react":228}],240:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -27516,6 +27539,37 @@ module.exports = MyVideo;
 
 var React = require('react');
 
+var PlayLiv = React.createClass({
+	displayName: 'PlayLiv',
+
+	handleClick: function handleClick() {
+		$('#livModal').modal('show');
+	},
+	componentDidMount: function componentDidMount() {
+		if (this.isMounted) {}
+	},
+	render: function render() {
+		return React.createElement(
+			'a',
+			{ id: 'liv', onClick: this.handleClick },
+			' ',
+			React.createElement(
+				'span',
+				{ className: 'glyphicon glyphicon-film' },
+				' '
+			)
+		);
+	}
+
+});
+
+module.exports = PlayLiv;
+
+},{"react":228}],249:[function(require,module,exports){
+'use strict';
+
+var React = require('react');
+
 var Share = React.createClass({
 	displayName: 'Share',
 
@@ -27724,7 +27778,7 @@ var Share = React.createClass({
 
 module.exports = Share;
 
-},{"react":228}],249:[function(require,module,exports){
+},{"react":228}],250:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -27782,7 +27836,7 @@ var wxLogin = React.createClass({
 				});
 			} else {
 				//修改授权地址
-				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fPageShare%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 			}
 		}
 	},
