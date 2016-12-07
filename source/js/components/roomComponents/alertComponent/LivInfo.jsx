@@ -5,18 +5,21 @@ var LivInfo = React.createClass({
 		return {
 			sessionID: '',
 			target: '',
-			course: ['abc', 'def', 'kate']
+			course: ['请先查询指定房间内的liv课程']
 		};
 	},
 	handleClick: function(val) {
 		if (val !== '') {
+			var that=this;
 			$.ajax({
 				async: true,
-				url: 'http://203.195.173.135:9000/play/list?sessionID='+val,
+				url: 'http://203.195.173.135:9000/play/list?sessionID=' + val,
 				type: 'GET',
 				timeout: 5000,
 				success: function(res) {
-					console.log(res);
+					that.setState({
+						course: res
+					});
 				}
 			});
 		}
@@ -24,9 +27,58 @@ var LivInfo = React.createClass({
 	componentDidMount: function() {
 		var that = this;
 		if (this.isMounted) {
+			$(this.refs.linput).val(this.props._roomid);
+			//查询并显示list liv
 			$('#liv_list').on('click', function() {
 				that.handleClick($(that.refs.linput).val());
-			})
+			});
+			//播放
+			$('#liv_play').on('click', function() {
+				//console.log('file :  '+$('#liv_select').val()+'   sess  '+$(that.refs.linput).val()+'  tar  '+that.props._roomid);
+				//检查状态是否可以播放
+				$.ajax({
+					async: true,
+					url: 'http://203.195.173.135:9000/play/status?&sessionID=' + that.props._roomid,
+					type: 'GET',
+					timeout: 5000,
+					success: function(res) {
+						if (res.status == 'OK') {
+							$.ajax({
+								async: true,
+								url: 'http://203.195.173.135:9000/play/start?file=' + $('#liv_select').val() + '&sessionID=' + $(that.refs.linput).val() + '&loop=true&target=' + that.props._roomid,
+								type: 'GET',
+								timeout: 5000,
+								success: function(res) {
+									$('#livModal').modal('hide');
+								}
+							});
+						} else {
+							//停止再播
+							$.ajax({
+								async: true,
+								url: 'http://203.195.173.135:9000/play/stop?sessionID=' + that.props._roomid,
+								type: 'GET',
+								timeout: 5000,
+								success: function(res) {
+									$.ajax({
+										async: true,
+										url: 'http://203.195.173.135:9000/play/start?file=' + $('#liv_select').val() + '&sessionID=' + $(that.refs.linput).val() + '&loop=true&target=' + that.props._roomid,
+										type: 'GET',
+										timeout: 5000,
+										success: function(res) {
+											$('#livModal').modal('hide');
+										}
+									});
+								}
+							});
+						}
+					}
+				});
+			});
+			//停止
+			$('#liv_cancel').on('click', function() {
+				$('#livModal').modal('hide');
+			});
 		}
 	},
 	render: function() {
@@ -48,7 +100,7 @@ var LivInfo = React.createClass({
 				< button id = 'liv_list'
 				className = "btn btn-default"
 				type = "button" >
-				查询 < /button> < /span > < /div> < select > {
+				查询 < /button> < /span > < /div> < select className='livselect' id='liv_select'> {
 				names.map(function(name) {
 					return <option key = {
 						name
@@ -62,7 +114,7 @@ var LivInfo = React.createClass({
 
 			< button type = "button"
 		id = 'liv_cancel'
-		className = "btn btn-default" > 取消 < /button>
+		className = "btn btn-default" > 停止 < /button>
 
 		< button type = "button"
 		id = 'liv_play'

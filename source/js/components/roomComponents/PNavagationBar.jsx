@@ -24,7 +24,7 @@ var PNavagationBar = React.createClass({
 
 			< ul className = 'nav nav-pills' >
 			< li > < img id = 'logo'
-			src = 'img/pageshare.png' / > < /li>  < li > < Home / > < /li > < li > < MyAudio / > < /li>  < li > < MyVideo / > < /li> <li> <PlayLiv/ > < /li> < li > < Edit / > < /li > < /ul >
+			src = 'img/pageshare.png' / > < /li>  < li > < Home / > < /li > < li > < MyAudio / > < /li>  < li > < MyVideo / > < /li> <li> <PlayLiv _roomid={this.props._roomid}/ > < /li> < li > < Edit / > < /li > < /ul >
 			< /div>
 		);
 	}

@@ -25622,8 +25622,10 @@ var AppRoom = _react2.default.createClass({
       _react2.default.createElement(_Application2.default, { _roomid: text
       }),
       ' ',
-      _react2.default.createElement(_NavagationBar2.default, null),
-      _react2.default.createElement(_LivInfo2.default, null),
+      _react2.default.createElement(_NavagationBar2.default, { _roomid: text }),
+      _react2.default.createElement(_LivInfo2.default, { _roomid: text
+      }),
+      ' ',
       _react2.default.createElement(_NetTip2.default, null)
     );
   }
@@ -25723,8 +25725,12 @@ var PAppRoom = _react2.default.createClass({
       _react2.default.createElement(_Application2.default, { _roomid: text
       }),
       ' ',
-      _react2.default.createElement(_PNavagationBar2.default, null),
-      _react2.default.createElement(_LivInfo2.default, null),
+      _react2.default.createElement(_PNavagationBar2.default, { _roomid: text
+      }),
+      ' ',
+      _react2.default.createElement(_LivInfo2.default, { _roomid: text
+      }),
+      ' ',
       _react2.default.createElement(_NetTip2.default, null)
     );
   }
@@ -26724,7 +26730,7 @@ var PNavagationBar = React.createClass({
 					'li',
 					null,
 					' ',
-					React.createElement(_PlayLiv2.default, null),
+					React.createElement(_PlayLiv2.default, { _roomid: this.props._roomid }),
 					' '
 				),
 				' ',
@@ -26862,18 +26868,21 @@ var LivInfo = React.createClass({
 		return {
 			sessionID: '',
 			target: '',
-			course: ['abc', 'def', 'kate']
+			course: ['请先查询指定房间内的liv课程']
 		};
 	},
 	handleClick: function handleClick(val) {
 		if (val !== '') {
+			var that = this;
 			$.ajax({
 				async: true,
 				url: 'http://203.195.173.135:9000/play/list?sessionID=' + val,
 				type: 'GET',
 				timeout: 5000,
 				success: function success(res) {
-					console.log(res);
+					that.setState({
+						course: res
+					});
 				}
 			});
 		}
@@ -26881,8 +26890,57 @@ var LivInfo = React.createClass({
 	componentDidMount: function componentDidMount() {
 		var that = this;
 		if (this.isMounted) {
+			$(this.refs.linput).val(this.props._roomid);
+			//查询并显示list liv
 			$('#liv_list').on('click', function () {
 				that.handleClick($(that.refs.linput).val());
+			});
+			//播放
+			$('#liv_play').on('click', function () {
+				//console.log('file :  '+$('#liv_select').val()+'   sess  '+$(that.refs.linput).val()+'  tar  '+that.props._roomid);
+				//检查状态是否可以播放
+				$.ajax({
+					async: true,
+					url: 'http://203.195.173.135:9000/play/status?&sessionID=' + that.props._roomid,
+					type: 'GET',
+					timeout: 5000,
+					success: function success(res) {
+						if (res.status == 'OK') {
+							$.ajax({
+								async: true,
+								url: 'http://203.195.173.135:9000/play/start?file=' + $('#liv_select').val() + '&sessionID=' + $(that.refs.linput).val() + '&loop=true&target=' + that.props._roomid,
+								type: 'GET',
+								timeout: 5000,
+								success: function success(res) {
+									$('#livModal').modal('hide');
+								}
+							});
+						} else {
+							//停止再播
+							$.ajax({
+								async: true,
+								url: 'http://203.195.173.135:9000/play/stop?sessionID=' + that.props._roomid,
+								type: 'GET',
+								timeout: 5000,
+								success: function success(res) {
+									$.ajax({
+										async: true,
+										url: 'http://203.195.173.135:9000/play/start?file=' + $('#liv_select').val() + '&sessionID=' + $(that.refs.linput).val() + '&loop=true&target=' + that.props._roomid,
+										type: 'GET',
+										timeout: 5000,
+										success: function success(res) {
+											$('#livModal').modal('hide');
+										}
+									});
+								}
+							});
+						}
+					}
+				});
+			});
+			//停止
+			$('#liv_cancel').on('click', function () {
+				$('#livModal').modal('hide');
 			});
 		}
 	},
@@ -26926,7 +26984,7 @@ var LivInfo = React.createClass({
 						' ',
 						React.createElement(
 							'select',
-							null,
+							{ className: 'livselect', id: 'liv_select' },
 							' ',
 							names.map(function (name) {
 								return React.createElement(
@@ -26949,7 +27007,7 @@ var LivInfo = React.createClass({
 							{ type: 'button',
 								id: 'liv_cancel',
 								className: 'btn btn-default' },
-							' 取消 '
+							' 停止 '
 						),
 						React.createElement(
 							'button',
