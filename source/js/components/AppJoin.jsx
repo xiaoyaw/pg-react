@@ -1,3 +1,5 @@
+//修改部分：137
+
 import JoinInput from './joinComponents/JoinInput.jsx';
 import JoinNav from './joinComponents/JoinNav.jsx';
 import {
@@ -132,7 +134,7 @@ var AppJoin = React.createClass({
 
 		} else {
 			//分享join界面url，先授权获取到username再跳/JOIN
-			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fPageShare%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 		}
 	},
 	render: function() {

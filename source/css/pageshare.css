@@ -60,6 +60,13 @@ body{
     margin: 3px;
     cursor:default;
 }
+#liv{
+      border-style: outset;
+    border-width: 1px;
+    border-color: #ff30f0;
+    margin: 3px;
+    cursor:default;  
+}
 
 #share {
     border-style: outset;
@@ -69,7 +76,7 @@ body{
     cursor:default;
 }
 /*on click btn css*/
-#voice:active,#film:active,#share:active,#edit:active,#exit:active{
+#voice:active,#film:active,#share:active,#edit:active,#exit:active,#liv:active{
     border-style: inset;
     border-width: 1px;
     background-color: #BDBDBD;
@@ -86,4 +93,11 @@ body{
     z-index: 20;
     top: 40%; 
     display: none;
+}
+.infoBox{
+    border: 2px solid #ffaacc;
+    border-radius: 5%;
+    position: relative;
+    z-index: 110;
+    margin-top: 30%;
 }

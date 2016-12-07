@@ -4,7 +4,7 @@ import Application from './roomComponents/Application.jsx';
 import Slider from './roomComponents/Slider.jsx';
 import PNavagationBar from './roomComponents/PNavagationBar.jsx';
 import NetTip from './roomComponents/NetTip.jsx';
-
+// import LivInfo from './roomComponents/alertComponent/LivInfo.jsx'; <LivInfo/>
 
 var PAppRoom = React.createClass({
 

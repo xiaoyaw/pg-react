@@ -60,9 +60,10 @@ var PJoinInput = React.createClass({
 			//获取焦点
 			$(input).focus();
 			//实时获取text
-			$(input).on('input propertychange', function() {
+			$(input).on('keyup', function() {
+				$(input).val($(input).val().replace(/\s/g, ''));
 				thiz.setState({
-					text: $(this).val().toLowerCase().replace(/\s/g, '')
+					text: $(this).val().toLowerCase()
 				});
 			});
 			window.addEventListener('resize', thiz.handleResize);

@@ -66,7 +66,7 @@ function is_weixin() {
 	}
 }
 
-},{"./components/AppJoin.jsx":229,"./components/AppRoom.jsx":230,"./components/PAppJoin.jsx":231,"./components/PAppRoom.jsx":232,"./components/wxLogin.jsx":248,"react":228,"react-dom":3,"react-router":30}],2:[function(require,module,exports){
+},{"./components/AppJoin.jsx":229,"./components/AppRoom.jsx":230,"./components/PAppJoin.jsx":231,"./components/PAppRoom.jsx":232,"./components/wxLogin.jsx":249,"react":228,"react-dom":3,"react-router":30}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -25425,7 +25425,7 @@ var _reactRouter = require('react-router');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var React = require('react');
+var React = require('react'); //修改部分：137
 
 var AppJoin = React.createClass({
 	displayName: 'AppJoin',
@@ -25548,7 +25548,7 @@ var AppJoin = React.createClass({
 			});
 		} else {
 			//分享join界面url，先授权获取到username再跳/JOIN
-			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fPageShare%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 		}
 	},
 	render: function render() {
@@ -25591,6 +25591,10 @@ var _NetTip = require('./roomComponents/NetTip.jsx');
 
 var _NetTip2 = _interopRequireDefault(_NetTip);
 
+var _LivInfo = require('./roomComponents/alertComponent/LivInfo.jsx');
+
+var _LivInfo2 = _interopRequireDefault(_LivInfo);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var AppRoom = _react2.default.createClass({
@@ -25627,7 +25631,7 @@ var AppRoom = _react2.default.createClass({
 
 module.exports = AppRoom;
 
-},{"./roomComponents/Application.jsx":236,"./roomComponents/NavagationBar.jsx":237,"./roomComponents/NetTip.jsx":238,"./roomComponents/Slider.jsx":240,"react":228,"react-dom":3}],231:[function(require,module,exports){
+},{"./roomComponents/Application.jsx":236,"./roomComponents/NavagationBar.jsx":237,"./roomComponents/NetTip.jsx":238,"./roomComponents/Slider.jsx":240,"./roomComponents/alertComponent/LivInfo.jsx":241,"react":228,"react-dom":3}],231:[function(require,module,exports){
 'use strict';
 
 var _PJoinInput = require('./joinComponents/PJoinInput.jsx');
@@ -25686,6 +25690,8 @@ var _NetTip = require('./roomComponents/NetTip.jsx');
 var _NetTip2 = _interopRequireDefault(_NetTip);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import LivInfo from './roomComponents/alertComponent/LivInfo.jsx'; <LivInfo/>
 
 var PAppRoom = _react2.default.createClass({
   displayName: 'PAppRoom',
@@ -25762,9 +25768,10 @@ var JoinInput = React.createClass({
 			//获取焦点
 			$(input).focus();
 			//实时获取input值
-			$(input).bind('input propertychange', function () {
+			$(input).on('keyup', function () {
+				$(input).val($(input).val().replace(/\s/g, ''));
 				thiz.setState({
-					text: $(this).val().toLowerCase().replace(/\s/g, '')
+					text: $(this).val().toLowerCase()
 				});
 			});
 		}
@@ -26006,9 +26013,10 @@ var PJoinInput = React.createClass({
 			//获取焦点
 			$(input).focus();
 			//实时获取text
-			$(input).on('input propertychange', function () {
+			$(input).on('keyup', function () {
+				$(input).val($(input).val().replace(/\s/g, ''));
 				thiz.setState({
-					text: $(this).val().toLowerCase().replace(/\s/g, '')
+					text: $(this).val().toLowerCase()
 				});
 			});
 			window.addEventListener('resize', thiz.handleResize);
@@ -26485,7 +26493,7 @@ var Application = _react2.default.createClass({
 
 exports.default = Application;
 
-},{"./blackBoard/BgImage.jsx":241,"./blackBoard/Canvas.jsx":242,"react":228,"react-router":30}],237:[function(require,module,exports){
+},{"./blackBoard/BgImage.jsx":242,"./blackBoard/Canvas.jsx":243,"react":228,"react-router":30}],237:[function(require,module,exports){
 'use strict';
 
 var _MyAudio = require('./navBar/MyAudio.jsx');
@@ -26505,6 +26513,9 @@ var _Share = require('./navBar/Share.jsx');
 var _Share2 = _interopRequireDefault(_Share);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import PlayLiv from './navBar/PlayLiv.jsx';  < li > < PlayLiv / > < /li>
+
 
 var React = require('react');
 
@@ -26563,7 +26574,7 @@ var NavagationBar = React.createClass({
 					React.createElement(_MyVideo2.default, null),
 					' '
 				),
-				'  ',
+				'   ',
 				React.createElement(
 					'li',
 					null,
@@ -26581,7 +26592,7 @@ var NavagationBar = React.createClass({
 
 module.exports = NavagationBar;
 
-},{"./navBar/Home.jsx":244,"./navBar/MyAudio.jsx":245,"./navBar/MyVideo.jsx":246,"./navBar/Share.jsx":247,"react":228}],238:[function(require,module,exports){
+},{"./navBar/Home.jsx":245,"./navBar/MyAudio.jsx":246,"./navBar/MyVideo.jsx":247,"./navBar/Share.jsx":248,"react":228}],238:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -26638,6 +26649,8 @@ var _Share2 = _interopRequireDefault(_Share);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import PlayLiv from './navBar/PlayLiv.jsx';
+
 var React = require('react');
 
 var PNavagationBar = React.createClass({
@@ -26691,7 +26704,7 @@ var PNavagationBar = React.createClass({
 					React.createElement(_MyVideo2.default, null),
 					' '
 				),
-				'   ',
+				'  ',
 				React.createElement(
 					'li',
 					null,
@@ -26708,7 +26721,7 @@ var PNavagationBar = React.createClass({
 
 module.exports = PNavagationBar;
 
-},{"./navBar/Edit.jsx":243,"./navBar/Home.jsx":244,"./navBar/MyAudio.jsx":245,"./navBar/MyVideo.jsx":246,"./navBar/Share.jsx":247,"react":228}],240:[function(require,module,exports){
+},{"./navBar/Edit.jsx":244,"./navBar/Home.jsx":245,"./navBar/MyAudio.jsx":246,"./navBar/MyVideo.jsx":247,"./navBar/Share.jsx":248,"react":228}],240:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -26817,6 +26830,127 @@ module.exports = Slider;
 },{"react":228}],241:[function(require,module,exports){
 'use strict';
 
+var React = require('react');
+
+var LivInfo = React.createClass({
+	displayName: 'LivInfo',
+
+	getInitialState: function getInitialState() {
+		return {
+			sessionID: '',
+			target: '',
+			course: ['abc', 'def', 'kate']
+		};
+	},
+	handleClick: function handleClick(val) {
+		if (val !== '') {
+			$.ajax({
+				async: true,
+				url: 'http://203.195.173.135:9000/play/list?sessionID=' + val,
+				type: 'GET',
+				timeout: 5000,
+				success: function success(res) {
+					console.log(res);
+				}
+			});
+		}
+	},
+	componentDidMount: function componentDidMount() {
+		var that = this;
+		if (this.isMounted) {
+			$('#liv_list').on('click', function () {
+				that.handleClick($(that.refs.linput).val());
+			});
+		}
+	},
+	render: function render() {
+		var names = this.state.course;
+		return React.createElement(
+			'div',
+			{ className: 'modal fade',
+				id: 'livModal',
+				tabIndex: '-1',
+				role: 'dialog' },
+			React.createElement(
+				'div',
+				{ className: 'modal-dialog' },
+				React.createElement(
+					'div',
+					{ className: 'modal-content' },
+					React.createElement(
+						'div',
+						{ className: 'modal-body' },
+						React.createElement(
+							'div',
+							{ className: 'input-group' },
+							React.createElement('input', { type: 'text',
+								ref: 'linput',
+								className: 'form-control' }),
+							React.createElement(
+								'span',
+								{ className: 'input-group-btn' },
+								React.createElement(
+									'button',
+									{ id: 'liv_list',
+										className: 'btn btn-default',
+										type: 'button' },
+									'查询 '
+								),
+								' '
+							),
+							' '
+						),
+						' ',
+						React.createElement(
+							'select',
+							null,
+							' ',
+							names.map(function (name) {
+								return React.createElement(
+									'option',
+									{ key: name },
+									' ',
+									name,
+									' '
+								);
+							}),
+							' '
+						),
+						' '
+					),
+					React.createElement(
+						'div',
+						{ className: 'modal-footer' },
+						React.createElement(
+							'button',
+							{ type: 'button',
+								id: 'liv_cancel',
+								className: 'btn btn-default' },
+							' 取消 '
+						),
+						React.createElement(
+							'button',
+							{ type: 'button',
+								id: 'liv_play',
+								className: 'btn btn-primary' },
+							' 播放 '
+						)
+					),
+					' '
+				),
+				' '
+			),
+			' '
+		);
+	}
+
+});
+
+module.exports = LivInfo;
+
+},{"react":228}],242:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -26858,7 +26992,7 @@ var BgImage = _react2.default.createClass({
      */
 exports.default = BgImage;
 
-},{"react":228}],242:[function(require,module,exports){
+},{"react":228}],243:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27126,7 +27260,7 @@ var Canvas = _react2.default.createClass({
      */
 exports.default = Canvas;
 
-},{"react":228}],243:[function(require,module,exports){
+},{"react":228}],244:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -27201,7 +27335,7 @@ var Edit = React.createClass({
 
 module.exports = Edit;
 
-},{"react":228}],244:[function(require,module,exports){
+},{"react":228}],245:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -27238,7 +27372,7 @@ var Home = React.createClass({
 
 module.exports = Home;
 
-},{"react":228,"react-router":30}],245:[function(require,module,exports){
+},{"react":228,"react-router":30}],246:[function(require,module,exports){
 'use strict';
 
 /*
@@ -27307,7 +27441,7 @@ var MyAudio = React.createClass({
 
 module.exports = MyAudio;
 
-},{"react":228}],246:[function(require,module,exports){
+},{"react":228}],247:[function(require,module,exports){
 'use strict';
 
 /*
@@ -27377,7 +27511,7 @@ var MyVideo = React.createClass({
 
 module.exports = MyVideo;
 
-},{"react":228}],247:[function(require,module,exports){
+},{"react":228}],248:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -27590,13 +27724,14 @@ var Share = React.createClass({
 
 module.exports = Share;
 
-},{"react":228}],248:[function(require,module,exports){
+},{"react":228}],249:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
 
 var React = require('react'); /*
                               微信授权，获取用户信息，并存入sessionStorage
+                              修改部分：58
                               */
 
 var wxLogin = React.createClass({
@@ -27647,7 +27782,7 @@ var wxLogin = React.createClass({
 				});
 			} else {
 				//修改授权地址
-				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fPageShare%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 			}
 		}
 	},

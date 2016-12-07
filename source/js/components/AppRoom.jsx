@@ -4,6 +4,7 @@ import Application from './roomComponents/Application.jsx';
 import Slider from './roomComponents/Slider.jsx';
 import NavagationBar from './roomComponents/NavagationBar.jsx';
 import NetTip from './roomComponents/NetTip.jsx';
+import LivInfo from './roomComponents/alertComponent/LivInfo.jsx';
 
 
 var AppRoom = React.createClass({
