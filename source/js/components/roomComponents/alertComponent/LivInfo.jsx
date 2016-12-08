@@ -9,17 +9,24 @@ var LivInfo = React.createClass({
 		};
 	},
 	handleClick: function(val) {
+		//查询liv文件加载
 		if (val !== '') {
-			var that=this;
+			var that = this;
 			$.ajax({
 				async: true,
 				url: 'http://203.195.173.135:9000/play/list?sessionID=' + val,
 				type: 'GET',
 				timeout: 5000,
 				success: function(res) {
-					that.setState({
-						course: res
-					});
+					if (res.length == 0) {
+						that.setState({
+							course: ['此房间内没有可用文件']
+						});
+					} else {
+						that.setState({
+							course: res
+						});
+					}
 				}
 			});
 		}
@@ -35,7 +42,7 @@ var LivInfo = React.createClass({
 			//播放
 			$('#liv_play').on('click', function() {
 				//console.log('file :  '+$('#liv_select').val()+'   sess  '+$(that.refs.linput).val()+'  tar  '+that.props._roomid);
-				//检查状态是否可以播放
+					//检查状态是否可以播放
 				$.ajax({
 					async: true,
 					url: 'http://203.195.173.135:9000/play/status?&sessionID=' + that.props._roomid,
@@ -73,11 +80,24 @@ var LivInfo = React.createClass({
 							});
 						}
 					}
-				});
+				});				
 			});
-			//停止
+			//取消
 			$('#liv_cancel').on('click', function() {
 				$('#livModal').modal('hide');
+			});
+
+			//停止
+			$('#liv_stop').on('click', function() {
+				$.ajax({
+					async: true,
+					url: 'http://203.195.173.135:9000/play/stop?sessionID=' + that.props._roomid,
+					type: 'GET',
+					timeout: 5000,
+					success: function(res) {
+						$('#livModal').modal('hide');
+					}
+				})
 			});
 		}
 	},
@@ -114,7 +134,11 @@ var LivInfo = React.createClass({
 
 			< button type = "button"
 		id = 'liv_cancel'
-		className = "btn btn-default" > 停止 < /button>
+		className = "btn btn-default" > 取消 < /button>
+
+		< button type = "button"
+		id = 'liv_stop'
+		className = "btn btn-warning" > 停止 < /button> 
 
 		< button type = "button"
 		id = 'liv_play'

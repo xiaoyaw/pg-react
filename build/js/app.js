@@ -26872,6 +26872,7 @@ var LivInfo = React.createClass({
 		};
 	},
 	handleClick: function handleClick(val) {
+		//查询liv文件加载
 		if (val !== '') {
 			var that = this;
 			$.ajax({
@@ -26880,9 +26881,15 @@ var LivInfo = React.createClass({
 				type: 'GET',
 				timeout: 5000,
 				success: function success(res) {
-					that.setState({
-						course: res
-					});
+					if (res.length == 0) {
+						that.setState({
+							course: ['此房间内没有可用文件']
+						});
+					} else {
+						that.setState({
+							course: res
+						});
+					}
 				}
 			});
 		}
@@ -26938,9 +26945,22 @@ var LivInfo = React.createClass({
 					}
 				});
 			});
-			//停止
+			//取消
 			$('#liv_cancel').on('click', function () {
 				$('#livModal').modal('hide');
+			});
+
+			//停止
+			$('#liv_stop').on('click', function () {
+				$.ajax({
+					async: true,
+					url: 'http://203.195.173.135:9000/play/stop?sessionID=' + that.props._roomid,
+					type: 'GET',
+					timeout: 5000,
+					success: function success(res) {
+						$('#livModal').modal('hide');
+					}
+				});
 			});
 		}
 	},
@@ -27007,6 +27027,13 @@ var LivInfo = React.createClass({
 							{ type: 'button',
 								id: 'liv_cancel',
 								className: 'btn btn-default' },
+							' 取消 '
+						),
+						React.createElement(
+							'button',
+							{ type: 'button',
+								id: 'liv_stop',
+								className: 'btn btn-warning' },
 							' 停止 '
 						),
 						React.createElement(
