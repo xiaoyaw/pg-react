@@ -32,7 +32,7 @@ var AppJoin = React.createClass({
 					//验证签名，监听分享
 					var title = '飞播云板',
 						desc = '我有东西show你!',
-						imgurl = 'http://pictoshare.net/dev/build/img/pageshare.png';
+						imgurl = 'http://www.pictoshare.net/dev/build/img/pageshare.png';
 					var is_hasData = setInterval(
 						function() {
 							if (signature != undefined && signature != "" && signature != 'undefined') {
@@ -134,7 +134,7 @@ var AppJoin = React.createClass({
 
 		} else {
 			//分享join界面url，先授权获取到username再跳/JOIN
-			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 		}
 	},
 	render: function() {
