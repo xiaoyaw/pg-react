@@ -29,7 +29,7 @@ var wxLogin = React.createClass({
 		};
 	},
 	componentDidMount: function() {
-		if (sessionStorage.nickname) {   //本地有则为返回，跳转回/join，否则第一次加入，需请求数据
+		if (sessionStorage.nickname) { //本地有则为返回，跳转回/join，否则第一次加入，需请求数据
 			hashHistory.replace('/join');
 		} else {
 			if (this.state.isLogin && this.isMounted()) {
@@ -54,9 +54,10 @@ var wxLogin = React.createClass({
 					}.bind(this),
 				});
 			} else {
-				//修改授权地址
+				//修改授权地址wx6573103bb78bec40
 				//document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
-				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+				//e课
+				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 
 			}
 		}

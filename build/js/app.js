@@ -25452,7 +25452,7 @@ var AppJoin = React.createClass({
 					//验证签名，监听分享
 					var title = '飞播云板',
 					    desc = '我有东西show你!',
-					    imgurl = 'http://www.pictoshare.net/dev/build/img/pageshare.png';
+					    imgurl = 'http://pictoshare.net/dev/build/img/pageshare.png';
 					var is_hasData = setInterval(function () {
 						if (signature != undefined && signature != "" && signature != 'undefined') {
 							//微信分享接口
@@ -25548,7 +25548,9 @@ var AppJoin = React.createClass({
 			});
 		} else {
 			//分享join界面url，先授权获取到username再跳/JOIN
-			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+			//	document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+			//e课
+			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 		}
 	},
 	render: function render() {
@@ -26730,7 +26732,7 @@ var PNavagationBar = React.createClass({
 					'li',
 					null,
 					' ',
-					React.createElement(_PlayLiv2.default, { _roomid: this.props._roomid }),
+					React.createElement(_PlayLiv2.default, null),
 					' '
 				),
 				' ',
@@ -26860,7 +26862,6 @@ module.exports = Slider;
 'use strict';
 
 var React = require('react');
-
 var LivInfo = React.createClass({
 	displayName: 'LivInfo',
 
@@ -27001,11 +27002,10 @@ var LivInfo = React.createClass({
 							),
 							' '
 						),
-						' ',
 						React.createElement(
 							'select',
-							{ className: 'livselect', id: 'liv_select' },
-							' ',
+							{ className: 'livselect',
+								id: 'liv_select' },
 							names.map(function (name) {
 								return React.createElement(
 									'option',
@@ -27920,9 +27920,10 @@ var wxLogin = React.createClass({
 					}.bind(this)
 				});
 			} else {
-				//修改授权地址
+				//修改授权地址wx6573103bb78bec40
 				//document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
-				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+				//e课
+				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 			}
 		}
 	},

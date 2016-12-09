@@ -1,5 +1,4 @@
 var React = require('react');
-
 var LivInfo = React.createClass({
 	getInitialState: function() {
 		return {
@@ -42,7 +41,7 @@ var LivInfo = React.createClass({
 			//播放
 			$('#liv_play').on('click', function() {
 				//console.log('file :  '+$('#liv_select').val()+'   sess  '+$(that.refs.linput).val()+'  tar  '+that.props._roomid);
-					//检查状态是否可以播放
+				//检查状态是否可以播放
 				$.ajax({
 					async: true,
 					url: 'http://203.195.173.135:9000/play/status?&sessionID=' + that.props._roomid,
@@ -80,7 +79,7 @@ var LivInfo = React.createClass({
 							});
 						}
 					}
-				});				
+				});
 			});
 			//取消
 			$('#liv_cancel').on('click', function() {
@@ -104,23 +103,27 @@ var LivInfo = React.createClass({
 	render: function() {
 		var names = this.state.course;
 		return ( < div className = "modal fade"
-				id = "livModal"
-				tabIndex = "-1"
-				role = "dialog" >
-				< div className = "modal-dialog" >
+			id = "livModal"
+			tabIndex = "-1"
+			role = "dialog" >
+			< div className = "modal-dialog" >
 
-				< div className = "modal-content" >
+			< div className = "modal-content" >
 
-				< div className = "modal-body" >
-				< div className = "input-group" >
-				< input type = "text"
-				ref = 'linput'
-				className = "form-control" / >
-				< span className = "input-group-btn" >
-				< button id = 'liv_list'
-				className = "btn btn-default"
-				type = "button" >
-				查询 < /button> < /span > < /div> < select className='livselect' id='liv_select'> {
+			< div className = "modal-body" >
+			< div className = "input-group" >
+			< input type = "text"
+			ref = 'linput'
+			className = "form-control" / >
+			< span className = "input-group-btn" >
+			< button id = 'liv_list'
+			className = "btn btn-default"
+			type = "button" >
+			查询 < /button> < /span > < /div> 
+
+			< select className = 'livselect'
+			id = 'liv_select' >
+			{
 				names.map(function(name) {
 					return <option key = {
 						name
@@ -133,20 +136,20 @@ var LivInfo = React.createClass({
 			< div className = "modal-footer" >
 
 			< button type = "button"
-		id = 'liv_cancel'
-		className = "btn btn-default" > 取消 < /button>
+			id = 'liv_cancel'
+			className = "btn btn-default" > 取消 < /button>
 
-		< button type = "button"
-		id = 'liv_stop'
-		className = "btn btn-warning" > 停止 < /button> 
+			< button type = "button"
+			id = 'liv_stop'
+			className = "btn btn-warning" > 停止 < /button> 
 
-		< button type = "button"
-		id = 'liv_play'
-		className = "btn btn-primary" > 播放 < /button> 
+			< button type = "button"
+			id = 'liv_play'
+			className = "btn btn-primary" > 播放 < /button> 
 
-		< /div > < /div > < /div > < /div >
-	);
-}
+			< /div > < /div > < /div > < /div >
+		);
+	}
 
 });
 
