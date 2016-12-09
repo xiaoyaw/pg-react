@@ -4,40 +4,24 @@ var LivInfo = React.createClass({
 		return {
 			sessionID: '',
 			target: '',
-			course: ['请先查询指定房间内的liv课程']
+			course: [],
+			sessionID: []
 		};
 	},
-	handleClick: function(val) {
+	handleClick: function() {
 		//查询liv文件加载
-		if (val !== '') {
-			var that = this;
-			$.ajax({
-				async: true,
-				url: 'http://203.195.173.135:9000/play/list?sessionID=' + val,
-				type: 'GET',
-				timeout: 5000,
-				success: function(res) {
-					if (res.length == 0) {
-						that.setState({
-							course: ['此房间内没有可用文件']
-						});
-					} else {
-						that.setState({
-							course: res
-						});
-					}
-				}
-			});
-		}
+		this.queryAllLiv();
 	},
 	componentDidMount: function() {
 		var that = this;
 		if (this.isMounted) {
-			$(this.refs.linput).val(this.props._roomid);
-			//查询并显示list liv
+			//查询并list所有liv
+			this.queryAllLiv();
+			//再次刷新liv列表			
 			$('#liv_list').on('click', function() {
-				that.handleClick($(that.refs.linput).val());
+				that.handleClick();
 			});
+
 			//播放
 			$('#liv_play').on('click', function() {
 				//console.log('file :  '+$('#liv_select').val()+'   sess  '+$(that.refs.linput).val()+'  tar  '+that.props._roomid);
@@ -51,7 +35,7 @@ var LivInfo = React.createClass({
 						if (res.status == 'OK') {
 							$.ajax({
 								async: true,
-								url: 'http://203.195.173.135:9000/play/start?file=' + $('#liv_select').val() + '&sessionID=' + $(that.refs.linput).val() + '&loop=true&target=' + that.props._roomid,
+								url: 'http://203.195.173.135:9000/play/start?file=' + $(that.refs.linput).val() + '&sessionID=' + that.state.sessionID[that.state.course.indexOf($(that.refs.linput).val())] + '&loop=true&target=' + that.props._roomid,
 								type: 'GET',
 								timeout: 5000,
 								success: function(res) {
@@ -68,7 +52,7 @@ var LivInfo = React.createClass({
 								success: function(res) {
 									$.ajax({
 										async: true,
-										url: 'http://203.195.173.135:9000/play/start?file=' + $('#liv_select').val() + '&sessionID=' + $(that.refs.linput).val() + '&loop=true&target=' + that.props._roomid,
+										url: 'http://203.195.173.135:9000/play/start?file=' + $(that.refs.linput).val() + '&sessionID=' + that.state.sessionID[that.state.course.indexOf($(that.refs.linput).val())] + '&loop=true&target=' + that.props._roomid,
 										type: 'GET',
 										timeout: 5000,
 										success: function(res) {
@@ -100,6 +84,31 @@ var LivInfo = React.createClass({
 			});
 		}
 	},
+	queryAllLiv: function() {
+		var that = this;
+		$.ajax({
+			async: true,
+			url: 'http://203.195.173.135:9000/play/list',
+			type: 'GET',
+			timeout: 5000,
+			success: function(res) {
+				var a = [],
+					b = [];
+				for (var p in res) {
+					if (res[p].length != 0) {
+						for (var i = 0; i < res[p].length; i++) {
+							b.push(p);
+							a.push(res[p][i]);
+						}
+					}
+				}
+				that.setState({
+					course: a,
+					sessionID:b
+				});
+			}
+		})
+	},
 	render: function() {
 		var names = this.state.course;
 		return ( < div className = "modal fade"
@@ -114,16 +123,15 @@ var LivInfo = React.createClass({
 			< div className = "input-group" >
 			< input type = "text"
 			ref = 'linput'
-			className = "form-control" / >
+			className = "form-control"
+			list = "liv_select" / >
 			< span className = "input-group-btn" >
 			< button id = 'liv_list'
 			className = "btn btn-default"
 			type = "button" >
-			查询 < /button> < /span > < /div> 
+			刷新 < /button> < /span > < /div> 
 
-			< select className = 'livselect'
-			id = 'liv_select' >
-			{
+			< datalist id = 'liv_select' > {
 				names.map(function(name) {
 					return <option key = {
 						name
@@ -131,7 +139,7 @@ var LivInfo = React.createClass({
 						name
 					} < /option>
 				})
-			} < /select> < /div >
+			} < /datalist>  < /div >
 
 			< div className = "modal-footer" >
 
