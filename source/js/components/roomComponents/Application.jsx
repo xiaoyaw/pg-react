@@ -28,6 +28,7 @@ let Application = React.createClass({
     }
     return {
       //liv
+      timeout: null,
       isStop: false,
       pageIndex: 0,
       pageNum: 0,
@@ -122,7 +123,7 @@ let Application = React.createClass({
         //页数未到末尾
         if (thiz.state.dataNow < thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]].length) {
           //本页未到最后一笔
-          setTimeout(function() {
+          thiz.state.timeout = setTimeout(function() {
             thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
             thiz.setState({
               dataNow: thiz.state.dataNow + 1
@@ -156,8 +157,9 @@ let Application = React.createClass({
     if (this.isMounted()) {
       //点击退出键
       $('#exit').on('click', function() {
+        clearTimeout(thiz.state.timeout);
         thiz.setState({
-          pageIndex: thiz.state.pageNum + 1
+          isStop: true
         });
       })
 
@@ -174,7 +176,7 @@ let Application = React.createClass({
           if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 0) {
             thiz.state.audio.pause();
             thiz.state.video.pause();
-            window.clearTimeout();
+           clearTimeout(thiz.state.timeout);
             thiz.setState({
               pageIndex: thiz.state.pageIndex - 1
             });
@@ -182,10 +184,10 @@ let Application = React.createClass({
         })
         //向右
       $('#liv_right').on('click', function() {
-          if (thiz.state.pageIndex < pageNum - 1) {
+          if (thiz.state.pageIndex < thiz.state.pageNum - 1) {
             thiz.state.audio.pause();
             thiz.state.video.pause();
-            window.clearTimeout();
+             clearTimeout(thiz.state.timeout);
             thiz.setState({
               pageIndex: thiz.state.pageIndex + 1
             });
@@ -197,7 +199,7 @@ let Application = React.createClass({
         if (!thiz.state.isStop) {
           thiz.state.audio.pause();
           thiz.state.video.pause();
-          window.clearTimeout();
+          clearTimeout(thiz.state.timeout);
           thiz.setState({
             isStop: true
           });
