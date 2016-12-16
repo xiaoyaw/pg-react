@@ -150,17 +150,16 @@ let Application = React.createClass({
   componentDidMount: function() {
     var thiz = this;
     if (this.isMounted()) {
-
       //点击退出键
       $('#exit').on('click', function() {
         thiz.setState({
           pageIndex: thiz.state.pageNum + 1
         });
       })
-
+     
       //点击按钮时下载数据并播放
       $('#liv_play').on('click', function() {
-        $.get('http://203.195.173.135:9000/files/liv?file=' + $('#liv_select').val() + '.liv&format=json', function(res) {
+        $.get('http://203.195.173.135:9000/files/liv?file=' + $('#liv_select').val() + '&format=json', function(res) {
           thiz.playLivFile(res);
           $('#liv_Nav').fadeIn();
         });
