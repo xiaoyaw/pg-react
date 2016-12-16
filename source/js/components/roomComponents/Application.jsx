@@ -26,10 +26,11 @@ let Application = React.createClass({
       ws = new WebSocket('ws://203.195.173.135:9999/ws');
     }
     return {
+      isStop: false,
       pageIndex: 0,
       pageNum: 0,
       res: null,
-      livsize:[],
+      livsize: [],
       dataNow: 0,
       interTime: '',
       userName: null,
@@ -92,7 +93,7 @@ let Application = React.createClass({
   },
 
   callivMsgSize: function(res) {
-    var livsize =[]
+    var livsize = []
     for (var p in res) {
       livsize.push(p);
     }
@@ -101,7 +102,7 @@ let Application = React.createClass({
   playLivFile: function(res) {
     var livsize = this.callivMsgSize(res);
     this.setState({
-      livsize:livsize,
+      livsize: livsize,
       res: res,
       pageNum: livsize.length
     }, function() {
@@ -112,28 +113,36 @@ let Application = React.createClass({
   //递归liv播放
   diguiliv: function() {
     var thiz = this;
-    if (thiz.state.pageIndex < thiz.state.pageNum) {
-      //页数未到末尾
-      if (thiz.state.dataNow < thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]].length) {
-        //本页未到最后一笔
-        setTimeout(function() {
-          thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
+    if (!thiz.state.isStop) {
+      if (thiz.state.pageIndex < thiz.state.pageNum) {
+        //页数未到末尾
+        if (thiz.state.dataNow < thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]].length) {
+          //本页未到最后一笔
+          setTimeout(function() {
+            thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
+            thiz.setState({
+              dataNow: thiz.state.dataNow + 1
+            }, function() {
+              thiz.diguiliv();
+            });
+          }, thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].time);
+        } else { //本页最后一笔画完，翻页并递归
           thiz.setState({
-            dataNow: thiz.state.dataNow + 1
+            pageIndex: thiz.state.pageIndex + 1,
+            dataNow: 0
           }, function() {
             thiz.diguiliv();
           });
-        }, thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].time);
-      } else { //本页最后一笔画完，翻页并递归
+        }
+      } else {
+        //是否轮播
         thiz.setState({
-          pageIndex: thiz.state.pageIndex + 1,
+          pageIndex: 0,
           dataNow: 0
         }, function() {
           thiz.diguiliv();
         });
       }
-    } else {
-      //是否轮播
     }
   },
 
@@ -141,25 +150,67 @@ let Application = React.createClass({
   componentDidMount: function() {
     var thiz = this;
     if (this.isMounted()) {
+
+      //点击退出键
       $('#exit').on('click', function() {
         thiz.setState({
           pageIndex: thiz.state.pageNum + 1
         });
       })
-      $('#edit').on('click',function(){
-        thiz.setState({
-          pageIndex:1
-        })
-      });
-      
-      //----测试
-        $.get('http://203.195.173.135:9000/files/liv?file=1207新格式.liv&format=json',function(res){
-          console.log(res);
+
+      //点击按钮时下载数据并播放
+      $('#liv_play').on('click', function() {
+        $.get('http://203.195.173.135:9000/files/liv?file=' + $('#liv_select').val() + '.liv&format=json', function(res) {
           thiz.playLivFile(res);
+          $('#liv_Nav').fadeIn();
         });
-      //----测试
-      this.playLivFile(res);
-      var ws = this.state.webSocket;
+      });
+
+      //向左
+      $('#liv_left').on('click', function() {
+          if (thiz.state.pageIndex < pageNum && thiz.state.pageIndex > 0) {
+            $('#myaudio').pause();
+            $('#myvideo').pause();
+            window.clearTimeout();
+            thiz.setState({
+              pageIndex: thiz.state.pageIndex - 1
+            });
+          }
+        })
+        //向右
+      $('#liv_right').on('click', function() {
+          if (thiz.state.pageIndex < pageNum - 1) {
+            $('#myaudio').pause();
+            $('#myvideo').pause();
+            window.clearTimeout();
+            thiz.setState({
+              pageIndex: thiz.state.pageIndex + 1
+            });
+          }
+
+        })
+        //停止
+      $('#liv_stop').on('click', function() {
+        if (!thiz.state.isStop) {
+          $('#liv_stop').html('< span className = " glyphicon glyphicon-play" > < /span>');
+          $('#myaudio').pause();
+          $('#myvideo').pause();
+          window.clearTimeout();
+          thiz.setState({
+            isStop: true
+          });
+        } else {
+          thiz.setState({
+            isStop: false
+          },function(){
+            $('#liv_stop').html('< span className = "glyphicon glyphicon-stop" > < /span>');
+            thiz.diguiliv();
+          });
+        }
+
+      })
+
+      //ws连接
       if (typeof(Storage) !== "undefined") {
         if (sessionStorage.username) {
           var un = sessionStorage.getItem("username");
@@ -167,6 +218,8 @@ let Application = React.createClass({
         }
       }
       var roomid = this.props._roomid;
+
+      var ws = this.state.webSocket;
       this.connectWebSocket(ws, un, pd, roomid);
 
       window.addEventListener('resize', this.handleResize);

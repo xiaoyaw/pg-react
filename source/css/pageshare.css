@@ -107,3 +107,13 @@ body{
     margin: 5px;
     border-color:#DCDCDC;
 }
+#liv_left,#liv_right,#liv_stop{
+     border: 1px solid;
+    margin: 30px;
+    width: 42px;
+    height: 42px;
+    border-color:#E6E6FA;
+    cursor:default;
+    border-radius: 50%;
+    background: #ffffff;
+}

@@ -66,7 +66,7 @@ function is_weixin() {
 	}
 }
 
-},{"./components/AppJoin.jsx":229,"./components/AppRoom.jsx":230,"./components/PAppJoin.jsx":231,"./components/PAppRoom.jsx":232,"./components/wxLogin.jsx":250,"react":228,"react-dom":3,"react-router":30}],2:[function(require,module,exports){
+},{"./components/AppJoin.jsx":229,"./components/AppRoom.jsx":230,"./components/PAppJoin.jsx":231,"./components/PAppRoom.jsx":232,"./components/wxLogin.jsx":251,"react":228,"react-dom":3,"react-router":30}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -25597,6 +25597,10 @@ var _LivInfo = require('./roomComponents/alertComponent/LivInfo.jsx');
 
 var _LivInfo2 = _interopRequireDefault(_LivInfo);
 
+var _ControlNav = require('./roomComponents/controlNav/ControlNav.jsx');
+
+var _ControlNav2 = _interopRequireDefault(_ControlNav);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var AppRoom = _react2.default.createClass({
@@ -25628,7 +25632,8 @@ var AppRoom = _react2.default.createClass({
       _react2.default.createElement(_LivInfo2.default, { _roomid: text
       }),
       ' ',
-      _react2.default.createElement(_NetTip2.default, null)
+      _react2.default.createElement(_NetTip2.default, null),
+      _react2.default.createElement(_ControlNav2.default, null)
     );
   }
 
@@ -25636,7 +25641,7 @@ var AppRoom = _react2.default.createClass({
 
 module.exports = AppRoom;
 
-},{"./roomComponents/Application.jsx":236,"./roomComponents/NavagationBar.jsx":237,"./roomComponents/NetTip.jsx":238,"./roomComponents/Slider.jsx":240,"./roomComponents/alertComponent/LivInfo.jsx":241,"react":228,"react-dom":3}],231:[function(require,module,exports){
+},{"./roomComponents/Application.jsx":236,"./roomComponents/NavagationBar.jsx":237,"./roomComponents/NetTip.jsx":238,"./roomComponents/Slider.jsx":240,"./roomComponents/alertComponent/LivInfo.jsx":241,"./roomComponents/controlNav/ControlNav.jsx":244,"react":228,"react-dom":3}],231:[function(require,module,exports){
 'use strict';
 
 var _PJoinInput = require('./joinComponents/PJoinInput.jsx');
@@ -25698,6 +25703,10 @@ var _LivInfo = require('./roomComponents/alertComponent/LivInfo.jsx');
 
 var _LivInfo2 = _interopRequireDefault(_LivInfo);
 
+var _ControlNav = require('./roomComponents/controlNav/ControlNav.jsx');
+
+var _ControlNav2 = _interopRequireDefault(_ControlNav);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var PAppRoom = _react2.default.createClass({
@@ -25733,7 +25742,8 @@ var PAppRoom = _react2.default.createClass({
       _react2.default.createElement(_LivInfo2.default, { _roomid: text
       }),
       ' ',
-      _react2.default.createElement(_NetTip2.default, null)
+      _react2.default.createElement(_NetTip2.default, null),
+      _react2.default.createElement(_ControlNav2.default, null)
     );
   }
 
@@ -25741,7 +25751,7 @@ var PAppRoom = _react2.default.createClass({
 
 module.exports = PAppRoom;
 
-},{"./roomComponents/Application.jsx":236,"./roomComponents/NetTip.jsx":238,"./roomComponents/PNavagationBar.jsx":239,"./roomComponents/Slider.jsx":240,"./roomComponents/alertComponent/LivInfo.jsx":241,"react":228,"react-dom":3}],233:[function(require,module,exports){
+},{"./roomComponents/Application.jsx":236,"./roomComponents/NetTip.jsx":238,"./roomComponents/PNavagationBar.jsx":239,"./roomComponents/Slider.jsx":240,"./roomComponents/alertComponent/LivInfo.jsx":241,"./roomComponents/controlNav/ControlNav.jsx":244,"react":228,"react-dom":3}],233:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -26181,6 +26191,7 @@ var Application = _react2.default.createClass({
       ws = new WebSocket('ws://203.195.173.135:9999/ws');
     }
     return {
+      isStop: false,
       pageIndex: 0,
       pageNum: 0,
       res: null,
@@ -26267,29 +26278,37 @@ var Application = _react2.default.createClass({
   //递归liv播放
   diguiliv: function diguiliv() {
     var thiz = this;
-    if (thiz.state.pageIndex < thiz.state.pageNum) {
-      //页数未到末尾
-      if (thiz.state.dataNow < thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]].length) {
-        //本页未到最后一笔
-        setTimeout(function () {
-          thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
+    if (!thiz.state.isStop) {
+      if (thiz.state.pageIndex < thiz.state.pageNum) {
+        //页数未到末尾
+        if (thiz.state.dataNow < thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]].length) {
+          //本页未到最后一笔
+          setTimeout(function () {
+            thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
+            thiz.setState({
+              dataNow: thiz.state.dataNow + 1
+            }, function () {
+              thiz.diguiliv();
+            });
+          }, thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].time);
+        } else {
+          //本页最后一笔画完，翻页并递归
           thiz.setState({
-            dataNow: thiz.state.dataNow + 1
+            pageIndex: thiz.state.pageIndex + 1,
+            dataNow: 0
           }, function () {
             thiz.diguiliv();
           });
-        }, thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].time);
+        }
       } else {
-        //本页最后一笔画完，翻页并递归
+        //是否轮播
         thiz.setState({
-          pageIndex: thiz.state.pageIndex + 1,
+          pageIndex: 0,
           dataNow: 0
         }, function () {
           thiz.diguiliv();
         });
       }
-    } else {
-      //是否轮播
     }
   },
 
@@ -26297,25 +26316,65 @@ var Application = _react2.default.createClass({
   componentDidMount: function componentDidMount() {
     var thiz = this;
     if (this.isMounted()) {
+
+      //点击退出键
       $('#exit').on('click', function () {
         thiz.setState({
           pageIndex: thiz.state.pageNum + 1
         });
       });
-      $('#edit').on('click', function () {
-        thiz.setState({
-          pageIndex: 1
+
+      //点击按钮时下载数据并播放
+      $('#liv_play').on('click', function () {
+        $.get('http://203.195.173.135:9000/files/liv?file=' + $('#liv_select').val() + '.liv&format=json', function (res) {
+          thiz.playLivFile(res);
+          $('#liv_Nav').fadeIn();
         });
       });
 
-      //----测试
-      $.get('http://203.195.173.135:9000/files/liv?file=1207新格式.liv&format=json', function (res) {
-        console.log(res);
-        thiz.playLivFile(res);
+      //向左
+      $('#liv_left').on('click', function () {
+        if (thiz.state.pageIndex < pageNum && thiz.state.pageIndex > 0) {
+          $('#myaudio').pause();
+          $('#myvideo').pause();
+          window.clearTimeout();
+          thiz.setState({
+            pageIndex: thiz.state.pageIndex - 1
+          });
+        }
       });
-      //----测试
-      this.playLivFile(res);
-      var ws = this.state.webSocket;
+      //向右
+      $('#liv_right').on('click', function () {
+        if (thiz.state.pageIndex < pageNum - 1) {
+          $('#myaudio').pause();
+          $('#myvideo').pause();
+          window.clearTimeout();
+          thiz.setState({
+            pageIndex: thiz.state.pageIndex + 1
+          });
+        }
+      });
+      //停止
+      $('#liv_stop').on('click', function () {
+        if (!thiz.state.isStop) {
+          $('#liv_stop').html('< span className = " glyphicon glyphicon-play" > < /span>');
+          $('#myaudio').pause();
+          $('#myvideo').pause();
+          window.clearTimeout();
+          thiz.setState({
+            isStop: true
+          });
+        } else {
+          thiz.setState({
+            isStop: false
+          }, function () {
+            $('#liv_stop').html('< span className = "glyphicon glyphicon-stop" > < /span>');
+            thiz.diguiliv();
+          });
+        }
+      });
+
+      //ws连接
       if (typeof Storage !== "undefined") {
         if (sessionStorage.username) {
           var un = sessionStorage.getItem("username");
@@ -26323,6 +26382,8 @@ var Application = _react2.default.createClass({
         }
       }
       var roomid = this.props._roomid;
+
+      var ws = this.state.webSocket;
       this.connectWebSocket(ws, un, pd, roomid);
 
       window.addEventListener('resize', this.handleResize);
@@ -26682,7 +26743,7 @@ var NavagationBar = React.createClass({
 
 module.exports = NavagationBar;
 
-},{"./navBar/Home.jsx":245,"./navBar/MyAudio.jsx":246,"./navBar/MyVideo.jsx":247,"./navBar/PlayLiv.jsx":248,"./navBar/Share.jsx":249,"react":228}],238:[function(require,module,exports){
+},{"./navBar/Home.jsx":246,"./navBar/MyAudio.jsx":247,"./navBar/MyVideo.jsx":248,"./navBar/PlayLiv.jsx":249,"./navBar/Share.jsx":250,"react":228}],238:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -26821,7 +26882,7 @@ var PNavagationBar = React.createClass({
 
 module.exports = PNavagationBar;
 
-},{"./navBar/Edit.jsx":244,"./navBar/Home.jsx":245,"./navBar/MyAudio.jsx":246,"./navBar/MyVideo.jsx":247,"./navBar/PlayLiv.jsx":248,"./navBar/Share.jsx":249,"react":228}],240:[function(require,module,exports){
+},{"./navBar/Edit.jsx":245,"./navBar/Home.jsx":246,"./navBar/MyAudio.jsx":247,"./navBar/MyVideo.jsx":248,"./navBar/PlayLiv.jsx":249,"./navBar/Share.jsx":250,"react":228}],240:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -26930,18 +26991,14 @@ module.exports = Slider;
 },{"react":228}],241:[function(require,module,exports){
 'use strict';
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 var React = require('react');
 var LivInfo = React.createClass({
 	displayName: 'LivInfo',
 
 	getInitialState: function getInitialState() {
-		return _defineProperty({
-			sessionID: '',
-			target: '',
-			course: ['aaaaa', 'bbbbb', 'ccccc', 'ddddd', 'eeeee']
-		}, 'sessionID', []);
+		return {
+			course: []
+		};
 	},
 	handleClick: function handleClick() {
 		//查询liv文件加载
@@ -26953,69 +27010,12 @@ var LivInfo = React.createClass({
 			//查询并list所有liv
 			this.queryAllLiv();
 			//再次刷新liv列表			
-			$('#liv_list').on('click', function () {
+			$('#liv').on('click', function () {
 				that.handleClick();
 			});
 
-			//播放
 			$('#liv_play').on('click', function () {
-				console.log($('#liv_select').val());
-				//检查状态是否可以播放
-				// $.ajax({
-				// 	async: true,
-				// 	url: 'http://203.195.173.135:9000/play/status?&sessionID=' + that.props._roomid,
-				// 	type: 'GET',
-				// 	timeout: 5000,
-				// 	success: function(res) {
-				// 		if (res.status == 'OK') {
-				// 			$.ajax({
-				// 				async: true,
-				// 				url: 'http://203.195.173.135:9000/play/start?file=' + $(that.refs.linput).val() + '&sessionID=' + that.state.sessionID[that.state.course.indexOf($(that.refs.linput).val())] + '&loop=true&target=' + that.props._roomid,
-				// 				type: 'GET',
-				// 				timeout: 5000,
-				// 				success: function(res) {
-				// 					$('#livModal').modal('hide');
-				// 				}
-				// 			});
-				// 		} else {
-				// 			//停止再播
-				// 			$.ajax({
-				// 				async: true,
-				// 				url: 'http://203.195.173.135:9000/play/stop?sessionID=' + that.props._roomid,
-				// 				type: 'GET',
-				// 				timeout: 5000,
-				// 				success: function(res) {
-				// 					$.ajax({
-				// 						async: true,
-				// 						url: 'http://203.195.173.135:9000/play/start?file=' + $(that.refs.linput).val() + '&sessionID=' + that.state.sessionID[that.state.course.indexOf($(that.refs.linput).val())] + '&loop=true&target=' + that.props._roomid,
-				// 						type: 'GET',
-				// 						timeout: 5000,
-				// 						success: function(res) {
-				// 							$('#livModal').modal('hide');
-				// 						}
-				// 					});
-				// 				}
-				// 			});
-				// 		}
-				// 	}
-				// });
-			});
-			//取消
-			$('#liv_cancel').on('click', function () {
 				$('#livModal').modal('hide');
-			});
-
-			//停止
-			$('#liv_stop').on('click', function () {
-				$.ajax({
-					async: true,
-					url: 'http://203.195.173.135:9000/play/stop?sessionID=' + that.props._roomid,
-					type: 'GET',
-					timeout: 5000,
-					success: function success(res) {
-						$('#livModal').modal('hide');
-					}
-				});
 			});
 		}
 	},
@@ -27023,23 +27023,12 @@ var LivInfo = React.createClass({
 		var that = this;
 		$.ajax({
 			async: true,
-			url: 'http://203.195.173.135:9000/play/list',
+			url: 'http://203.195.173.135:9000/files/list?format=json',
 			type: 'GET',
 			timeout: 5000,
 			success: function success(res) {
-				var a = [],
-				    b = [];
-				for (var p in res) {
-					if (res[p].length != 0) {
-						for (var i = 0; i < res[p].length; i++) {
-							b.push(p);
-							a.push(res[p][i]);
-						}
-					}
-				}
 				that.setState({
-					course: a,
-					sessionID: b
+					course: res
 				});
 			}
 		});
@@ -27076,7 +27065,7 @@ var LivInfo = React.createClass({
 										{ key: name,
 											value: name },
 										' ',
-										name,
+										name.split('.')[0],
 										' '
 									);
 								}),
@@ -27087,27 +27076,6 @@ var LivInfo = React.createClass({
 					React.createElement(
 						'div',
 						{ className: 'modal-footer' },
-						React.createElement(
-							'button',
-							{ type: 'button',
-								id: 'liv_list',
-								className: 'btn btn-info pull-left' },
-							' 刷新列表 '
-						),
-						React.createElement(
-							'button',
-							{ type: 'button',
-								id: 'liv_cancel',
-								className: 'btn btn-default' },
-							' 取消 '
-						),
-						React.createElement(
-							'button',
-							{ type: 'button',
-								id: 'liv_stop',
-								className: 'btn btn-warning' },
-							' 停止 '
-						),
 						React.createElement(
 							'button',
 							{ type: 'button',
@@ -27441,6 +27409,66 @@ var Canvas = _react2.default.createClass({
 exports.default = Canvas;
 
 },{"react":228}],244:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
+
+var ControlNav = React.createClass({
+	displayName: "ControlNav",
+
+
+	render: function render() {
+		return React.createElement(
+			"div",
+			{ className: "navbar-fixed-bottom ",
+				id: "liv_Nav",
+				style: {
+					display: 'none',
+					zIndex: 10,
+					opacity: 0.5
+				} },
+			React.createElement(
+				"button",
+				{ id: "liv_left",
+					className: "liv_control" },
+				React.createElement(
+					"span",
+					{ className: "glyphicon glyphicon-chevron-left" },
+					" "
+				),
+				" "
+			),
+			React.createElement(
+				"button",
+				{ id: "liv_stop",
+					className: "liv_control" },
+				React.createElement(
+					"span",
+					{ className: "glyphicon glyphicon-stop" },
+					" "
+				),
+				" "
+			),
+			React.createElement(
+				"button",
+				{ id: "liv_right",
+					className: "liv_control" },
+				React.createElement(
+					"span",
+					{ className: "glyphicon glyphicon-chevron-right" },
+					" "
+				),
+				" "
+			),
+			" "
+		);
+	}
+
+});
+
+module.exports = ControlNav;
+
+},{"react":228}],245:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -27515,7 +27543,7 @@ var Edit = React.createClass({
 
 module.exports = Edit;
 
-},{"react":228}],245:[function(require,module,exports){
+},{"react":228}],246:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -27552,7 +27580,7 @@ var Home = React.createClass({
 
 module.exports = Home;
 
-},{"react":228,"react-router":30}],246:[function(require,module,exports){
+},{"react":228,"react-router":30}],247:[function(require,module,exports){
 'use strict';
 
 /*
@@ -27621,7 +27649,7 @@ var MyAudio = React.createClass({
 
 module.exports = MyAudio;
 
-},{"react":228}],247:[function(require,module,exports){
+},{"react":228}],248:[function(require,module,exports){
 'use strict';
 
 /*
@@ -27691,7 +27719,7 @@ var MyVideo = React.createClass({
 
 module.exports = MyVideo;
 
-},{"react":228}],248:[function(require,module,exports){
+},{"react":228}],249:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -27722,7 +27750,7 @@ var PlayLiv = React.createClass({
 
 module.exports = PlayLiv;
 
-},{"react":228}],249:[function(require,module,exports){
+},{"react":228}],250:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -27935,7 +27963,7 @@ var Share = React.createClass({
 
 module.exports = Share;
 
-},{"react":228}],250:[function(require,module,exports){
+},{"react":228}],251:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');

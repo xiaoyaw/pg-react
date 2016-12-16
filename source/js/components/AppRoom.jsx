@@ -5,7 +5,7 @@ import Slider from './roomComponents/Slider.jsx';
 import NavagationBar from './roomComponents/NavagationBar.jsx';
 import NetTip from './roomComponents/NetTip.jsx';
 import LivInfo from './roomComponents/alertComponent/LivInfo.jsx';
-
+import ControlNav from './roomComponents/controlNav/ControlNav.jsx';
 
 var AppRoom = React.createClass({
   componentWillMount: function() {
@@ -37,6 +37,7 @@ var AppRoom = React.createClass({
       text
     }
     /> < NetTip / >
+      <ControlNav/>
       < /div>
   );
 }
