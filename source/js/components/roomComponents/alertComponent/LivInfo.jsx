@@ -4,7 +4,7 @@ var LivInfo = React.createClass({
 		return {
 			sessionID: '',
 			target: '',
-			course: [],
+			course: ['aaaaa', 'bbbbb', 'ccccc', 'ddddd', 'eeeee'],
 			sessionID: []
 		};
 	},
@@ -24,46 +24,46 @@ var LivInfo = React.createClass({
 
 			//播放
 			$('#liv_play').on('click', function() {
-				//console.log('file :  '+$('#liv_select').val()+'   sess  '+$(that.refs.linput).val()+'  tar  '+that.props._roomid);
+				console.log($('#liv_select').val());
 				//检查状态是否可以播放
-				$.ajax({
-					async: true,
-					url: 'http://203.195.173.135:9000/play/status?&sessionID=' + that.props._roomid,
-					type: 'GET',
-					timeout: 5000,
-					success: function(res) {
-						if (res.status == 'OK') {
-							$.ajax({
-								async: true,
-								url: 'http://203.195.173.135:9000/play/start?file=' + $(that.refs.linput).val() + '&sessionID=' + that.state.sessionID[that.state.course.indexOf($(that.refs.linput).val())] + '&loop=true&target=' + that.props._roomid,
-								type: 'GET',
-								timeout: 5000,
-								success: function(res) {
-									$('#livModal').modal('hide');
-								}
-							});
-						} else {
-							//停止再播
-							$.ajax({
-								async: true,
-								url: 'http://203.195.173.135:9000/play/stop?sessionID=' + that.props._roomid,
-								type: 'GET',
-								timeout: 5000,
-								success: function(res) {
-									$.ajax({
-										async: true,
-										url: 'http://203.195.173.135:9000/play/start?file=' + $(that.refs.linput).val() + '&sessionID=' + that.state.sessionID[that.state.course.indexOf($(that.refs.linput).val())] + '&loop=true&target=' + that.props._roomid,
-										type: 'GET',
-										timeout: 5000,
-										success: function(res) {
-											$('#livModal').modal('hide');
-										}
-									});
-								}
-							});
-						}
-					}
-				});
+				// $.ajax({
+				// 	async: true,
+				// 	url: 'http://203.195.173.135:9000/play/status?&sessionID=' + that.props._roomid,
+				// 	type: 'GET',
+				// 	timeout: 5000,
+				// 	success: function(res) {
+				// 		if (res.status == 'OK') {
+				// 			$.ajax({
+				// 				async: true,
+				// 				url: 'http://203.195.173.135:9000/play/start?file=' + $(that.refs.linput).val() + '&sessionID=' + that.state.sessionID[that.state.course.indexOf($(that.refs.linput).val())] + '&loop=true&target=' + that.props._roomid,
+				// 				type: 'GET',
+				// 				timeout: 5000,
+				// 				success: function(res) {
+				// 					$('#livModal').modal('hide');
+				// 				}
+				// 			});
+				// 		} else {
+				// 			//停止再播
+				// 			$.ajax({
+				// 				async: true,
+				// 				url: 'http://203.195.173.135:9000/play/stop?sessionID=' + that.props._roomid,
+				// 				type: 'GET',
+				// 				timeout: 5000,
+				// 				success: function(res) {
+				// 					$.ajax({
+				// 						async: true,
+				// 						url: 'http://203.195.173.135:9000/play/start?file=' + $(that.refs.linput).val() + '&sessionID=' + that.state.sessionID[that.state.course.indexOf($(that.refs.linput).val())] + '&loop=true&target=' + that.props._roomid,
+				// 						type: 'GET',
+				// 						timeout: 5000,
+				// 						success: function(res) {
+				// 							$('#livModal').modal('hide');
+				// 						}
+				// 					});
+				// 				}
+				// 			});
+				// 		}
+				// 	}
+				// });
 			});
 			//取消
 			$('#liv_cancel').on('click', function() {
@@ -104,7 +104,7 @@ var LivInfo = React.createClass({
 				}
 				that.setState({
 					course: a,
-					sessionID:b
+					sessionID: b
 				});
 			}
 		})
@@ -120,28 +120,31 @@ var LivInfo = React.createClass({
 			< div className = "modal-content" >
 
 			< div className = "modal-body" >
-			< div className = "input-group" >
-			< input type = "text"
-			ref = 'linput'
-			className = "form-control"
-			list = "liv_select" / >
-			< span className = "input-group-btn" >
-			< button id = 'liv_list'
-			className = "btn btn-default"
-			type = "button" >
-			刷新 < /button> < /span > < /div> 
-
-			< datalist id = 'liv_select' > {
+			< div >
+			< select name = "livfile"
+			className = "container"
+			id = "liv_select" > {
 				names.map(function(name) {
 					return <option key = {
+						name
+					}
+					value = {
 						name
 					} > {
 						name
 					} < /option>
 				})
-			} < /datalist>  < /div >
+			} < /select>
+
+			< /div>
+
+			< /div >
 
 			< div className = "modal-footer" >
+
+			< button type = "button"
+			id = 'liv_list'
+			className = "btn btn-info pull-left" > 刷新列表 < /button>
 
 			< button type = "button"
 			id = 'liv_cancel'
@@ -155,7 +158,7 @@ var LivInfo = React.createClass({
 			id = 'liv_play'
 			className = "btn btn-primary" > 播放 < /button> 
 
-			< /div > < /div > < /div > < /div >
+			< /div > </div > < /div > </div >
 		);
 	}
 

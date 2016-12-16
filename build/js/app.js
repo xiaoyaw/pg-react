@@ -26181,6 +26181,11 @@ var Application = _react2.default.createClass({
       ws = new WebSocket('ws://203.195.173.135:9999/ws');
     }
     return {
+      pageIndex: 0,
+      pageNum: 0,
+      res: null,
+      livsize: [],
+      dataNow: 0,
       interTime: '',
       userName: null,
       webSocket: ws,
@@ -26241,10 +26246,75 @@ var Application = _react2.default.createClass({
     ws.close(1000, username);
   },
 
+
+  callivMsgSize: function callivMsgSize(res) {
+    var livsize = [];
+    for (var p in res) {
+      livsize.push(p);
+    }
+    return livsize;
+  },
+  playLivFile: function playLivFile(res) {
+    var livsize = this.callivMsgSize(res);
+    this.setState({
+      livsize: livsize,
+      res: res,
+      pageNum: livsize.length
+    }, function () {
+      this.diguiliv();
+    });
+  },
+  //递归liv播放
+  diguiliv: function diguiliv() {
+    var thiz = this;
+    if (thiz.state.pageIndex < thiz.state.pageNum) {
+      //页数未到末尾
+      if (thiz.state.dataNow < thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]].length) {
+        //本页未到最后一笔
+        setTimeout(function () {
+          thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
+          thiz.setState({
+            dataNow: thiz.state.dataNow + 1
+          }, function () {
+            thiz.diguiliv();
+          });
+        }, thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].time);
+      } else {
+        //本页最后一笔画完，翻页并递归
+        thiz.setState({
+          pageIndex: thiz.state.pageIndex + 1,
+          dataNow: 0
+        }, function () {
+          thiz.diguiliv();
+        });
+      }
+    } else {
+      //是否轮播
+    }
+  },
+
   //渲染以后？ 设置为以前收不到Message
   componentDidMount: function componentDidMount() {
     var thiz = this;
     if (this.isMounted()) {
+      $('#exit').on('click', function () {
+        thiz.setState({
+          pageIndex: thiz.state.pageNum + 1
+        });
+      });
+      $('#edit').on('click', function () {
+        thiz.setState({
+          pageIndex: 1
+        });
+      });
+
+      //----测试
+      $.get('http://203.195.173.135:9000/files/liv?file=1207新格式.liv&format=json', function (res) {
+        console.log(res);
+        thiz.playLivFile(res);
+      });
+      //----测试
+      this.playLivFile(res);
       var ws = this.state.webSocket;
       if (typeof Storage !== "undefined") {
         if (sessionStorage.username) {
@@ -26257,7 +26327,7 @@ var Application = _react2.default.createClass({
 
       window.addEventListener('resize', this.handleResize);
       ws.onmessage = function (msg) {
-        thiz.handleMessage(msg);
+        thiz.handleMessage(JSON.parse(msg.data));
       };
     }
   },
@@ -26353,9 +26423,7 @@ var Application = _react2.default.createClass({
     this.setState({
       isResize: false
     });
-    var json = msg.data;
-    var value = JSON.parse(json);
-    var src, data;
+    var value = msg;
     switch (value.cmd) {
       case "login":
         //账号密码为空时
@@ -26486,6 +26554,7 @@ var Application = _react2.default.createClass({
         _left: this.state.left,
         _top: this.state.top
       }),
+      '   ',
       _react2.default.createElement(_Canvas2.default, { _img_width: this.state.img_width,
         _img_height: this.state.img_height,
 
@@ -26871,7 +26940,7 @@ var LivInfo = React.createClass({
 		return _defineProperty({
 			sessionID: '',
 			target: '',
-			course: []
+			course: ['aaaaa', 'bbbbb', 'ccccc', 'ddddd', 'eeeee']
 		}, 'sessionID', []);
 	},
 	handleClick: function handleClick() {
@@ -26890,46 +26959,46 @@ var LivInfo = React.createClass({
 
 			//播放
 			$('#liv_play').on('click', function () {
-				//console.log('file :  '+$('#liv_select').val()+'   sess  '+$(that.refs.linput).val()+'  tar  '+that.props._roomid);
+				console.log($('#liv_select').val());
 				//检查状态是否可以播放
-				$.ajax({
-					async: true,
-					url: 'http://203.195.173.135:9000/play/status?&sessionID=' + that.props._roomid,
-					type: 'GET',
-					timeout: 5000,
-					success: function success(res) {
-						if (res.status == 'OK') {
-							$.ajax({
-								async: true,
-								url: 'http://203.195.173.135:9000/play/start?file=' + $(that.refs.linput).val() + '&sessionID=' + that.state.sessionID[that.state.course.indexOf($(that.refs.linput).val())] + '&loop=true&target=' + that.props._roomid,
-								type: 'GET',
-								timeout: 5000,
-								success: function success(res) {
-									$('#livModal').modal('hide');
-								}
-							});
-						} else {
-							//停止再播
-							$.ajax({
-								async: true,
-								url: 'http://203.195.173.135:9000/play/stop?sessionID=' + that.props._roomid,
-								type: 'GET',
-								timeout: 5000,
-								success: function success(res) {
-									$.ajax({
-										async: true,
-										url: 'http://203.195.173.135:9000/play/start?file=' + $(that.refs.linput).val() + '&sessionID=' + that.state.sessionID[that.state.course.indexOf($(that.refs.linput).val())] + '&loop=true&target=' + that.props._roomid,
-										type: 'GET',
-										timeout: 5000,
-										success: function success(res) {
-											$('#livModal').modal('hide');
-										}
-									});
-								}
-							});
-						}
-					}
-				});
+				// $.ajax({
+				// 	async: true,
+				// 	url: 'http://203.195.173.135:9000/play/status?&sessionID=' + that.props._roomid,
+				// 	type: 'GET',
+				// 	timeout: 5000,
+				// 	success: function(res) {
+				// 		if (res.status == 'OK') {
+				// 			$.ajax({
+				// 				async: true,
+				// 				url: 'http://203.195.173.135:9000/play/start?file=' + $(that.refs.linput).val() + '&sessionID=' + that.state.sessionID[that.state.course.indexOf($(that.refs.linput).val())] + '&loop=true&target=' + that.props._roomid,
+				// 				type: 'GET',
+				// 				timeout: 5000,
+				// 				success: function(res) {
+				// 					$('#livModal').modal('hide');
+				// 				}
+				// 			});
+				// 		} else {
+				// 			//停止再播
+				// 			$.ajax({
+				// 				async: true,
+				// 				url: 'http://203.195.173.135:9000/play/stop?sessionID=' + that.props._roomid,
+				// 				type: 'GET',
+				// 				timeout: 5000,
+				// 				success: function(res) {
+				// 					$.ajax({
+				// 						async: true,
+				// 						url: 'http://203.195.173.135:9000/play/start?file=' + $(that.refs.linput).val() + '&sessionID=' + that.state.sessionID[that.state.course.indexOf($(that.refs.linput).val())] + '&loop=true&target=' + that.props._roomid,
+				// 						type: 'GET',
+				// 						timeout: 5000,
+				// 						success: function(res) {
+				// 							$('#livModal').modal('hide');
+				// 						}
+				// 					});
+				// 				}
+				// 			});
+				// 		}
+				// 	}
+				// });
 			});
 			//取消
 			$('#liv_cancel').on('click', function () {
@@ -26994,45 +27063,37 @@ var LivInfo = React.createClass({
 						{ className: 'modal-body' },
 						React.createElement(
 							'div',
-							{ className: 'input-group' },
-							React.createElement('input', { type: 'text',
-								ref: 'linput',
-								className: 'form-control',
-								list: 'liv_select' }),
+							null,
 							React.createElement(
-								'span',
-								{ className: 'input-group-btn' },
-								React.createElement(
-									'button',
-									{ id: 'liv_list',
-										className: 'btn btn-default',
-										type: 'button' },
-									'刷新 '
-								),
+								'select',
+								{ name: 'livfile',
+									className: 'container',
+									id: 'liv_select' },
+								' ',
+								names.map(function (name) {
+									return React.createElement(
+										'option',
+										{ key: name,
+											value: name },
+										' ',
+										name,
+										' '
+									);
+								}),
 								' '
-							),
-							' '
-						),
-						React.createElement(
-							'datalist',
-							{ id: 'liv_select' },
-							' ',
-							names.map(function (name) {
-								return React.createElement(
-									'option',
-									{ key: name },
-									' ',
-									name,
-									' '
-								);
-							}),
-							' '
-						),
-						'  '
+							)
+						)
 					),
 					React.createElement(
 						'div',
 						{ className: 'modal-footer' },
+						React.createElement(
+							'button',
+							{ type: 'button',
+								id: 'liv_list',
+								className: 'btn btn-info pull-left' },
+							' 刷新列表 '
+						),
 						React.createElement(
 							'button',
 							{ type: 'button',

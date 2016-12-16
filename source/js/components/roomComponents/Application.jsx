@@ -26,6 +26,11 @@ let Application = React.createClass({
       ws = new WebSocket('ws://203.195.173.135:9999/ws');
     }
     return {
+      pageIndex: 0,
+      pageNum: 0,
+      res: null,
+      livsize:[],
+      dataNow: 0,
       interTime: '',
       userName: null,
       webSocket: ws,
@@ -85,10 +90,75 @@ let Application = React.createClass({
     window.clearInterval(this.state.interTime);
     ws.close(1000, username);
   },
+
+  callivMsgSize: function(res) {
+    var livsize =[]
+    for (var p in res) {
+      livsize.push(p);
+    }
+    return livsize;
+  },
+  playLivFile: function(res) {
+    var livsize = this.callivMsgSize(res);
+    this.setState({
+      livsize:livsize,
+      res: res,
+      pageNum: livsize.length
+    }, function() {
+      this.diguiliv();
+    });
+
+  },
+  //递归liv播放
+  diguiliv: function() {
+    var thiz = this;
+    if (thiz.state.pageIndex < thiz.state.pageNum) {
+      //页数未到末尾
+      if (thiz.state.dataNow < thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]].length) {
+        //本页未到最后一笔
+        setTimeout(function() {
+          thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
+          thiz.setState({
+            dataNow: thiz.state.dataNow + 1
+          }, function() {
+            thiz.diguiliv();
+          });
+        }, thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].time);
+      } else { //本页最后一笔画完，翻页并递归
+        thiz.setState({
+          pageIndex: thiz.state.pageIndex + 1,
+          dataNow: 0
+        }, function() {
+          thiz.diguiliv();
+        });
+      }
+    } else {
+      //是否轮播
+    }
+  },
+
   //渲染以后？ 设置为以前收不到Message
   componentDidMount: function() {
     var thiz = this;
     if (this.isMounted()) {
+      $('#exit').on('click', function() {
+        thiz.setState({
+          pageIndex: thiz.state.pageNum + 1
+        });
+      })
+      $('#edit').on('click',function(){
+        thiz.setState({
+          pageIndex:1
+        })
+      });
+      
+      //----测试
+        $.get('http://203.195.173.135:9000/files/liv?file=1207新格式.liv&format=json',function(res){
+          console.log(res);
+          thiz.playLivFile(res);
+        });
+      //----测试
+      this.playLivFile(res);
       var ws = this.state.webSocket;
       if (typeof(Storage) !== "undefined") {
         if (sessionStorage.username) {
@@ -101,7 +171,7 @@ let Application = React.createClass({
 
       window.addEventListener('resize', this.handleResize);
       ws.onmessage = function(msg) {
-        thiz.handleMessage(msg);
+        thiz.handleMessage(JSON.parse(msg.data));
       }
     }
   },
@@ -196,9 +266,7 @@ let Application = React.createClass({
     this.setState({
       isResize: false
     });
-    var json = msg.data;
-    var value = JSON.parse(json);
-    var src, data;
+    var value = msg;
     switch (value.cmd) {
       case "login":
         //账号密码为空时
@@ -253,7 +321,7 @@ let Application = React.createClass({
         audio.src = "data:audio/mpeg;base64," + value.voice;
         // if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
         //   $('body').on('touchstart touchmove touchend click', function() { //一次事件触发
-            audio.play();
+        audio.play();
         //    $('body').unbind();
         //   });
         //   this.setState({
@@ -335,8 +403,7 @@ let Application = React.createClass({
       _top = {
         this.state.top
       }
-      />  
-       <Canvas _img_width = {
+      />   < Canvas _img_width = {
       this.state.img_width
     }
     _img_height = {
