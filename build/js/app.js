@@ -26180,6 +26180,8 @@ var Application = _react2.default.createClass({
 
   getInitialState: function getInitialState() {
 
+    var audio = document.getElementById('myaudio');
+    var video = document.getElementById('myvideo');
     //禁止选中
     if (typeof document.onselectstart != "undefined") {
       // IE下禁止元素被选取        
@@ -26191,12 +26193,15 @@ var Application = _react2.default.createClass({
       ws = new WebSocket('ws://203.195.173.135:9999/ws');
     }
     return {
+      //liv
       isStop: false,
       pageIndex: 0,
       pageNum: 0,
       res: null,
       livsize: [],
       dataNow: 0,
+      audio: audio,
+      video: video,
       interTime: '',
       userName: null,
       webSocket: ws,
@@ -26333,9 +26338,9 @@ var Application = _react2.default.createClass({
 
       //向左
       $('#liv_left').on('click', function () {
-        if (thiz.state.pageIndex < pageNum && thiz.state.pageIndex > 0) {
-          $('#myaudio').pause();
-          $('#myvideo').pause();
+        if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 0) {
+          thiz.state.audio.pause();
+          thiz.state.video.pause();
           window.clearTimeout();
           thiz.setState({
             pageIndex: thiz.state.pageIndex - 1
@@ -26345,8 +26350,8 @@ var Application = _react2.default.createClass({
       //向右
       $('#liv_right').on('click', function () {
         if (thiz.state.pageIndex < pageNum - 1) {
-          $('#myaudio').pause();
-          $('#myvideo').pause();
+          thiz.state.audio.pause();
+          thiz.state.video.pause();
           window.clearTimeout();
           thiz.setState({
             pageIndex: thiz.state.pageIndex + 1
@@ -26356,9 +26361,8 @@ var Application = _react2.default.createClass({
       //停止
       $('#liv_stop').on('click', function () {
         if (!thiz.state.isStop) {
-          $('#liv_stop').html('< span className = " glyphicon glyphicon-play" > < /span>');
-          $('#myaudio').pause();
-          $('#myvideo').pause();
+          thiz.state.audio.pause();
+          thiz.state.video.pause();
           window.clearTimeout();
           thiz.setState({
             isStop: true
@@ -26367,7 +26371,6 @@ var Application = _react2.default.createClass({
           thiz.setState({
             isStop: false
           }, function () {
-            $('#liv_stop').html('< span className = "glyphicon glyphicon-stop" > < /span>');
             thiz.diguiliv();
           });
         }

@@ -14,7 +14,8 @@ import {
 let Application = React.createClass({
   getInitialState: function() {
 
-
+    var audio = document.getElementById('myaudio');
+    var video = document.getElementById('myvideo');
     //禁止选中
     if (typeof(document.onselectstart) != "undefined") {
       // IE下禁止元素被选取        
@@ -26,12 +27,15 @@ let Application = React.createClass({
       ws = new WebSocket('ws://203.195.173.135:9999/ws');
     }
     return {
+      //liv
       isStop: false,
       pageIndex: 0,
       pageNum: 0,
       res: null,
       livsize: [],
       dataNow: 0,
+      audio: audio,
+      video: video,
       interTime: '',
       userName: null,
       webSocket: ws,
@@ -156,7 +160,7 @@ let Application = React.createClass({
           pageIndex: thiz.state.pageNum + 1
         });
       })
-     
+
       //点击按钮时下载数据并播放
       $('#liv_play').on('click', function() {
         $.get('http://203.195.173.135:9000/files/liv?file=' + $('#liv_select').val() + '&format=json', function(res) {
@@ -167,9 +171,9 @@ let Application = React.createClass({
 
       //向左
       $('#liv_left').on('click', function() {
-          if (thiz.state.pageIndex < pageNum && thiz.state.pageIndex > 0) {
-            $('#myaudio').pause();
-            $('#myvideo').pause();
+          if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 0) {
+            thiz.state.audio.pause();
+            thiz.state.video.pause();
             window.clearTimeout();
             thiz.setState({
               pageIndex: thiz.state.pageIndex - 1
@@ -179,8 +183,8 @@ let Application = React.createClass({
         //向右
       $('#liv_right').on('click', function() {
           if (thiz.state.pageIndex < pageNum - 1) {
-            $('#myaudio').pause();
-            $('#myvideo').pause();
+            thiz.state.audio.pause();
+            thiz.state.video.pause();
             window.clearTimeout();
             thiz.setState({
               pageIndex: thiz.state.pageIndex + 1
@@ -191,9 +195,8 @@ let Application = React.createClass({
         //停止
       $('#liv_stop').on('click', function() {
         if (!thiz.state.isStop) {
-          $('#liv_stop').html('< span className = " glyphicon glyphicon-play" > < /span>');
-          $('#myaudio').pause();
-          $('#myvideo').pause();
+          thiz.state.audio.pause();
+          thiz.state.video.pause();
           window.clearTimeout();
           thiz.setState({
             isStop: true
@@ -201,8 +204,7 @@ let Application = React.createClass({
         } else {
           thiz.setState({
             isStop: false
-          },function(){
-            $('#liv_stop').html('< span className = "glyphicon glyphicon-stop" > < /span>');
+          }, function() {
             thiz.diguiliv();
           });
         }
