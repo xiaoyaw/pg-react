@@ -160,7 +160,6 @@ let Application = React.createClass({
       var req = new Object();
       req = this.getRequest();
       var liv = req['liv'];
-
       if (liv != '' && liv != undefined) {
         $.get('http://203.195.173.135:9000/files/liv?file=' + liv + '.liv&format=json', function(res) {
           thiz.playLivFile(res);
@@ -177,10 +176,8 @@ let Application = React.createClass({
 
       //点击按钮时下载数据并播放
       $('#liv_play').on('click', function() {
-        sessionStorage.setItem("liv", $('#liv_select').val());
         if (thiz.state.res == null) {
           $.get('http://203.195.173.135:9000/files/liv?file=' + $('#liv_select').val() + '&format=json', function(res) {
-            sessionStorage.setItem("liv", $('#liv_select').val());
             thiz.playLivFile(res);
             $('#liv_Nav').fadeIn();
           });
@@ -203,15 +200,16 @@ let Application = React.createClass({
 
       //向左
       $('#liv_left').on('click', function() {
-          if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 0) {
+          if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 1) {
             thiz.state.audio.pause();
             thiz.state.video.pause();
             clearTimeout(thiz.state.timeout);
             thiz.setState({
-              pageIndex: thiz.state.pageIndex - 1,
+              pageIndex: thiz.state.pageIndex - 2,
               dataNow: 0
             }, function() {
               thiz.diguiliv();
+              console.loog("LpageIndex  :  "+thiz.state.pageIndex);
             });
           }
         })
@@ -222,10 +220,11 @@ let Application = React.createClass({
             thiz.state.video.pause();
             clearTimeout(thiz.state.timeout);
             thiz.setState({
-                pageIndex: thiz.state.pageIndex + 1,
+                pageIndex: thiz.state.pageIndex + 2,
                 dataNow: 0
               }),
               function() {
+               console.loog("RpageIndex  :  "+thiz.state.pageIndex);
                 thiz.diguiliv();
               };
           }

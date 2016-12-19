@@ -51,11 +51,6 @@ var Share = React.createClass({
 		if (this.isMounted()) {
 			//微信分享接口
 			$('#share').click(function() {
-				if (sessionStorage.liv) {
-					thiz.setState({
-						url_now:document.location.origin+"?liv="+sessionStorage.getItem("liv").split('.')[0]+document.location.hash
-					});
-				} 
 				$('#myInput').modal('toggle');
 			});
 

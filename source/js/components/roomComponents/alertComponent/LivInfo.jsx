@@ -2,7 +2,7 @@ var React = require('react');
 var LivInfo = React.createClass({
 	getInitialState: function() {
 		return {
-			course: ['aaa.liv','vvv.liv']
+			course: []
 		};
 	},
 	handleClick: function() {

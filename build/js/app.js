@@ -26327,7 +26327,6 @@ var Application = _react2.default.createClass({
       var req = new Object();
       req = this.getRequest();
       var liv = req['liv'];
-
       if (liv != '' && liv != undefined) {
         $.get('http://203.195.173.135:9000/files/liv?file=' + liv + '.liv&format=json', function (res) {
           thiz.playLivFile(res);
@@ -26344,10 +26343,8 @@ var Application = _react2.default.createClass({
 
       //点击按钮时下载数据并播放
       $('#liv_play').on('click', function () {
-        sessionStorage.setItem("liv", $('#liv_select').val());
         if (thiz.state.res == null) {
           $.get('http://203.195.173.135:9000/files/liv?file=' + $('#liv_select').val() + '&format=json', function (res) {
-            sessionStorage.setItem("liv", $('#liv_select').val());
             thiz.playLivFile(res);
             $('#liv_Nav').fadeIn();
           });
@@ -26370,15 +26367,16 @@ var Application = _react2.default.createClass({
 
       //向左
       $('#liv_left').on('click', function () {
-        if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 0) {
+        if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 1) {
           thiz.state.audio.pause();
           thiz.state.video.pause();
           clearTimeout(thiz.state.timeout);
           thiz.setState({
-            pageIndex: thiz.state.pageIndex - 1,
+            pageIndex: thiz.state.pageIndex - 2,
             dataNow: 0
           }, function () {
             thiz.diguiliv();
+            console.loog("LpageIndex  :  " + thiz.state.pageIndex);
           });
         }
       });
@@ -26389,9 +26387,10 @@ var Application = _react2.default.createClass({
           thiz.state.video.pause();
           clearTimeout(thiz.state.timeout);
           thiz.setState({
-            pageIndex: thiz.state.pageIndex + 1,
+            pageIndex: thiz.state.pageIndex + 2,
             dataNow: 0
           }), function () {
+            console.loog("RpageIndex  :  " + thiz.state.pageIndex);
             thiz.diguiliv();
           };
         }
@@ -27050,7 +27049,7 @@ var LivInfo = React.createClass({
 
 	getInitialState: function getInitialState() {
 		return {
-			course: ['aaa.liv', 'vvv.liv']
+			course: []
 		};
 	},
 	handleClick: function handleClick() {
@@ -27867,11 +27866,6 @@ var Share = React.createClass({
 		if (this.isMounted()) {
 			//微信分享接口
 			$('#share').click(function () {
-				if (sessionStorage.liv) {
-					thiz.setState({
-						url_now: document.location.origin + "?liv=" + sessionStorage.getItem("liv").split('.')[0] + document.location.hash
-					});
-				}
 				$('#myInput').modal('toggle');
 			});
 
