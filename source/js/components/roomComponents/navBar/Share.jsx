@@ -11,44 +11,44 @@ var Share = React.createClass({
 			dataUrl: ''
 		};
 	},
-	componentWillMount: function() {
-		var thiz = this;
-		$.ajax({
-			async: false,
-			url: "php/wx_share.php",
-			type: "GET",
-			data: {
-				urll: document.location.href,
-			},
-			timeout: 5000,
-			success: function(result) {
-				var url_now = document.location.href;
-				var arry = result.split(":");
-				var appid = arry[0],
-					timestamp = arry[1],
-					noncestr = arry[2],
-					signature = arry[3];
-				wx.config({
-					debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-					appId: appid, // 必填，公众号的唯一标识
-					timestamp: timestamp, // 必填，生成签名的时间戳
-					nonceStr: noncestr, // 必填，生成签名的随机串
-					signature: signature, // 必填，签名，见附录1
-					jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone', 'onMenuShareWeibo'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-				});
-				thiz.deal_wx_interface();
-				wx.error(function(res) {
-
-					console.log('room签名失败');
-					// config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-
-				});
-			}
-		});
-	},
 	componentDidMount: function() {
 		var thiz = this;
 		if (this.isMounted()) {
+			$.ajax({
+				async: false,
+				url: "php/wx_share.php",
+				type: "GET",
+				data: {
+					urll: document.location.href,
+				},
+				timeout: 5000,
+				success: function(result) {
+					var url_now = document.location.href;
+					var arry = result.split(":");
+					var appid = arry[0],
+						timestamp = arry[1],
+						noncestr = arry[2],
+						signature = arry[3];
+					wx.config({
+						debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+						appId: appid, // 必填，公众号的唯一标识
+						timestamp: timestamp, // 必填，生成签名的时间戳
+						nonceStr: noncestr, // 必填，生成签名的随机串
+						signature: signature, // 必填，签名，见附录1
+						jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone', 'onMenuShareWeibo'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+					});
+					thiz.deal_wx_interface();
+					wx.error(function(res) {
+
+						console.log('room签名失败');
+						// config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+
+					});
+				}
+			});
+
+
+
 			//微信分享接口
 			$('#share').click(function() {
 				$('#myInput').modal('toggle');

@@ -209,7 +209,7 @@ let Application = React.createClass({
               dataNow: 0
             }, function() {
               thiz.diguiliv();
-              console.loog("LpageIndex  :  "+thiz.state.pageIndex);
+              console.log("LpageIndex  :  "+thiz.state.pageIndex);
             });
           }
         })
@@ -220,11 +220,11 @@ let Application = React.createClass({
             thiz.state.video.pause();
             clearTimeout(thiz.state.timeout);
             thiz.setState({
-                pageIndex: thiz.state.pageIndex + 2,
+                pageIndex: thiz.state.pageIndex + 1,
                 dataNow: 0
               }),
               function() {
-               console.loog("RpageIndex  :  "+thiz.state.pageIndex);
+               console.log("RpageIndex  :  "+thiz.state.pageIndex);
                 thiz.diguiliv();
               };
           }

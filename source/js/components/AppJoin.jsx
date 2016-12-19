@@ -12,7 +12,7 @@ var React = require('react');
 
 var AppJoin = React.createClass({
 
-	componentWillMount: function() {
+	componentDidMount: function() {
 		if (sessionStorage.nickname) { //分享设置
 			$.ajax({
 				async: false,
