@@ -108,6 +108,7 @@ body{
     border-color:#DCDCDC;
 }
 #liv_left,#liv_right,#liv_stop{
+    border-style: outset;
      border: 1px solid;
     margin: 30px;
     width: 42px;
@@ -116,4 +117,16 @@ body{
     cursor:default;
     border-radius: 50%;
     background: #ffffff;
+}
+}
+#liv_left:active,#liv_right:active,#liv_stop:active{
+    border-style: inset;
+     border: 1px solid;
+    margin: 30px;
+    width: 42px;
+    height: 42px;
+    border-color:#E6E6FA;
+    cursor:default;
+    border-radius: 50%;
+    background: #00FFFF;
 }

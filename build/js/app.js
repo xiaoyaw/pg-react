@@ -26322,6 +26322,18 @@ var Application = _react2.default.createClass({
   componentDidMount: function componentDidMount() {
     var thiz = this;
     if (this.isMounted()) {
+      //liv
+      //如果是分享出来的
+      var req = new Object();
+      req = this.getRequest();
+      var liv = req['liv'];
+
+      if (liv != '' && liv != undefined) {
+        $.get('http://203.195.173.135:9000/files/liv?file=' + liv + '.liv&format=json', function (res) {
+          thiz.playLivFile(res);
+          $('#liv_Nav').fadeIn();
+        });
+      };
       //点击退出键
       $('#exit').on('click', function () {
         clearTimeout(thiz.state.timeout);
@@ -26332,10 +26344,28 @@ var Application = _react2.default.createClass({
 
       //点击按钮时下载数据并播放
       $('#liv_play').on('click', function () {
-        $.get('http://203.195.173.135:9000/files/liv?file=' + $('#liv_select').val() + '&format=json', function (res) {
-          thiz.playLivFile(res);
-          $('#liv_Nav').fadeIn();
-        });
+        sessionStorage.setItem("liv", $('#liv_select').val());
+        if (thiz.state.res == null) {
+          $.get('http://203.195.173.135:9000/files/liv?file=' + $('#liv_select').val() + '&format=json', function (res) {
+            sessionStorage.setItem("liv", $('#liv_select').val());
+            thiz.playLivFile(res);
+            $('#liv_Nav').fadeIn();
+          });
+        } else {
+          clearTimeout(thiz.state.timeout);
+          thiz.state.audio.pause();
+          thiz.state.video.pause();
+          thiz.setState({
+            isStop: false,
+            pageIndex: 0,
+            pageNum: 0,
+            res: null,
+            livsize: [],
+            dataNow: 0
+          }, function () {
+            $('#liv_play').click();
+          });
+        }
       });
 
       //向左
@@ -26345,7 +26375,10 @@ var Application = _react2.default.createClass({
           thiz.state.video.pause();
           clearTimeout(thiz.state.timeout);
           thiz.setState({
-            pageIndex: thiz.state.pageIndex - 1
+            pageIndex: thiz.state.pageIndex - 1,
+            dataNow: 0
+          }, function () {
+            thiz.diguiliv();
           });
         }
       });
@@ -26356,8 +26389,11 @@ var Application = _react2.default.createClass({
           thiz.state.video.pause();
           clearTimeout(thiz.state.timeout);
           thiz.setState({
-            pageIndex: thiz.state.pageIndex + 1
-          });
+            pageIndex: thiz.state.pageIndex + 1,
+            dataNow: 0
+          }), function () {
+            thiz.diguiliv();
+          };
         }
       });
       //停止
@@ -26377,7 +26413,7 @@ var Application = _react2.default.createClass({
           });
         }
       });
-
+      //---liv
       //ws连接
       if (typeof Storage !== "undefined") {
         if (sessionStorage.username) {
@@ -26395,6 +26431,19 @@ var Application = _react2.default.createClass({
         thiz.handleMessage(JSON.parse(msg.data));
       };
     }
+  },
+  getRequest: function getRequest() {
+    var url = document.location.search;
+    var theRequest = new Object();
+    var strs;
+    if (url.indexOf("?") != -1) {
+      var str = url.substr(1);
+      strs = str.split("&");
+      for (var i = 0; i < strs.length; i++) {
+        theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+      }
+    }
+    return theRequest;
   },
   wsKeepConnect: function wsKeepConnect() {
     var ws = this.state.webSocket;
@@ -27001,7 +27050,7 @@ var LivInfo = React.createClass({
 
 	getInitialState: function getInitialState() {
 		return {
-			course: []
+			course: ['aaa.liv', 'vvv.liv']
 		};
 	},
 	handleClick: function handleClick() {
@@ -27588,9 +27637,9 @@ module.exports = Home;
 'use strict';
 
 /*
-* 播放音频，暂停音频
-* 按钮state的改变
-*/
+ * 播放音频，暂停音频
+ * 按钮state的改变
+ */
 
 var React = require('react');
 
@@ -27604,6 +27653,12 @@ var MyAudio = React.createClass({
 		};
 	},
 	handleClick: function handleClick() {
+		if (sessionStorage.liv) {
+			console.log('true');
+		} else {
+			console.log('false');
+		}
+
 		var thiz = this;
 		this.setState({
 			clicked: !this.state.clicked
@@ -27639,7 +27694,8 @@ var MyAudio = React.createClass({
 
 		return React.createElement(
 			'a',
-			{ ref: 'btnAudio', id: 'voice' },
+			{ ref: 'btnAudio',
+				id: 'voice' },
 			React.createElement(
 				'span',
 				{ className: voiceImg },
@@ -27790,7 +27846,7 @@ var Share = React.createClass({
 				    noncestr = arry[2],
 				    signature = arry[3];
 				wx.config({
-					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+					debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 					appId: appid, // 必填，公众号的唯一标识
 					timestamp: timestamp, // 必填，生成签名的时间戳
 					nonceStr: noncestr, // 必填，生成签名的随机串
@@ -27811,6 +27867,11 @@ var Share = React.createClass({
 		if (this.isMounted()) {
 			//微信分享接口
 			$('#share').click(function () {
+				if (sessionStorage.liv) {
+					thiz.setState({
+						url_now: document.location.origin + "?liv=" + sessionStorage.getItem("liv").split('.')[0] + document.location.hash
+					});
+				}
 				$('#myInput').modal('toggle');
 			});
 
