@@ -19,11 +19,11 @@ var AppJoin = React.createClass({
 				url: "php/wx_share.php",
 				type: "GET",
 				data: {
-					urll: document.location.href,
+					urll: document.location.href.split('#')[0],
 				},
 				timeout: 5000,
 				success: function(result) {
-					var url_now = document.location.href;
+					var url_now = document.location.href.split('#')[0];
 					var arry = result.split(":");
 					var appid = arry[0],
 						timestamp = arry[1],

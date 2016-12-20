@@ -174,6 +174,7 @@ let Application = React.createClass({
         });
       })
 
+
       //点击按钮时下载数据并播放
       $('#liv_play').on('click', function() {
         if (thiz.state.res == null) {
@@ -219,7 +220,6 @@ let Application = React.createClass({
             thiz.state.video.pause();
             clearTimeout(thiz.state.timeout);
             thiz.setState({
-                pageIndex: thiz.state.pageIndex + 1,
                 dataNow: 0
               },function(){
                 thiz.diguiliv();
