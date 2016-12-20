@@ -115,9 +115,8 @@ body{
     height: 42px;
     border-color:#E6E6FA;
     cursor:default;
-    border-radius: 50%;
+    border-radius: 20%;
     background: #ffffff;
-}
 }
 #liv_left:active,#liv_right:active,#liv_stop:active{
     border-style: inset;

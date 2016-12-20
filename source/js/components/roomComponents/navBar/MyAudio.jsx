@@ -13,12 +13,6 @@ var MyAudio = React.createClass({
 		};
 	},
 	handleClick: function() {
-		if(sessionStorage.liv){
-			console.log('true');
-		}else{
-			console.log('false');
-		}
-
 		var thiz = this;
 		this.setState({
 			clicked: !this.state.clicked

@@ -15,7 +15,7 @@ var Share = React.createClass({
 		var thiz = this;
 		if (this.isMounted()) {
 			$.ajax({
-				async: false,
+				async: true,
 				url: "php/wx_share.php",
 				type: "GET",
 				data: {
@@ -40,7 +40,7 @@ var Share = React.createClass({
 					thiz.deal_wx_interface();
 					wx.error(function(res) {
 
-						console.log('room签名失败');
+						console.log('room签名失败'+res);
 						// config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
 
 					});
@@ -67,8 +67,10 @@ var Share = React.createClass({
 							case 1:
 								thiz.setState({
 									desc: msg
+								},function(){
+									thiz.deal_wx_interface();
 								});
-								thiz.deal_wx_interface();
+								
 								break;
 							default:
 								var req = new Object();

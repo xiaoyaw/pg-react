@@ -209,7 +209,6 @@ let Application = React.createClass({
               dataNow: 0
             }, function() {
               thiz.diguiliv();
-              console.log("LpageIndex  :  "+thiz.state.pageIndex);
             });
           }
         })
@@ -222,13 +221,10 @@ let Application = React.createClass({
             thiz.setState({
                 pageIndex: thiz.state.pageIndex + 1,
                 dataNow: 0
-              }),
-              function() {
-               console.log("RpageIndex  :  "+thiz.state.pageIndex);
+              },function(){
                 thiz.diguiliv();
-              };
+              });
           }
-
         })
         //停止
       $('#liv_stop').on('click', function() {
