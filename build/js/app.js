@@ -25457,7 +25457,7 @@ var AppJoin = React.createClass({
 						if (signature != undefined && signature != "" && signature != 'undefined') {
 							//微信分享接口
 							wx.config({
-								debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+								debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 								appId: appid, // 必填，公众号的唯一标识
 								timestamp: timestamp, // 必填，生成签名的时间戳
 								nonceStr: noncestr, // 必填，生成签名的随机串
@@ -26326,22 +26326,6 @@ var Application = _react2.default.createClass({
     if (this.isMounted()) {
       //liv
       //如果是分享出来的
-      var req = new Object();
-      req = this.getRequest();
-      var liv = req['liv'];
-      if (liv != '' && liv != undefined) {
-        $.get('http://203.195.173.135:9000/files/liv?file=' + liv + '.liv&format=json', function (res) {
-          thiz.playLivFile(res);
-          $('#liv_Nav').fadeIn();
-        });
-      };
-      //点击退出键
-      $('#exit').on('click', function () {
-        clearTimeout(thiz.state.timeout);
-        thiz.setState({
-          isStop: true
-        });
-      });
 
       //点击按钮时下载数据并播放
       $('#liv_play').on('click', function () {
@@ -26349,6 +26333,59 @@ var Application = _react2.default.createClass({
           $.get('http://203.195.173.135:9000/files/liv?file=' + $('#liv_select').val() + '&format=json', function (res) {
             thiz.playLivFile(res);
             $('#liv_Nav').fadeIn();
+
+            $('#exit').on('click', function () {
+              clearTimeout(thiz.state.timeout);
+              thiz.setState({
+                isStop: true
+              });
+            });
+
+            //向左
+            $('#liv_left').on('click', function () {
+              if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 1) {
+                thiz.state.audio.pause();
+                thiz.state.video.pause();
+                clearTimeout(thiz.state.timeout);
+                thiz.setState({
+                  pageIndex: thiz.state.pageIndex - 2,
+                  dataNow: 0
+                }, function () {
+                  thiz.diguiliv();
+                });
+              }
+            });
+            //向右
+            $('#liv_right').on('click', function () {
+              if (thiz.state.pageIndex < thiz.state.pageNum - 1) {
+                thiz.state.audio.pause();
+                thiz.state.video.pause();
+                clearTimeout(thiz.state.timeout);
+                thiz.setState({
+                  dataNow: 0
+                }, function () {
+                  thiz.diguiliv();
+                });
+              }
+            });
+            //停止
+            $('#liv_stop').on('click', function () {
+              if (!thiz.state.isStop) {
+                thiz.state.audio.pause();
+                thiz.state.video.pause();
+                clearTimeout(thiz.state.timeout);
+                thiz.setState({
+                  isStop: true
+                });
+              } else {
+                //正在播放的话
+                thiz.setState({
+                  isStop: false
+                }, function () {
+                  thiz.diguiliv();
+                });
+              }
+            });
           });
         } else {
           clearTimeout(thiz.state.timeout);
@@ -26367,50 +26404,6 @@ var Application = _react2.default.createClass({
         }
       });
 
-      //向左
-      $('#liv_left').on('click', function () {
-        if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 1) {
-          thiz.state.audio.pause();
-          thiz.state.video.pause();
-          clearTimeout(thiz.state.timeout);
-          thiz.setState({
-            pageIndex: thiz.state.pageIndex - 2,
-            dataNow: 0
-          }, function () {
-            thiz.diguiliv();
-          });
-        }
-      });
-      //向右
-      $('#liv_right').on('click', function () {
-        if (thiz.state.pageIndex < thiz.state.pageNum - 1) {
-          thiz.state.audio.pause();
-          thiz.state.video.pause();
-          clearTimeout(thiz.state.timeout);
-          thiz.setState({
-            dataNow: 0
-          }, function () {
-            thiz.diguiliv();
-          });
-        }
-      });
-      //停止
-      $('#liv_stop').on('click', function () {
-        if (!thiz.state.isStop) {
-          thiz.state.audio.pause();
-          thiz.state.video.pause();
-          clearTimeout(thiz.state.timeout);
-          thiz.setState({
-            isStop: true
-          });
-        } else {
-          thiz.setState({
-            isStop: false
-          }, function () {
-            thiz.diguiliv();
-          });
-        }
-      });
       //---liv
       //ws连接
       if (typeof Storage !== "undefined") {
@@ -26429,19 +26422,6 @@ var Application = _react2.default.createClass({
         thiz.handleMessage(JSON.parse(msg.data));
       };
     }
-  },
-  getRequest: function getRequest() {
-    var url = document.location.search;
-    var theRequest = new Object();
-    var strs;
-    if (url.indexOf("?") != -1) {
-      var str = url.substr(1);
-      strs = str.split("&");
-      for (var i = 0; i < strs.length; i++) {
-        theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
-      }
-    }
-    return theRequest;
   },
   wsKeepConnect: function wsKeepConnect() {
     var ws = this.state.webSocket;
@@ -27460,58 +27440,72 @@ var Canvas = _react2.default.createClass({
 exports.default = Canvas;
 
 },{"react":228}],244:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var React = require('react');
 
 var ControlNav = React.createClass({
-	displayName: "ControlNav",
+	displayName: 'ControlNav',
 
+	getInitialState: function getInitialState() {
+		return {
+			clicked: false
+		};
+	},
+	handleClick: function handleClick() {
+		this.setState({
+			clicked: !this.state.clicked
+		});
+	},
 
 	render: function render() {
+
+		var stopstate = this.state.clicked ? 'glyphicon glyphicon-play' : 'glyphicon glyphicon-pause';
+
 		return React.createElement(
-			"div",
-			{ className: "navbar-fixed-bottom ",
-				id: "liv_Nav",
+			'div',
+			{ className: 'navbar-fixed-bottom ',
+				id: 'liv_Nav',
 				style: {
 					display: 'none',
 					zIndex: 10,
 					opacity: 0.5
 				} },
 			React.createElement(
-				"button",
-				{ id: "liv_left",
-					className: "liv_control" },
+				'button',
+				{ id: 'liv_left',
+					className: 'liv_control' },
 				React.createElement(
-					"span",
-					{ className: "glyphicon glyphicon-chevron-left" },
-					" "
+					'span',
+					{ className: 'glyphicon glyphicon-chevron-left' },
+					' '
 				),
-				" "
+				' '
 			),
 			React.createElement(
-				"button",
-				{ id: "liv_stop",
-					className: "liv_control" },
+				'button',
+				{ id: 'liv_stop',
+					onClick: this.handleClick,
+					className: 'liv_control' },
 				React.createElement(
-					"span",
-					{ className: "glyphicon glyphicon-stop" },
-					" "
+					'span',
+					{ className: stopstate },
+					' '
 				),
-				" "
+				' '
 			),
 			React.createElement(
-				"button",
-				{ id: "liv_right",
-					className: "liv_control" },
+				'button',
+				{ id: 'liv_right',
+					className: 'liv_control' },
 				React.createElement(
-					"span",
-					{ className: "glyphicon glyphicon-chevron-right" },
-					" "
+					'span',
+					{ className: 'glyphicon glyphicon-chevron-right' },
+					' '
 				),
-				" "
+				' '
 			),
-			" "
+			' '
 		);
 	}
 
@@ -27815,7 +27809,7 @@ var Share = React.createClass({
 			title: '飞播云板',
 			desc: '邀请你点击进入课堂',
 			imgUrl: 'http://pictoshare.net/dev/build/img/pageshare.png',
-			url_now: document.location.href.split('#')[0],
+			url_now: document.location.href,
 			type: '',
 			dataUrl: ''
 		};
@@ -27831,7 +27825,7 @@ var Share = React.createClass({
 					url: "php/wx_share.php",
 					type: "GET",
 					data: {
-						urll: document.location.href.split('#')[0]
+						urll: document.location.href
 					},
 					timeout: 5000,
 					success: function success(result) {
@@ -27842,7 +27836,7 @@ var Share = React.createClass({
 						    noncestr = arry[2],
 						    signature = arry[3];
 						wx.config({
-							debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+							debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 							appId: appid, // 必填，公众号的唯一标识
 							timestamp: timestamp, // 必填，生成签名的时间戳
 							nonceStr: noncestr, // 必填，生成签名的随机串
@@ -27878,6 +27872,8 @@ var Share = React.createClass({
 						case 1:
 							thiz.setState({
 								desc: msg
+							}, function () {
+								thiz.deal_wx_interface();
 							});
 
 							break;
@@ -27912,6 +27908,9 @@ var Share = React.createClass({
 									dataUrl: req['dataUrl']
 								});
 							}
+
+							thiz.deal_wx_interface();
+
 							break;
 					}
 				}
@@ -27920,16 +27919,21 @@ var Share = React.createClass({
 	},
 	deal_wx_interface: function deal_wx_interface() {
 		//验证签名，监听分享
-		var that = this;
+		var title = this.state.title,
+		    desc = this.state.desc,
+		    imgurl = this.state.imgUrl,
+		    type = this.state.type,
+		    dataUrl = this.state.dataUrl,
+		    url_now = this.state.url_now;
 		wx.ready(function () {
 			// config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
 			wx.onMenuShareAppMessage({
-				title: that.state.title, // 分享标题
-				desc: that.state.desc, // 分享描述
-				link: that.state.url_now, // 分享链接
-				imgUrl: that.state.imgUrl, // 分享图标
-				type: that.state.type, // 分享类型,music、video或link，不填默认为link
-				dataUrl: that.state.dataUrl, // 如果type是music或video，则要提供数据链接，默认为空
+				title: title, // 分享标题
+				desc: desc, // 分享描述
+				link: url_now, // 分享链接
+				imgUrl: imgurl, // 分享图标
+				type: type, // 分享类型,music、video或link，不填默认为link
+				dataUrl: dataUrl, // 如果type是music或video，则要提供数据链接，默认为空
 				success: function success() {
 					// 用户确认分享后执行的回调函数
 
@@ -27941,9 +27945,9 @@ var Share = React.createClass({
 			});
 
 			wx.onMenuShareTimeline({
-				title: that.state.title, // 分享标题
-				link: that.state.url_now, // 分享链接
-				imgUrl: that.state.imgUrl, // 分享图标
+				title: title, // 分享标题
+				link: url_now, // 分享链接
+				imgUrl: imgurl, // 分享图标
 				success: function success() {
 					// 用户确认分享后执行的回调函数
 				},
@@ -27953,10 +27957,10 @@ var Share = React.createClass({
 			});
 
 			wx.onMenuShareQQ({
-				title: that.state.title, // 分享标题
-				desc: that.state.desc, // 分享描述
-				link: that.state.url_now, // 分享链接
-				imgUrl: that.state.imgUrl, // 分享图标
+				title: title, // 分享标题
+				desc: desc, // 分享描述
+				link: url_now, // 分享链接
+				imgUrl: imgurl, // 分享图标
 				success: function success() {
 					// 用户确认分享后执行的回调函数
 				},
@@ -27966,10 +27970,10 @@ var Share = React.createClass({
 			});
 
 			wx.onMenuShareWeibo({
-				title: that.state.title, // 分享标题
-				desc: that.state.desc, // 分享描述
-				link: that.state.url_now, // 分享链接
-				imgUrl: that.state.imgUrl, // 分享图标
+				title: title, // 分享标题
+				desc: desc, // 分享描述
+				link: url_now, // 分享链接
+				imgUrl: imgurl, // 分享图标
 				success: function success() {
 					// 用户确认分享后执行的回调函数
 				},
@@ -27979,10 +27983,10 @@ var Share = React.createClass({
 			});
 
 			wx.onMenuShareQZone({
-				title: that.state.title, // 分享标题
-				desc: that.state.desc, // 分享描述
-				link: that.state.url_now, // 分享链接
-				imgUrl: that.state.imgUrl, // 分享图标
+				title: title, // 分享标题
+				desc: desc, // 分享描述
+				link: url_now, // 分享链接
+				imgUrl: imgurl, // 分享图标
 				success: function success() {
 					// 用户确认分享后执行的回调函数
 				},

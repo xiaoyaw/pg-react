@@ -157,23 +157,6 @@ let Application = React.createClass({
     if (this.isMounted()) {
       //liv
       //如果是分享出来的
-      var req = new Object();
-      req = this.getRequest();
-      var liv = req['liv'];
-      if (liv != '' && liv != undefined) {
-        $.get('http://203.195.173.135:9000/files/liv?file=' + liv + '.liv&format=json', function(res) {
-          thiz.playLivFile(res);
-          $('#liv_Nav').fadeIn();
-        });
-      };
-      //点击退出键
-      $('#exit').on('click', function() {
-        clearTimeout(thiz.state.timeout);
-        thiz.setState({
-          isStop: true
-        });
-      })
-
 
       //点击按钮时下载数据并播放
       $('#liv_play').on('click', function() {
@@ -181,6 +164,61 @@ let Application = React.createClass({
           $.get('http://203.195.173.135:9000/files/liv?file=' + $('#liv_select').val() + '&format=json', function(res) {
             thiz.playLivFile(res);
             $('#liv_Nav').fadeIn();
+
+
+            $('#exit').on('click', function() {
+              clearTimeout(thiz.state.timeout);
+              thiz.setState({
+                isStop: true
+              });
+            })
+
+            //向左
+            $('#liv_left').on('click', function() {
+                if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 1) {
+                  thiz.state.audio.pause();
+                  thiz.state.video.pause();
+                  clearTimeout(thiz.state.timeout);
+                  thiz.setState({
+                    pageIndex: thiz.state.pageIndex - 2,
+                    dataNow: 0
+                  }, function() {
+                    thiz.diguiliv();
+                  });
+                }
+              })
+              //向右
+            $('#liv_right').on('click', function() {
+                if (thiz.state.pageIndex < thiz.state.pageNum - 1) {
+                  thiz.state.audio.pause();
+                  thiz.state.video.pause();
+                  clearTimeout(thiz.state.timeout);
+                  thiz.setState({
+                    dataNow: 0
+                  }, function() {
+                    thiz.diguiliv();
+                  });
+                }
+              })
+              //停止
+            $('#liv_stop').on('click', function() {
+              if (!thiz.state.isStop) {
+                thiz.state.audio.pause();
+                thiz.state.video.pause();
+                clearTimeout(thiz.state.timeout);
+                thiz.setState({
+                  isStop: true
+                });
+              } else { //正在播放的话
+                thiz.setState({
+                  isStop: false
+                }, function() {
+                  thiz.diguiliv();
+                });
+              }
+
+            })
+
           });
         } else {
           clearTimeout(thiz.state.timeout);
@@ -199,53 +237,10 @@ let Application = React.createClass({
         }
       });
 
-      //向左
-      $('#liv_left').on('click', function() {
-          if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 1) {
-            thiz.state.audio.pause();
-            thiz.state.video.pause();
-            clearTimeout(thiz.state.timeout);
-            thiz.setState({
-              pageIndex: thiz.state.pageIndex - 2,
-              dataNow: 0
-            }, function() {
-              thiz.diguiliv();
-            });
-          }
-        })
-        //向右
-      $('#liv_right').on('click', function() {
-          if (thiz.state.pageIndex < thiz.state.pageNum - 1) {
-            thiz.state.audio.pause();
-            thiz.state.video.pause();
-            clearTimeout(thiz.state.timeout);
-            thiz.setState({
-                dataNow: 0
-              },function(){
-                thiz.diguiliv();
-              });
-          }
-        })
-        //停止
-      $('#liv_stop').on('click', function() {
-          if (!thiz.state.isStop) {
-            thiz.state.audio.pause();
-            thiz.state.video.pause();
-            clearTimeout(thiz.state.timeout);
-            thiz.setState({
-              isStop: true
-            });
-          } else {
-            thiz.setState({
-              isStop: false
-            }, function() {
-              thiz.diguiliv();
-            });
-          }
 
-        })
-        //---liv
-        //ws连接
+
+      //---liv
+      //ws连接
       if (typeof(Storage) !== "undefined") {
         if (sessionStorage.username) {
           var un = sessionStorage.getItem("username");
@@ -262,19 +257,6 @@ let Application = React.createClass({
         thiz.handleMessage(JSON.parse(msg.data));
       }
     }
-  },
-  getRequest: function() {
-    var url = document.location.search;
-    var theRequest = new Object();
-    var strs;
-    if (url.indexOf("?") != -1) {
-      var str = url.substr(1);
-      strs = str.split("&");
-      for (var i = 0; i < strs.length; i++) {
-        theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
-      }
-    }
-    return theRequest;
   },
   wsKeepConnect: function() {
     var ws = this.state.webSocket;

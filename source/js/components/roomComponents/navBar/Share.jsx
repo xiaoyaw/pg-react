@@ -6,7 +6,7 @@ var Share = React.createClass({
 			title: '飞播云板',
 			desc: '邀请你点击进入课堂',
 			imgUrl: 'http://pictoshare.net/dev/build/img/pageshare.png',
-			url_now: document.location.href.split('#')[0],
+			url_now: document.location.href,
 			type: '',
 			dataUrl: ''
 		};
@@ -22,7 +22,7 @@ var Share = React.createClass({
 					url: "php/wx_share.php",
 					type: "GET",
 					data: {
-						urll: document.location.href.split('#')[0],
+						urll: document.location.href,
 					},
 					timeout: 5000,
 					success: function(result) {
@@ -33,7 +33,7 @@ var Share = React.createClass({
 							noncestr = arry[2],
 							signature = arry[3];
 						wx.config({
-							debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+							debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 							appId: appid, // 必填，公众号的唯一标识
 							timestamp: timestamp, // 必填，生成签名的时间戳
 							nonceStr: noncestr, // 必填，生成签名的随机串
@@ -73,6 +73,8 @@ var Share = React.createClass({
 							case 1:
 								thiz.setState({
 									desc: msg
+								}, function() {
+									thiz.deal_wx_interface();
 								});
 
 								break;
@@ -108,6 +110,9 @@ var Share = React.createClass({
 										dataUrl: req['dataUrl']
 									});
 								}
+
+								thiz.deal_wx_interface();
+
 								break;
 						}
 					}
@@ -117,16 +122,21 @@ var Share = React.createClass({
 	},
 	deal_wx_interface: function() {
 		//验证签名，监听分享
-	var that=this;
+		var title = this.state.title,
+			desc = this.state.desc,
+			imgurl = this.state.imgUrl,
+			type = this.state.type,
+			dataUrl = this.state.dataUrl,
+			url_now = this.state.url_now;
 		wx.ready(function() {
 			// config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
 			wx.onMenuShareAppMessage({
-				title: that.state.title, // 分享标题
-				desc: that.state.desc, // 分享描述
-				link: that.state.url_now, // 分享链接
-				imgUrl: that.state.imgUrl, // 分享图标
-				type: that.state.type, // 分享类型,music、video或link，不填默认为link
-				dataUrl: that.state.dataUrl, // 如果type是music或video，则要提供数据链接，默认为空
+				title: title, // 分享标题
+				desc: desc, // 分享描述
+				link: url_now, // 分享链接
+				imgUrl: imgurl, // 分享图标
+				type: type, // 分享类型,music、video或link，不填默认为link
+				dataUrl: dataUrl, // 如果type是music或video，则要提供数据链接，默认为空
 				success: function() {
 					// 用户确认分享后执行的回调函数
 
@@ -138,9 +148,9 @@ var Share = React.createClass({
 			});
 
 			wx.onMenuShareTimeline({
-				title: that.state.title, // 分享标题
-				link: that.state.url_now, // 分享链接
-				imgUrl: that.state.imgUrl, // 分享图标
+				title: title, // 分享标题
+				link: url_now, // 分享链接
+				imgUrl: imgurl, // 分享图标
 				success: function() {
 					// 用户确认分享后执行的回调函数
 				},
@@ -150,10 +160,10 @@ var Share = React.createClass({
 			});
 
 			wx.onMenuShareQQ({
-				title: that.state.title, // 分享标题
-				desc: that.state.desc, // 分享描述
-				link: that.state.url_now, // 分享链接
-				imgUrl: that.state.imgUrl, // 分享图标
+				title: title, // 分享标题
+				desc: desc, // 分享描述
+				link: url_now, // 分享链接
+				imgUrl: imgurl, // 分享图标
 				success: function() {
 					// 用户确认分享后执行的回调函数
 				},
@@ -163,10 +173,10 @@ var Share = React.createClass({
 			});
 
 			wx.onMenuShareWeibo({
-				title: that.state.title, // 分享标题
-				desc: that.state.desc, // 分享描述
-				link: that.state.url_now, // 分享链接
-				imgUrl: that.state.imgUrl, // 分享图标
+				title: title, // 分享标题
+				desc: desc, // 分享描述
+				link: url_now, // 分享链接
+				imgUrl: imgurl, // 分享图标
 				success: function() {
 					// 用户确认分享后执行的回调函数
 				},
@@ -176,10 +186,10 @@ var Share = React.createClass({
 			});
 
 			wx.onMenuShareQZone({
-				title: that.state.title, // 分享标题
-				desc: that.state.desc, // 分享描述
-				link: that.state.url_now, // 分享链接
-				imgUrl: that.state.imgUrl, // 分享图标
+				title: title, // 分享标题
+				desc: desc, // 分享描述
+				link: url_now, // 分享链接
+				imgUrl: imgurl, // 分享图标
 				success: function() {
 					// 用户确认分享后执行的回调函数
 				},

@@ -1,13 +1,26 @@
 var React = require('react');
 
 var ControlNav = React.createClass({
+	getInitialState: function() {
+		return {
+			clicked: false
+		};
+	},
+	handleClick: function() {
+		this.setState({
+			clicked: !this.state.clicked
+		});
+	},
 
 	render: function() {
+
+		var stopstate = this.state.clicked ? 'glyphicon glyphicon-play' : 'glyphicon glyphicon-pause';
+
 		return ( < div className = "navbar-fixed-bottom "
 			id = "liv_Nav"
 			style = {
 				{
-					display: 'none',
+					display:'none',
 					zIndex: 10,
 					opacity: 0.5
 				}
@@ -18,8 +31,9 @@ var ControlNav = React.createClass({
 
 
 			< button id = "liv_stop"
+			onClick={this.handleClick}
 			className = "liv_control" >
-			< span className = "glyphicon glyphicon-stop" > < /span> < /button >
+			< span className = {stopstate} > < /span> < /button >
 
 
 			< button id = "liv_right"
