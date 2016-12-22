@@ -5,12 +5,13 @@ import Slider from './roomComponents/Slider.jsx';
 import NavagationBar from './roomComponents/NavagationBar.jsx';
 import NetTip from './roomComponents/NetTip.jsx';
 import LivInfo from './roomComponents/alertComponent/LivInfo.jsx';
-import ControlNav from './roomComponents/controlNav/ControlNav.jsx';
+
 
 var AppRoom = React.createClass({
   componentWillMount: function() {
     if (typeof(Storage) !== "undefined") {
-      if (sessionStorage.username) {} else {
+      if (sessionStorage.username) {
+      } else {
         var username = "user_" + Math.random();
         var password = "pass_" + Math.random();
         sessionStorage.setItem("username", username);
@@ -19,7 +20,7 @@ var AppRoom = React.createClass({
     }
   },
   componentDidMount: function() {
-
+    
   },
   render: function() {
     var text = this.props.params.id;
@@ -30,14 +31,8 @@ var AppRoom = React.createClass({
       / > < Application _roomid = {
       text
     }
-    / > < NavagationBar _roomid = {
-      text
-    }/ >
-    < LivInfo _roomid = {
-      text
-    }
-    /> < NetTip / >
-      <ControlNav/>
+    / > < NavagationBar / >
+    < NetTip / >
       < /div>
   );
 }

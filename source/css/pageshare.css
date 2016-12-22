@@ -101,25 +101,3 @@ body{
     z-index: 110;
     margin-top: 30%;
 }
-#liv_select{
-    width: 100%;
-    height: 35px;
-    margin: 5px;
-    border-color:#DCDCDC;
-}
-#liv_left,#liv_right,#liv_stop{
-    border-style: outset;
-     border: 1px solid;
-    margin: 30px;
-    width: 42px;
-    height: 42px;
-    border-color:#E6E6FA;
-    cursor:default;
-    border-radius: 20%;
-    background: #ffffff;
-}
-#liv_left:active,#liv_right:active,#liv_stop:active{
-    border-style: inset;
-    cursor:default;
-    background: #00FFFF;
-}

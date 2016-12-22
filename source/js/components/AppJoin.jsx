@@ -12,18 +12,18 @@ var React = require('react');
 
 var AppJoin = React.createClass({
 
-	componentDidMount: function() {
+	componentWillMount: function() {
 		if (sessionStorage.nickname) { //分享设置
 			$.ajax({
-				async: true,
+				async: false,
 				url: "php/wx_share.php",
 				type: "GET",
 				data: {
-					urll: document.location.href.split('#')[0],
+					urll: document.location.href,
 				},
 				timeout: 5000,
 				success: function(result) {
-					var url_now = document.location.href.split('#')[0];
+					var url_now = document.location.href;
 					var arry = result.split(":");
 					var appid = arry[0],
 						timestamp = arry[1],
@@ -120,7 +120,6 @@ var AppJoin = React.createClass({
 								wx.error(function(res) {
 
 									console.log('签名失败');
-									console.log(res);
 									// config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
 
 								});
@@ -135,10 +134,7 @@ var AppJoin = React.createClass({
 
 		} else {
 			//分享join界面url，先授权获取到username再跳/JOIN
-			//	document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
-			//e课
-			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
-
+			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fPageShare%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 		}
 	},
 	render: function() {

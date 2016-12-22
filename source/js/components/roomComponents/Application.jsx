@@ -14,8 +14,7 @@ import {
 let Application = React.createClass({
   getInitialState: function() {
 
-    var audio = document.getElementById('myaudio');
-    var video = document.getElementById('myvideo');
+
     //禁止选中
     if (typeof(document.onselectstart) != "undefined") {
       // IE下禁止元素被选取        
@@ -27,16 +26,6 @@ let Application = React.createClass({
       ws = new WebSocket('ws://203.195.173.135:9999/ws');
     }
     return {
-      //liv
-      timeout: null,
-      isStop: false,
-      pageIndex: 0,
-      pageNum: 0,
-      res: null,
-      livsize: [],
-      dataNow: 0,
-      audio: audio,
-      video: video,
       interTime: '',
       userName: null,
       webSocket: ws,
@@ -96,151 +85,11 @@ let Application = React.createClass({
     window.clearInterval(this.state.interTime);
     ws.close(1000, username);
   },
-
-  callivMsgSize: function(res) {
-    var livsize = []
-    for (var p in res) {
-      livsize.push(p);
-    }
-    return livsize;
-  },
-  playLivFile: function(res) {
-    var livsize = this.callivMsgSize(res);
-    this.setState({
-      livsize: livsize,
-      res: res,
-      pageNum: livsize.length
-    }, function() {
-      this.diguiliv();
-    });
-
-  },
-  //递归liv播放
-  diguiliv: function() {
-    var thiz = this;
-    if (!thiz.state.isStop) {
-      if (thiz.state.pageIndex < thiz.state.pageNum) {
-        //页数未到末尾
-        if (thiz.state.dataNow < thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]].length) {
-          //本页未到最后一笔
-          thiz.state.timeout = setTimeout(function() {
-            thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
-            thiz.setState({
-              dataNow: thiz.state.dataNow + 1
-            }, function() {
-              thiz.diguiliv();
-            });
-          }, thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].time);
-        } else { //本页最后一笔画完，翻页并递归
-          thiz.setState({
-            pageIndex: thiz.state.pageIndex + 1,
-            dataNow: 0
-          }, function() {
-            thiz.diguiliv();
-          });
-        }
-      } else {
-        //是否轮播
-        thiz.setState({
-          pageIndex: 0,
-          dataNow: 0
-        }, function() {
-          thiz.diguiliv();
-        });
-      }
-    }
-  },
-
   //渲染以后？ 设置为以前收不到Message
   componentDidMount: function() {
     var thiz = this;
     if (this.isMounted()) {
-      //liv
-      //如果是分享出来的
-
-      //点击按钮时下载数据并播放
-      $('#liv_play').on('click', function() {
-        if (thiz.state.res == null) {
-          $.get('http://203.195.173.135:9000/files/liv?file=' + $('#liv_select').val() + '&format=json', function(res) {
-            thiz.playLivFile(res);
-            $('#liv_Nav').fadeIn();
-
-
-            $('#exit').on('click', function() {
-              clearTimeout(thiz.state.timeout);
-              thiz.setState({
-                isStop: true
-              });
-            })
-
-            //向左
-            $('#liv_left').on('click', function() {
-                if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 1) {
-                  thiz.state.audio.pause();
-                  thiz.state.video.pause();
-                  clearTimeout(thiz.state.timeout);
-                  thiz.setState({
-                    pageIndex: thiz.state.pageIndex - 2,
-                    dataNow: 0
-                  }, function() {
-                    thiz.diguiliv();
-                  });
-                }
-              })
-              //向右
-            $('#liv_right').on('click', function() {
-                if (thiz.state.pageIndex < thiz.state.pageNum - 1) {
-                  thiz.state.audio.pause();
-                  thiz.state.video.pause();
-                  clearTimeout(thiz.state.timeout);
-                  thiz.setState({
-                    dataNow: 0
-                  }, function() {
-                    thiz.diguiliv();
-                  });
-                }
-              })
-              //停止
-            $('#liv_stop').on('click', function() {
-              if (!thiz.state.isStop) {
-                thiz.state.audio.pause();
-                thiz.state.video.pause();
-                clearTimeout(thiz.state.timeout);
-                thiz.setState({
-                  isStop: true
-                });
-              } else { //正在播放的话
-                thiz.setState({
-                  isStop: false
-                }, function() {
-                  thiz.diguiliv();
-                });
-              }
-
-            })
-
-          });
-        } else {
-          clearTimeout(thiz.state.timeout);
-          thiz.state.audio.pause();
-          thiz.state.video.pause();
-          thiz.setState({
-            isStop: false,
-            pageIndex: 0,
-            pageNum: 0,
-            res: null,
-            livsize: [],
-            dataNow: 0
-          }, function() {
-            $('#liv_play').click();
-          });
-        }
-      });
-
-
-
-      //---liv
-      //ws连接
+      var ws = this.state.webSocket;
       if (typeof(Storage) !== "undefined") {
         if (sessionStorage.username) {
           var un = sessionStorage.getItem("username");
@@ -248,13 +97,11 @@ let Application = React.createClass({
         }
       }
       var roomid = this.props._roomid;
-
-      var ws = this.state.webSocket;
       this.connectWebSocket(ws, un, pd, roomid);
 
       window.addEventListener('resize', this.handleResize);
       ws.onmessage = function(msg) {
-        thiz.handleMessage(JSON.parse(msg.data));
+        thiz.handleMessage(msg);
       }
     }
   },
@@ -349,7 +196,9 @@ let Application = React.createClass({
     this.setState({
       isResize: false
     });
-    var value = msg;
+    var json = msg.data;
+    var value = JSON.parse(json);
+    var src, data;
     switch (value.cmd) {
       case "login":
         //账号密码为空时
@@ -404,7 +253,7 @@ let Application = React.createClass({
         audio.src = "data:audio/mpeg;base64," + value.voice;
         // if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
         //   $('body').on('touchstart touchmove touchend click', function() { //一次事件触发
-        audio.play();
+            audio.play();
         //    $('body').unbind();
         //   });
         //   this.setState({
@@ -486,7 +335,8 @@ let Application = React.createClass({
       _top = {
         this.state.top
       }
-      />   < Canvas _img_width = {
+      />  
+       <Canvas _img_width = {
       this.state.img_width
     }
     _img_height = {
