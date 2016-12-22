@@ -8,7 +8,7 @@ import {
 var Select = React.createClass({
 	getInitialState: function() {
 		return {
-			course: ['请选择待播文件','asd']
+			course: ['请选择待播文件']
 		};
 	},
 	componentDidMount: function() {
@@ -21,7 +21,7 @@ var Select = React.createClass({
 					var audio = document.getElementById("myaudio");
 					audio.src = 'img/sure.mp3';
 					audio.play();
-					hashHistory.push('/eread/' + $('#liv_select').val());
+					hashHistory.push('/eread/' + $('#liv_select').val().split('.')[0]);
 				}
 			});
 		}
