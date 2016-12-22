@@ -1,39 +1,43 @@
 <?php
-$appid = "wxe818778f16e4400d";
-$appsecret = "0f96dfcb79cf259c66217b7af95e20fe";//��ȡopenid
+//奕甲飞播
+// $appid = "wxe818778f16e4400d";
+// $appsecret = "0f96dfcb79cf259c66217b7af95e20fe";//»ñÈ¡openid
+//飞播e课
+$appid = "wx6573103bb78bec40";
+$appsecret = "e80fc19c30db3387232d828d7dfdb402";//»ñÈ¡openid
 
-//��ȡȫ��token
+//»ñÈ¡È«¾Ötoken
 $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=$appid&secret=$appsecret";
 $result = https_request($url);
 $jsoninfo = json_decode($result, true);
-$access_token = $jsoninfo["access_token"];//�ӷ���json����ж���openid
+$access_token = $jsoninfo["access_token"];//´Ó·µ»Øjson½á¹ûÖÐ¶Á³öopenid
 
-//��ȡticket
+//»ñÈ¡ticket
 $url1 = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=$access_token&type=jsapi";
 $result1 = https_request($url1);
 $jsoninfo1 = json_decode($result1, true);
 $jsapi_ticket=$jsoninfo1["ticket"];
 
-//��ȡ����ַ���
+//»ñÈ¡Ëæ»ú×Ö·û´®
 $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
  $noncestr = "";
  for ($i = 0; $i < 16; $i++) {
       $noncestr .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
     }
     
-//��ȡʱ��
+//»ñÈ¡Ê±¼ä
 $timestamp=time();
 
-//��ȡurl
+//»ñÈ¡url
 $urll= $_GET['urll'];
 
-//ASCLL����
+//ASCLLÅÅÐò
 $string = "jsapi_ticket=$jsapi_ticket&noncestr=$noncestr&timestamp=$timestamp&url=$urll";
 
-//ǩ��
+//Ç©Ãû
 $signature = sha1($string);
 
-//�ͻ�ǰ��
+//ËÍ»ØÇ°¶Ë
 echo $appid.":".$timestamp.":".$noncestr.":".$signature; 
 
  function https_request($url,$data = null){

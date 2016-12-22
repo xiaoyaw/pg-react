@@ -6,12 +6,12 @@
  * 2、没有放在canvas中处理视频的原因是 此组件任何state变化都会导致render方法执行，从而导致视频或音频重复播放
  */
 import React from 'react';
-import Canvas from './blackBoard/Canvas.jsx';
-import BgImage from './blackBoard/BgImage.jsx';
+import Canvas from '../roomComponents/blackBoard/Canvas.jsx';
+import BgImage from '../roomComponents/blackBoard/BgImage.jsx';
 import {
   hashHistory
 } from 'react-router';
-let Application = React.createClass({
+let ReadApplication = React.createClass({
   getInitialState: function() {
 
     var audio = document.getElementById('myaudio');
@@ -22,10 +22,6 @@ let Application = React.createClass({
       document.onselectstart = new Function("return false");
     }
 
-    var ws;
-    if (ws == null || ws.readyState != 1) {
-      ws = new WebSocket('ws://203.195.173.135:9999/ws');
-    }
     return {
       //liv
       timeout: null,
@@ -37,12 +33,9 @@ let Application = React.createClass({
       dataNow: 0,
       audio: audio,
       video: video,
-      interTime: '',
-      userName: null,
-      webSocket: ws,
       scaleX: null, //给canvas  X轴图片或笔迹伸缩量
       scaleY: null, //给canvas  Y轴图片或笔迹伸缩量
-      src: null, //给imgae的
+      src: 'img/welcome.png', //给imgae的
       width: null, //给image  canvse的
       height: null, //给image  canvse的
       left: null, //给image  canvse的
@@ -55,46 +48,22 @@ let Application = React.createClass({
     };
   },
 
-  //发送data打开连接
-  connectWebSocket: function(ws, user, pw, id) {
-    var thiz = this;
-    ws.onerror = function(e) {
-      // console.log("error");
-      alert('websocket连接有异常...');
-      hashHistory.replace('/');
-    }
-    ws.onopen = function(e) {
-      thiz.wsKeepConnect();
-      var UserMsg = {
-        'cmd': 'login',
-        'userName': user,
-        'passWord': pw,
-        'sessionID': id
-      };
-      ws.send(JSON.stringify(UserMsg));
-    }
-    ws.onclose = function(e) {
-      // console.log("closed");
-      $('#nettip').fadeIn();
-    }
-  },
   //搁置
   handleResize: function(e) {
     if (this.isMounted()) {
       this.calculateImgProp(this.state.src);
     }
   },
+  componentWillMount:function(){
+    this.calculateImgProp('img/welcome.png')
+  },
   componentWillUnmount() {
-    var username = this.state.username;
-    var ws = this.state.webSocket;
     var audio = document.getElementById('myaudio');
     var video = document.getElementById('myvideo');
     audio.pause();
     audio.src = '';
     video.pause();
     video.src = '';
-    window.clearInterval(this.state.interTime);
-    ws.close(1000, username);
   },
 
   callivMsgSize: function(res) {
@@ -157,118 +126,73 @@ let Application = React.createClass({
     if (this.isMounted()) {
       //liv
       //如果是分享出来的
-      
+
+      $.get('http://203.195.173.135:9000/files/liv?file=' + thiz.props.file + '.liv&format=json', function(res) {
+        thiz.playLivFile(res);
+        $('#liv_Nav').fadeIn();
+      });
+
       //点击按钮时下载数据并播放
       $('#liv_play').on('click', function() {
-        if (thiz.state.res == null) {
-          $.get('http://203.195.173.135:9000/files/liv?file=' + $('#liv_select').val() + '&format=json', function(res) {
-            thiz.playLivFile(res);
-            $('#liv_Nav').fadeIn();
+        if (thiz.state.res != null) {
+          $('#exit').on('click', function() {
+            clearTimeout(thiz.state.timeout);
+            thiz.setState({
+              isStop: true
+            });
+          })
 
-
-            $('#exit').on('click', function() {
-              clearTimeout(thiz.state.timeout);
-              thiz.setState({
-                isStop: true
-              });
-            })
-
-            //向左
-            $('#liv_left').on('click', function() {
-                if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 1) {
-                  thiz.state.audio.pause();
-                  thiz.state.video.pause();
-                  clearTimeout(thiz.state.timeout);
-                  thiz.setState({
-                    pageIndex: thiz.state.pageIndex - 2,
-                    dataNow: 0
-                  }, function() {
-                    thiz.diguiliv();
-                  });
-                }
-              })
-              //向右
-            $('#liv_right').on('click', function() {
-                if (thiz.state.pageIndex < thiz.state.pageNum - 1) {
-                  thiz.state.audio.pause();
-                  thiz.state.video.pause();
-                  clearTimeout(thiz.state.timeout);
-                  thiz.setState({
-                    dataNow: 0
-                  }, function() {
-                    thiz.diguiliv();
-                  });
-                }
-              })
-              //停止
-            $('#liv_stop').on('click', function() {
-              if (!thiz.state.isStop) {
+          //向左
+          $('#liv_left').on('click', function() {
+              if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 1) {
                 thiz.state.audio.pause();
                 thiz.state.video.pause();
                 clearTimeout(thiz.state.timeout);
                 thiz.setState({
-                  isStop: true
-                });
-              } else { //正在播放的话
-                thiz.setState({
-                  isStop: false
+                  pageIndex: thiz.state.pageIndex - 2,
+                  dataNow: 0
                 }, function() {
                   thiz.diguiliv();
                 });
               }
-
             })
+            //向右
+          $('#liv_right').on('click', function() {
+              if (thiz.state.pageIndex < thiz.state.pageNum - 1) {
+                thiz.state.audio.pause();
+                thiz.state.video.pause();
+                clearTimeout(thiz.state.timeout);
+                thiz.setState({
+                  dataNow: 0
+                }, function() {
+                  thiz.diguiliv();
+                });
+              }
+            })
+            //停止
+          $('#liv_stop').on('click', function() {
+            if (!thiz.state.isStop) {
+              thiz.state.audio.pause();
+              thiz.state.video.pause();
+              clearTimeout(thiz.state.timeout);
+              thiz.setState({
+                isStop: true
+              });
+            } else { //正在播放的话
+              thiz.setState({
+                isStop: false
+              }, function() {
+                thiz.diguiliv();
+              });
+            }
+          })
 
-          });
-        } else {
-          clearTimeout(thiz.state.timeout);
-          thiz.state.audio.pause();
-          thiz.state.video.pause();
-          thiz.setState({
-            isStop: false,
-            pageIndex: 0,
-            pageNum: 0,
-            res: null,
-            livsize: [],
-            dataNow: 0
-          }, function() {
-            $('#liv_play').click();
-          });
         }
       });
-
-
-
-      //---liv
-      //ws连接
-      if (typeof(Storage) !== "undefined") {
-        if (sessionStorage.username) {
-          var un = sessionStorage.getItem("username");
-          var pd = sessionStorage.getItem("password");
-        }
-      }
-      var roomid = this.props._roomid;
-
-      var ws = this.state.webSocket;
-      this.connectWebSocket(ws, un, pd, roomid);
-
       window.addEventListener('resize', this.handleResize);
-      ws.onmessage = function(msg) {
-        thiz.handleMessage(JSON.parse(msg.data));
-      }
     }
   },
-  wsKeepConnect: function() {
-    var ws = this.state.webSocket;
-    var heart = '';
-    var preventTimeOut = setInterval(
-      function() {
-        ws.send(JSON.stringify(heart));
-      }, 300000);
-    this.setState({
-      interTime: preventTimeOut
-    });
-  },
+
   getWindowSize: function() {
     var ww = window.innerWidth;
     var wh = window.innerHeight;
@@ -351,14 +275,6 @@ let Application = React.createClass({
     });
     var value = msg;
     switch (value.cmd) {
-      case "login":
-        //账号密码为空时
-        break;
-      case "Error":
-        //console.log('XMPP no response');
-        //hashHistory.replace('/');
-        //roomID为空时
-        break;
       case "startSession":
         //不知道什么时候触发
         this.calculateImgProp('img/welcome.png');
@@ -521,4 +437,4 @@ let Application = React.createClass({
 
 });
 
-export default Application;
+export default ReadApplication;

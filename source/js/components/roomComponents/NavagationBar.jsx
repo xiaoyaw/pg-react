@@ -2,7 +2,6 @@ import MyAudio from './navBar/MyAudio.jsx';
 import MyVideo from './navBar/MyVideo.jsx';
 import Home from './navBar/Home.jsx';
 import Share from './navBar/Share.jsx';
-// import PlayLiv from './navBar/PlayLiv.jsx';  < li > < PlayLiv / > < /li>
 
 
 var React = require('react');
@@ -28,7 +27,7 @@ var NavagationBar = React.createClass({
 
 			< ul className = 'nav nav-pills' >
 			< li > < img id = 'logo'
-			src = 'img/pageshare.png' / > < /li>  < li > < Home / > < /li > < li > < MyAudio / > < /li>  < li > < MyVideo / > < /li>   < li > < Share / > < /li > < /ul >  < /div>
+			src = 'img/pageshare.png' / > < /li>  < li > < Home / > < /li > < li > < MyAudio / > < /li>  < li > < MyVideo / > < /li>  < li > < Share / > < /li > < /ul >  < /div>
 		);
 	}
 
