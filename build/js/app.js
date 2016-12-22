@@ -66,7 +66,7 @@ function is_weixin() {
 	}
 }
 
-},{"./components/AppJoin.jsx":229,"./components/AppRoom.jsx":230,"./components/PAppJoin.jsx":231,"./components/PAppRoom.jsx":232,"./components/wxLogin.jsx":251,"react":228,"react-dom":3,"react-router":30}],2:[function(require,module,exports){
+},{"./components/AppJoin.jsx":229,"./components/AppRoom.jsx":230,"./components/PAppJoin.jsx":231,"./components/PAppRoom.jsx":232,"./components/wxLogin.jsx":249,"react":228,"react-dom":3,"react-router":30}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -25431,19 +25431,19 @@ var AppJoin = React.createClass({
 	displayName: 'AppJoin',
 
 
-	componentDidMount: function componentDidMount() {
+	componentWillMount: function componentWillMount() {
 		if (sessionStorage.nickname) {
 			//分享设置
 			$.ajax({
-				async: true,
+				async: false,
 				url: "php/wx_share.php",
 				type: "GET",
 				data: {
-					urll: document.location.href.split('#')[0]
+					urll: document.location.href
 				},
 				timeout: 5000,
 				success: function success(result) {
-					var url_now = document.location.href.split('#')[0];
+					var url_now = document.location.href;
 					var arry = result.split(":");
 					var appid = arry[0],
 					    timestamp = arry[1],
@@ -25538,7 +25538,6 @@ var AppJoin = React.createClass({
 							wx.error(function (res) {
 
 								console.log('签名失败');
-								console.log(res);
 								// config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
 							});
 
@@ -25549,9 +25548,7 @@ var AppJoin = React.createClass({
 			});
 		} else {
 			//分享join界面url，先授权获取到username再跳/JOIN
-			//	document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
-			//e课
-			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+			document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fPageShare%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 		}
 	},
 	render: function render() {
@@ -25598,10 +25595,6 @@ var _LivInfo = require('./roomComponents/alertComponent/LivInfo.jsx');
 
 var _LivInfo2 = _interopRequireDefault(_LivInfo);
 
-var _ControlNav = require('./roomComponents/controlNav/ControlNav.jsx');
-
-var _ControlNav2 = _interopRequireDefault(_ControlNav);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var AppRoom = _react2.default.createClass({
@@ -25629,12 +25622,8 @@ var AppRoom = _react2.default.createClass({
       _react2.default.createElement(_Application2.default, { _roomid: text
       }),
       ' ',
-      _react2.default.createElement(_NavagationBar2.default, { _roomid: text }),
-      _react2.default.createElement(_LivInfo2.default, { _roomid: text
-      }),
-      ' ',
-      _react2.default.createElement(_NetTip2.default, null),
-      _react2.default.createElement(_ControlNav2.default, null)
+      _react2.default.createElement(_NavagationBar2.default, null),
+      _react2.default.createElement(_NetTip2.default, null)
     );
   }
 
@@ -25642,7 +25631,7 @@ var AppRoom = _react2.default.createClass({
 
 module.exports = AppRoom;
 
-},{"./roomComponents/Application.jsx":236,"./roomComponents/NavagationBar.jsx":237,"./roomComponents/NetTip.jsx":238,"./roomComponents/Slider.jsx":240,"./roomComponents/alertComponent/LivInfo.jsx":241,"./roomComponents/controlNav/ControlNav.jsx":244,"react":228,"react-dom":3}],231:[function(require,module,exports){
+},{"./roomComponents/Application.jsx":236,"./roomComponents/NavagationBar.jsx":237,"./roomComponents/NetTip.jsx":238,"./roomComponents/Slider.jsx":240,"./roomComponents/alertComponent/LivInfo.jsx":241,"react":228,"react-dom":3}],231:[function(require,module,exports){
 'use strict';
 
 var _PJoinInput = require('./joinComponents/PJoinInput.jsx');
@@ -25661,7 +25650,6 @@ var PAppJoin = React.createClass({
 	displayName: 'PAppJoin',
 
 	render: function render() {
-
 		return React.createElement(
 			'div',
 			null,
@@ -25701,15 +25689,9 @@ var _NetTip = require('./roomComponents/NetTip.jsx');
 
 var _NetTip2 = _interopRequireDefault(_NetTip);
 
-var _LivInfo = require('./roomComponents/alertComponent/LivInfo.jsx');
-
-var _LivInfo2 = _interopRequireDefault(_LivInfo);
-
-var _ControlNav = require('./roomComponents/controlNav/ControlNav.jsx');
-
-var _ControlNav2 = _interopRequireDefault(_ControlNav);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import LivInfo from './roomComponents/alertComponent/LivInfo.jsx'; <LivInfo/>
 
 var PAppRoom = _react2.default.createClass({
   displayName: 'PAppRoom',
@@ -25738,14 +25720,8 @@ var PAppRoom = _react2.default.createClass({
       _react2.default.createElement(_Application2.default, { _roomid: text
       }),
       ' ',
-      _react2.default.createElement(_PNavagationBar2.default, { _roomid: text
-      }),
-      ' ',
-      _react2.default.createElement(_LivInfo2.default, { _roomid: text
-      }),
-      ' ',
-      _react2.default.createElement(_NetTip2.default, null),
-      _react2.default.createElement(_ControlNav2.default, null)
+      _react2.default.createElement(_PNavagationBar2.default, null),
+      _react2.default.createElement(_NetTip2.default, null)
     );
   }
 
@@ -25753,7 +25729,7 @@ var PAppRoom = _react2.default.createClass({
 
 module.exports = PAppRoom;
 
-},{"./roomComponents/Application.jsx":236,"./roomComponents/NetTip.jsx":238,"./roomComponents/PNavagationBar.jsx":239,"./roomComponents/Slider.jsx":240,"./roomComponents/alertComponent/LivInfo.jsx":241,"./roomComponents/controlNav/ControlNav.jsx":244,"react":228,"react-dom":3}],233:[function(require,module,exports){
+},{"./roomComponents/Application.jsx":236,"./roomComponents/NetTip.jsx":238,"./roomComponents/PNavagationBar.jsx":239,"./roomComponents/Slider.jsx":240,"react":228,"react-dom":3}],233:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -26182,8 +26158,6 @@ var Application = _react2.default.createClass({
 
   getInitialState: function getInitialState() {
 
-    var audio = document.getElementById('myaudio');
-    var video = document.getElementById('myvideo');
     //禁止选中
     if (typeof document.onselectstart != "undefined") {
       // IE下禁止元素被选取        
@@ -26195,16 +26169,6 @@ var Application = _react2.default.createClass({
       ws = new WebSocket('ws://203.195.173.135:9999/ws');
     }
     return {
-      //liv
-      timeout: null,
-      isStop: false,
-      pageIndex: 0,
-      pageNum: 0,
-      res: null,
-      livsize: [],
-      dataNow: 0,
-      audio: audio,
-      video: video,
       interTime: '',
       userName: null,
       webSocket: ws,
@@ -26265,147 +26229,11 @@ var Application = _react2.default.createClass({
     ws.close(1000, username);
   },
 
-
-  callivMsgSize: function callivMsgSize(res) {
-    var livsize = [];
-    for (var p in res) {
-      livsize.push(p);
-    }
-    return livsize;
-  },
-  playLivFile: function playLivFile(res) {
-    var livsize = this.callivMsgSize(res);
-    this.setState({
-      livsize: livsize,
-      res: res,
-      pageNum: livsize.length
-    }, function () {
-      this.diguiliv();
-    });
-  },
-  //递归liv播放
-  diguiliv: function diguiliv() {
-    var thiz = this;
-    if (!thiz.state.isStop) {
-      if (thiz.state.pageIndex < thiz.state.pageNum) {
-        //页数未到末尾
-        if (thiz.state.dataNow < thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]].length) {
-          //本页未到最后一笔
-          thiz.state.timeout = setTimeout(function () {
-            thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
-            thiz.setState({
-              dataNow: thiz.state.dataNow + 1
-            }, function () {
-              thiz.diguiliv();
-            });
-          }, thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].time);
-        } else {
-          //本页最后一笔画完，翻页并递归
-          thiz.setState({
-            pageIndex: thiz.state.pageIndex + 1,
-            dataNow: 0
-          }, function () {
-            thiz.diguiliv();
-          });
-        }
-      } else {
-        //是否轮播
-        thiz.setState({
-          pageIndex: 0,
-          dataNow: 0
-        }, function () {
-          thiz.diguiliv();
-        });
-      }
-    }
-  },
-
   //渲染以后？ 设置为以前收不到Message
   componentDidMount: function componentDidMount() {
     var thiz = this;
     if (this.isMounted()) {
-      //liv
-      //如果是分享出来的
-
-      //点击按钮时下载数据并播放
-      $('#liv_play').on('click', function () {
-        if (thiz.state.res == null) {
-          $.get('http://203.195.173.135:9000/files/liv?file=' + $('#liv_select').val() + '&format=json', function (res) {
-            thiz.playLivFile(res);
-            $('#liv_Nav').fadeIn();
-
-            $('#exit').on('click', function () {
-              clearTimeout(thiz.state.timeout);
-              thiz.setState({
-                isStop: true
-              });
-            });
-
-            //向左
-            $('#liv_left').on('click', function () {
-              if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 1) {
-                thiz.state.audio.pause();
-                thiz.state.video.pause();
-                clearTimeout(thiz.state.timeout);
-                thiz.setState({
-                  pageIndex: thiz.state.pageIndex - 2,
-                  dataNow: 0
-                }, function () {
-                  thiz.diguiliv();
-                });
-              }
-            });
-            //向右
-            $('#liv_right').on('click', function () {
-              if (thiz.state.pageIndex < thiz.state.pageNum - 1) {
-                thiz.state.audio.pause();
-                thiz.state.video.pause();
-                clearTimeout(thiz.state.timeout);
-                thiz.setState({
-                  dataNow: 0
-                }, function () {
-                  thiz.diguiliv();
-                });
-              }
-            });
-            //停止
-            $('#liv_stop').on('click', function () {
-              if (!thiz.state.isStop) {
-                thiz.state.audio.pause();
-                thiz.state.video.pause();
-                clearTimeout(thiz.state.timeout);
-                thiz.setState({
-                  isStop: true
-                });
-              } else {
-                //正在播放的话
-                thiz.setState({
-                  isStop: false
-                }, function () {
-                  thiz.diguiliv();
-                });
-              }
-            });
-          });
-        } else {
-          clearTimeout(thiz.state.timeout);
-          thiz.state.audio.pause();
-          thiz.state.video.pause();
-          thiz.setState({
-            isStop: false,
-            pageIndex: 0,
-            pageNum: 0,
-            res: null,
-            livsize: [],
-            dataNow: 0
-          }, function () {
-            $('#liv_play').click();
-          });
-        }
-      });
-
-      //---liv
-      //ws连接
+      var ws = this.state.webSocket;
       if (typeof Storage !== "undefined") {
         if (sessionStorage.username) {
           var un = sessionStorage.getItem("username");
@@ -26413,13 +26241,11 @@ var Application = _react2.default.createClass({
         }
       }
       var roomid = this.props._roomid;
-
-      var ws = this.state.webSocket;
       this.connectWebSocket(ws, un, pd, roomid);
 
       window.addEventListener('resize', this.handleResize);
       ws.onmessage = function (msg) {
-        thiz.handleMessage(JSON.parse(msg.data));
+        thiz.handleMessage(msg);
       };
     }
   },
@@ -26515,7 +26341,9 @@ var Application = _react2.default.createClass({
     this.setState({
       isResize: false
     });
-    var value = msg;
+    var json = msg.data;
+    var value = JSON.parse(json);
+    var src, data;
     switch (value.cmd) {
       case "login":
         //账号密码为空时
@@ -26646,7 +26474,6 @@ var Application = _react2.default.createClass({
         _left: this.state.left,
         _top: this.state.top
       }),
-      '   ',
       _react2.default.createElement(_Canvas2.default, { _img_width: this.state.img_width,
         _img_height: this.state.img_height,
 
@@ -26685,11 +26512,10 @@ var _Share = require('./navBar/Share.jsx');
 
 var _Share2 = _interopRequireDefault(_Share);
 
-var _PlayLiv = require('./navBar/PlayLiv.jsx');
-
-var _PlayLiv2 = _interopRequireDefault(_PlayLiv);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import PlayLiv from './navBar/PlayLiv.jsx';  < li > < PlayLiv / > < /li>
+
 
 var React = require('react');
 
@@ -26748,15 +26574,7 @@ var NavagationBar = React.createClass({
 					React.createElement(_MyVideo2.default, null),
 					' '
 				),
-				'  ',
-				React.createElement(
-					'li',
-					null,
-					' ',
-					React.createElement(_PlayLiv2.default, null),
-					' '
-				),
-				' ',
+				'   ',
 				React.createElement(
 					'li',
 					null,
@@ -26774,7 +26592,7 @@ var NavagationBar = React.createClass({
 
 module.exports = NavagationBar;
 
-},{"./navBar/Home.jsx":246,"./navBar/MyAudio.jsx":247,"./navBar/MyVideo.jsx":248,"./navBar/PlayLiv.jsx":249,"./navBar/Share.jsx":250,"react":228}],238:[function(require,module,exports){
+},{"./navBar/Home.jsx":245,"./navBar/MyAudio.jsx":246,"./navBar/MyVideo.jsx":247,"./navBar/Share.jsx":248,"react":228}],238:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -26829,11 +26647,9 @@ var _Share = require('./navBar/Share.jsx');
 
 var _Share2 = _interopRequireDefault(_Share);
 
-var _PlayLiv = require('./navBar/PlayLiv.jsx');
-
-var _PlayLiv2 = _interopRequireDefault(_PlayLiv);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import PlayLiv from './navBar/PlayLiv.jsx';
 
 var React = require('react');
 
@@ -26888,15 +26704,7 @@ var PNavagationBar = React.createClass({
 					React.createElement(_MyVideo2.default, null),
 					' '
 				),
-				' ',
-				React.createElement(
-					'li',
-					null,
-					' ',
-					React.createElement(_PlayLiv2.default, null),
-					' '
-				),
-				' ',
+				'  ',
 				React.createElement(
 					'li',
 					null,
@@ -26913,7 +26721,7 @@ var PNavagationBar = React.createClass({
 
 module.exports = PNavagationBar;
 
-},{"./navBar/Edit.jsx":245,"./navBar/Home.jsx":246,"./navBar/MyAudio.jsx":247,"./navBar/MyVideo.jsx":248,"./navBar/PlayLiv.jsx":249,"./navBar/Share.jsx":250,"react":228}],240:[function(require,module,exports){
+},{"./navBar/Edit.jsx":244,"./navBar/Home.jsx":245,"./navBar/MyAudio.jsx":246,"./navBar/MyVideo.jsx":247,"./navBar/Share.jsx":248,"react":228}],240:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -27023,46 +26831,37 @@ module.exports = Slider;
 'use strict';
 
 var React = require('react');
+
 var LivInfo = React.createClass({
 	displayName: 'LivInfo',
 
 	getInitialState: function getInitialState() {
 		return {
-			course: []
+			sessionID: '',
+			target: '',
+			course: ['abc', 'def', 'kate']
 		};
 	},
-	handleClick: function handleClick() {
-		//查询liv文件加载
-		this.queryAllLiv();
+	handleClick: function handleClick(val) {
+		if (val !== '') {
+			$.ajax({
+				async: true,
+				url: 'http://203.195.173.135:9000/play/list?sessionID=' + val,
+				type: 'GET',
+				timeout: 5000,
+				success: function success(res) {
+					console.log(res);
+				}
+			});
+		}
 	},
 	componentDidMount: function componentDidMount() {
 		var that = this;
 		if (this.isMounted) {
-			//查询并list所有liv
-			this.queryAllLiv();
-			//再次刷新liv列表			
-			$('#liv').on('click', function () {
-				that.handleClick();
-			});
-
-			$('#liv_play').on('click', function () {
-				$('#livModal').modal('hide');
+			$('#liv_list').on('click', function () {
+				that.handleClick($(that.refs.linput).val());
 			});
 		}
-	},
-	queryAllLiv: function queryAllLiv() {
-		var that = this;
-		$.ajax({
-			async: true,
-			url: 'http://203.195.173.135:9000/files/list?format=json',
-			type: 'GET',
-			timeout: 5000,
-			success: function success(res) {
-				that.setState({
-					course: res
-				});
-			}
-		});
 	},
 	render: function render() {
 		var names = this.state.course;
@@ -27083,30 +26882,52 @@ var LivInfo = React.createClass({
 						{ className: 'modal-body' },
 						React.createElement(
 							'div',
-							null,
+							{ className: 'input-group' },
+							React.createElement('input', { type: 'text',
+								ref: 'linput',
+								className: 'form-control' }),
 							React.createElement(
-								'select',
-								{ name: 'livfile',
-									className: 'container',
-									id: 'liv_select' },
-								' ',
-								names.map(function (name) {
-									return React.createElement(
-										'option',
-										{ key: name,
-											value: name },
-										' ',
-										name.split('.')[0],
-										' '
-									);
-								}),
+								'span',
+								{ className: 'input-group-btn' },
+								React.createElement(
+									'button',
+									{ id: 'liv_list',
+										className: 'btn btn-default',
+										type: 'button' },
+									'查询 '
+								),
 								' '
-							)
-						)
+							),
+							' '
+						),
+						' ',
+						React.createElement(
+							'select',
+							null,
+							' ',
+							names.map(function (name) {
+								return React.createElement(
+									'option',
+									{ key: name },
+									' ',
+									name,
+									' '
+								);
+							}),
+							' '
+						),
+						' '
 					),
 					React.createElement(
 						'div',
 						{ className: 'modal-footer' },
+						React.createElement(
+							'button',
+							{ type: 'button',
+								id: 'liv_cancel',
+								className: 'btn btn-default' },
+							' 取消 '
+						),
 						React.createElement(
 							'button',
 							{ type: 'button',
@@ -27444,80 +27265,6 @@ exports.default = Canvas;
 
 var React = require('react');
 
-var ControlNav = React.createClass({
-	displayName: 'ControlNav',
-
-	getInitialState: function getInitialState() {
-		return {
-			clicked: false
-		};
-	},
-	handleClick: function handleClick() {
-		this.setState({
-			clicked: !this.state.clicked
-		});
-	},
-
-	render: function render() {
-
-		var stopstate = this.state.clicked ? 'glyphicon glyphicon-play' : 'glyphicon glyphicon-pause';
-
-		return React.createElement(
-			'div',
-			{ className: 'navbar-fixed-bottom ',
-				id: 'liv_Nav',
-				style: {
-					display: 'none',
-					zIndex: 10,
-					opacity: 0.5
-				} },
-			React.createElement(
-				'button',
-				{ id: 'liv_left',
-					className: 'liv_control' },
-				React.createElement(
-					'span',
-					{ className: 'glyphicon glyphicon-chevron-left' },
-					' '
-				),
-				' '
-			),
-			React.createElement(
-				'button',
-				{ id: 'liv_stop',
-					onClick: this.handleClick,
-					className: 'liv_control' },
-				React.createElement(
-					'span',
-					{ className: stopstate },
-					' '
-				),
-				' '
-			),
-			React.createElement(
-				'button',
-				{ id: 'liv_right',
-					className: 'liv_control' },
-				React.createElement(
-					'span',
-					{ className: 'glyphicon glyphicon-chevron-right' },
-					' '
-				),
-				' '
-			),
-			' '
-		);
-	}
-
-});
-
-module.exports = ControlNav;
-
-},{"react":228}],245:[function(require,module,exports){
-'use strict';
-
-var React = require('react');
-
 var Edit = React.createClass({
 	displayName: 'Edit',
 
@@ -27588,7 +27335,7 @@ var Edit = React.createClass({
 
 module.exports = Edit;
 
-},{"react":228}],246:[function(require,module,exports){
+},{"react":228}],245:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -27625,13 +27372,13 @@ var Home = React.createClass({
 
 module.exports = Home;
 
-},{"react":228,"react-router":30}],247:[function(require,module,exports){
+},{"react":228,"react-router":30}],246:[function(require,module,exports){
 'use strict';
 
 /*
- * 播放音频，暂停音频
- * 按钮state的改变
- */
+* 播放音频，暂停音频
+* 按钮state的改变
+*/
 
 var React = require('react');
 
@@ -27680,8 +27427,7 @@ var MyAudio = React.createClass({
 
 		return React.createElement(
 			'a',
-			{ ref: 'btnAudio',
-				id: 'voice' },
+			{ ref: 'btnAudio', id: 'voice' },
 			React.createElement(
 				'span',
 				{ className: voiceImg },
@@ -27695,7 +27441,7 @@ var MyAudio = React.createClass({
 
 module.exports = MyAudio;
 
-},{"react":228}],248:[function(require,module,exports){
+},{"react":228}],247:[function(require,module,exports){
 'use strict';
 
 /*
@@ -27765,38 +27511,7 @@ var MyVideo = React.createClass({
 
 module.exports = MyVideo;
 
-},{"react":228}],249:[function(require,module,exports){
-'use strict';
-
-var React = require('react');
-
-var PlayLiv = React.createClass({
-	displayName: 'PlayLiv',
-
-	handleClick: function handleClick() {
-		$('#livModal').modal('show');
-	},
-	componentDidMount: function componentDidMount() {
-		if (this.isMounted) {}
-	},
-	render: function render() {
-		return React.createElement(
-			'a',
-			{ id: 'liv', onClick: this.handleClick },
-			' ',
-			React.createElement(
-				'span',
-				{ className: 'glyphicon glyphicon-film' },
-				' '
-			)
-		);
-	}
-
-});
-
-module.exports = PlayLiv;
-
-},{"react":228}],250:[function(require,module,exports){
+},{"react":228}],248:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -28014,7 +27729,7 @@ var Share = React.createClass({
 
 module.exports = Share;
 
-},{"react":228}],251:[function(require,module,exports){
+},{"react":228}],249:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -28071,10 +27786,8 @@ var wxLogin = React.createClass({
 					}.bind(this)
 				});
 			} else {
-				//修改授权地址wx6573103bb78bec40
-				//document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
-				//e课
-				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+				//修改授权地址
+				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fPageShare%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 			}
 		}
 	},

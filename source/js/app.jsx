@@ -19,7 +19,7 @@ if (is_weixin()) {
 	//微信端路由
 	ReactDOM.render(
  <Router history={hashHistory}>
- 	<Route path="/"  component={wxLogin}/>
+ 	<Route path="/" component={wxLogin}/>
   	<Route path="/join" component={AppJoin}/>
    	<Route path="/room/:id" component={AppRoom}/>
 </Router>,document.getElementById('app'));
@@ -27,7 +27,7 @@ if (is_weixin()) {
 	//PC端路由
 ReactDOM.render(
  <Router history={hashHistory}>
-  	<Route path="/"  component={PAppJoin}/>
+  	<Route path="/" component={PAppJoin}/>
   	<Route path="/join" component={PAppJoin}/>
    	<Route path="/room/:id" component={PAppRoom}/>
 </Router>,document.getElementById('app'));	

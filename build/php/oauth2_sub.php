@@ -1,11 +1,7 @@
 <?php
 $code = $_GET['code'];//前端传来的code值
-//奕甲飞播
-// $appid = "wxe818778f16e4400d";
-// $appsecret = "0f96dfcb79cf259c66217b7af95e20fe";//»ñÈ¡openid
-//飞播e课
-$appid = "wx6573103bb78bec40";
-$appsecret = "e80fc19c30db3387232d828d7dfdb402";//»ñÈ¡openid
+$appid = "wxe818778f16e4400d";
+$appsecret = "0f96dfcb79cf259c66217b7af95e20fe";//获取openid
 
 
 $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=$appid&secret=$appsecret&code=$code&grant_type=authorization_code";
