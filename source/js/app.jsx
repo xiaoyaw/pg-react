@@ -9,6 +9,8 @@ import PAppRoom from './components/PAppRoom.jsx';
 import AppJoin from './components/AppJoin.jsx';
 import PAppJoin from './components/PAppJoin.jsx';
 import wxLogin from './components/wxLogin.jsx';
+import EreadRoom from './components/readComponents/EreadRoom.jsx';
+
 import {
 	Router,
 	Route,
@@ -19,16 +21,18 @@ if (is_weixin()) {
 	//微信端路由
 	ReactDOM.render(
  <Router history={hashHistory}>
- 	<Route path="/" component={wxLogin}/>
+ 	<Route path="/"  component={wxLogin}/>
   	<Route path="/join" component={AppJoin}/>
+  	<Route path="/eread/:id" component={EreadRoom}/>
    	<Route path="/room/:id" component={AppRoom}/>
 </Router>,document.getElementById('app'));
 }else{
 	//PC端路由
 ReactDOM.render(
  <Router history={hashHistory}>
-  	<Route path="/" component={PAppJoin}/>
+ 	<Route path="/" component={PAppJoin}/>
   	<Route path="/join" component={PAppJoin}/>
+  	<Route path="/eread/:id" component={EreadRoom}/>
    	<Route path="/room/:id" component={PAppRoom}/>
 </Router>,document.getElementById('app'));	
 

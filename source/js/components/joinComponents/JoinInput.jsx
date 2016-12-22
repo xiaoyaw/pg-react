@@ -1,3 +1,4 @@
+import Select from './Select.jsx';
 import {
 	Link
 } from 'react-router';
@@ -11,7 +12,8 @@ var JoinInput = React.createClass({
 	getInitialState: function() {
 		return {
 			text: '',
-			width: ''
+			width: '',
+			isRead: false
 		};
 	},
 	componentWillMount: function() {
@@ -20,29 +22,44 @@ var JoinInput = React.createClass({
 	componentDidMount: function() {
 		if (this.isMounted()) {
 			var thiz = this;
-			var input = this.refs.textinput;
-			//处理input是否为空
-			$('#go').on('click', function() {
-				thiz.handleClick();
-			});
-
-			//回车键提交
-			$(input).keydown(function(e) {
-				var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
-				if (eCode == "13") { //keyCode=13是回车键
-					thiz.handleClick();
+			$('#switch').on('click', function() {
+				var model = sessionStorage.getItem('model');
+				if (model == 'false') {
+					thiz.setState({
+						isRead: false
+					});
+					thiz.addEventtoinput();
+				} else {
+					thiz.setState({
+						isRead: true
+					});
 				}
-			});
-			//获取焦点
-			$(input).focus();
-			//实时获取input值
-			$(input).on('keyup', function() {
-				$(input).val($(input).val().replace(/\s/g, ''));
-				thiz.setState({
-					text: $(this).val().toLowerCase()
-				});
-			});
+			})
+			this.addEventtoinput();
+			window.addEventListener('resize', thiz.handleResize);
 		}
+	},
+	addEventtoinput: function() {
+		var thiz = this;
+		var input = this.refs.textinput;
+		//处理Input值是否为空
+		$('#go').on('click', function() {
+			thiz.handleClick();
+		});
+		//回车键提交
+		$('#roomid').keydown(function(e) {
+			var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+			if (eCode == "13") { //keyCode=13是回车键
+				thiz.handleClick();
+			}
+		});
+		//实时获取text
+		$(input).on('keyup', function() {
+			$(input).val($(input).val().replace(/\s/g, ''));
+			thiz.setState({
+				text: $(this).val().toLowerCase()
+			});
+		});
 	},
 	calLogoSize: function() {
 		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
@@ -63,66 +80,91 @@ var JoinInput = React.createClass({
 			setTimeout(function() {
 				$('#warn').fadeOut();
 			}, 2000);
-		}else{
+		} else {
 			$(this.refs.textinput).blur();
 			var audio = document.getElementById("myaudio");
-			audio.src='img/sure.mp3';
+			audio.src = 'img/sure.mp3';
 			audio.play();
 
-			hashHistory.replace('/room/'+this.state.text);
+			hashHistory.replace('/room/' + this.state.text);
 		}
 	},
 	render: function() {
-		var text = this.state.text;
-		return ( < div id = "bigScreen" >
-			< div id = 'pageshare' >
+		if (this.state.isRead) {
+			return ( < div >
+				< div id = 'pageshare' >
 
-			< img id = "page"
-			src = "img/pageshare.png"
-			style = {
-				{
-					width: this.state.width,
-					height: this.state.width
+				< img id = "page"
+				src = "img/pageshare.png"
+				style = {
+					{
+						width: this.state.width,
+						height: this.state.width
+					}
+				}
+				/> < /div >
+				< div className = "container" >
+				< div className = "row" >
+				< div id = 'input'
+				style = {
+					{
+						width: this.state.inputWidth
+					}
+				} >
+				< Select / >
+				< /div > < /div > < /div >  < /div>);
+			}
+			else {
+				return ( < div id = "bigScreen" >
+					< div id = 'pageshare' >
+
+					< img id = "page"
+					src = "img/pageshare.png"
+					style = {
+						{
+							width: this.state.width,
+							height: this.state.width
+						}
+					}
+					/> < /div >
+					< div className = "container" >
+					< div className = "row" >
+					< div id = 'input'
+					style = {
+						{
+							width: this.state.inputWidth
+						}
+					} >
+
+					< div className = "input-group" >
+
+					< input type = "text"
+					ref = "textinput"
+					className = "form-control"
+					id = "roomid"
+					placeholder = "roomID" / >
+
+					< div className = "input-group-btn" >
+					< a className = "btn btn-default"
+					tabIndex = "-1"
+					id = "go" > Join < /a> 
+
+					< /div >  < /div > < /div > < /div > < /div > < div style = { {
+					textAlign: 'center',
+					textShadow: '2px 2px 5px #9B30FF',
+					marginTop: '35px',
+					display: 'none'
 				}
 			}
-			/> < /div >
-			< div className = "container" >
-			< div className = "row" > < div id = 'input'
-			style = {
-				{
-					width: '80%'
-				}
-			} >
+			id = "warn" > < font style = {
+					{
+						fontSize: '16px'
+					}
+				} > RoomID can not be empty！！！ < /font></div >
+				< /div>
+		);
+	}
 
-			< div className = "input-group" >
-
-			< input type = "text"
-			ref = "textinput"
-			className = "form-control"
-			placeholder = "roomID"
-			width = "150px" / >
-
-			< div className = "input-group-btn" >
-			< a 
-			className = "btn btn-default"
-			tabIndex = "-1"
-			id = "go" > Join < /a> 
-
-			< /div > < /div > < /div > < /div > < /div > < div style = { {
-				textAlign: 'center',
-				textShadow: '2px 2px 5px #9B30FF',
-				marginTop: '35px',
-				display: 'none'
-			}
-		}
-		id = "warn" > < font style = {
-				{
-					fontSize: '16px'
-				}
-			} > RoomID can not be empty！！！ < /font></div >
-
-			< /div>
-	);
 }
 
 });

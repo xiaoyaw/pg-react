@@ -3,7 +3,6 @@ import MyVideo from './navBar/MyVideo.jsx';
 import Home from './navBar/Home.jsx';
 import Edit from './navBar/Edit.jsx';
 import Share from './navBar/Share.jsx';
-// import PlayLiv from './navBar/PlayLiv.jsx';
 
 var React = require('react');
 

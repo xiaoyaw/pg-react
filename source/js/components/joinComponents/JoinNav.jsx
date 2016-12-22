@@ -28,7 +28,7 @@ var JoinNav = React.createClass({
 					display: 'block'
 				}
 			} >
-			< div className = "navbar-header" >
+			< div   className = "navbar-header" >
 			< a className = "navbar-brand navbar-left"
 			href = "#"
 			id = 'headimage'
@@ -38,7 +38,8 @@ var JoinNav = React.createClass({
 				}
 			} > < span className = "glyphicon glyphicon-user"
 			id = "span" > {this.state.nickname} < /span></a >
-			< /div> < /nav >
+			< /div> 
+			< /nav >
 		);
 	}
 

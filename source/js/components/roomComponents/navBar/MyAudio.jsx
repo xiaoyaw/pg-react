@@ -1,7 +1,7 @@
 /*
-* 播放音频，暂停音频
-* 按钮state的改变
-*/
+ * 播放音频，暂停音频
+ * 按钮state的改变
+ */
 
 var React = require('react');
 
@@ -19,7 +19,7 @@ var MyAudio = React.createClass({
 		});
 		var audio = document.getElementById("myaudio");
 		if (this.state.clicked) {
-			if (audio.duration>0) {
+			if (audio.duration > 0) {
 				audio.play();
 				var is_playFinish = setInterval(
 					function() {
@@ -45,12 +45,13 @@ var MyAudio = React.createClass({
 
 		}
 	},
-	render: function() {	
+	render: function() {
 		//设置按钮状态
 		var voiceImg = this.state.clicked ? 'glyphicon glyphicon-pause' : 'glyphicon glyphicon-headphones';
-			//设置audio的播放还是暂停
+		//设置audio的播放还是暂停
 
-		return ( < a  ref="btnAudio" id='voice'>
+		return ( < a ref = "btnAudio"
+			id = 'voice' >
 			< span className = {
 				voiceImg
 			} > < /span>	 < /a >
