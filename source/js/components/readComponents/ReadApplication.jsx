@@ -102,7 +102,7 @@ let ReadApplication = React.createClass({
       })
       //向右
     $('#liv_right').on('click', function() {
-        if (thiz.state.pageIndex < thiz.state.pageNum - 1) {
+        if (thiz.state.pageIndex < thiz.state.pageNum) {
           thiz.state.audio.pause();
           thiz.state.video.pause();
           clearTimeout(thiz.state.timeout);
@@ -125,9 +125,9 @@ let ReadApplication = React.createClass({
         });
       } else { //正在播放的话
         thiz.setState({
-          isStop: false,
-          isfirst: true
+          isStop: false
         }, function() {
+          thiz.state.audio.play();
           thiz.diguiliv();
         });
       }
