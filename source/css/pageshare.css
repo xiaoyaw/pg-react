@@ -106,6 +106,7 @@ body{
     height: 35px;
     margin: 5px;
     border-color:#DCDCDC;
+    border-radius: 5px;
 }
 #liv_left,#liv_right,#liv_stop{
     border-style: outset;
