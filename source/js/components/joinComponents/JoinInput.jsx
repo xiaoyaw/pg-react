@@ -67,10 +67,12 @@ var JoinInput = React.createClass({
 		if (w > h) {
 			this.setState({
 				width: h * 0.4,
+				inputWidth: '60%'
 			});
 		} else {
 			this.setState({
 				width: w * 0.6,
+				inputWidth: '80%'
 			});
 		}
 	},
