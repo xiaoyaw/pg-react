@@ -80,8 +80,58 @@ let ReadApplication = React.createClass({
     }, function() {
       this.diguiliv();
       $('#liv_Nav').fadeIn();
+      this.addControl();
     });
-
+  },
+  addControl: function() {
+    var thiz = this;
+    //向左
+    $('#liv_left').on('click', function() {
+        if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 1) {
+          thiz.state.audio.pause();
+          thiz.state.video.pause();
+          clearTimeout(thiz.state.timeout);
+          thiz.setState({
+            pageIndex: thiz.state.pageIndex - 2,
+            dataNow: 0,
+            isfirst: true
+          }, function() {
+            thiz.diguiliv();
+          });
+        }
+      })
+      //向右
+    $('#liv_right').on('click', function() {
+        if (thiz.state.pageIndex < thiz.state.pageNum - 1) {
+          thiz.state.audio.pause();
+          thiz.state.video.pause();
+          clearTimeout(thiz.state.timeout);
+          thiz.setState({
+            dataNow: 0,
+            isfirst: true
+          }, function() {
+            thiz.diguiliv();
+          });
+        }
+      })
+      //停止
+    $('#liv_stop').on('click', function() {
+      if (!thiz.state.isStop) {
+        thiz.state.audio.pause();
+        thiz.state.video.pause();
+        clearTimeout(thiz.state.timeout);
+        thiz.setState({
+          isStop: true
+        });
+      } else { //正在播放的话
+        thiz.setState({
+          isStop: false,
+          isfirst: true
+        }, function() {
+          thiz.diguiliv();
+        });
+      }
+    })
   },
   //递归liv播放
   diguiliv: function() {
@@ -92,13 +142,13 @@ let ReadApplication = React.createClass({
           //页数未到末尾
           if (thiz.state.dataNow < thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]].length) {
             //本页未到最后一笔
-              thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
-              thiz.setState({
-                dataNow: thiz.state.dataNow + 1,
-                isfirst:false
-              }, function() {
-                thiz.diguiliv();
-              });
+            thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
+            thiz.setState({
+              dataNow: thiz.state.dataNow + 1,
+              isfirst: false
+            }, function() {
+              thiz.diguiliv();
+            });
           } else { //本页最后一笔画完，翻页并递归
             thiz.setState({
               pageIndex: thiz.state.pageIndex + 1,
@@ -164,63 +214,14 @@ let ReadApplication = React.createClass({
       });
 
       //点击按钮时下载数据并播放
-      if (thiz.state.res != null) {
-        $('#exit').on('click', function() {
-          clearTimeout(thiz.state.timeout);
-          thiz.setState({
-            isStop: true
-          });
-        })
+      $('#exit').on('click', function() {
+        clearTimeout(thiz.state.timeout);
+        thiz.setState({
+          isStop: true
+        });
+      })
 
-        //向左
-        $('#liv_left').on('click', function() {
-            if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 1) {
-              thiz.state.audio.pause();
-              thiz.state.video.pause();
-              clearTimeout(thiz.state.timeout);
-              thiz.setState({
-                pageIndex: thiz.state.pageIndex - 2,
-                dataNow: 0,
-                isfirst:true
-              }, function() {
-                thiz.diguiliv();
-              });
-            }
-          })
-          //向右
-        $('#liv_right').on('click', function() {
-            if (thiz.state.pageIndex < thiz.state.pageNum - 1) {
-              thiz.state.audio.pause();
-              thiz.state.video.pause();
-              clearTimeout(thiz.state.timeout);
-              thiz.setState({
-                dataNow: 0,
-                isfirst:true
-              }, function() {
-                thiz.diguiliv();
-              });
-            }
-          })
-          //停止
-        $('#liv_stop').on('click', function() {
-          if (!thiz.state.isStop) {
-            thiz.state.audio.pause();
-            thiz.state.video.pause();
-            clearTimeout(thiz.state.timeout);
-            thiz.setState({
-              isStop: true
-            });
-          } else { //正在播放的话
-            thiz.setState({
-              isStop: false,
-              isfirst:true
-            }, function() {
-              thiz.diguiliv();
-            });
-          }
-        })
 
-      }
       window.addEventListener('resize', this.handleResize);
     }
   },

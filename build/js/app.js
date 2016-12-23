@@ -25820,11 +25820,13 @@ var JoinInput = React.createClass({
 		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 		if (w > h) {
 			this.setState({
-				width: h * 0.4
+				width: h * 0.4,
+				inputWidth: '60%'
 			});
 		} else {
 			this.setState({
-				width: w * 0.6
+				width: w * 0.6,
+				inputWidth: '80%'
 			});
 		}
 	},
@@ -26664,6 +26666,58 @@ var ReadApplication = _react2.default.createClass({
     }, function () {
       this.diguiliv();
       $('#liv_Nav').fadeIn();
+      this.addControl();
+    });
+  },
+  addControl: function addControl() {
+    var thiz = this;
+    //向左
+    $('#liv_left').on('click', function () {
+      if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 1) {
+        thiz.state.audio.pause();
+        thiz.state.video.pause();
+        clearTimeout(thiz.state.timeout);
+        thiz.setState({
+          pageIndex: thiz.state.pageIndex - 2,
+          dataNow: 0,
+          isfirst: true
+        }, function () {
+          thiz.diguiliv();
+        });
+      }
+    });
+    //向右
+    $('#liv_right').on('click', function () {
+      if (thiz.state.pageIndex < thiz.state.pageNum - 1) {
+        thiz.state.audio.pause();
+        thiz.state.video.pause();
+        clearTimeout(thiz.state.timeout);
+        thiz.setState({
+          dataNow: 0,
+          isfirst: true
+        }, function () {
+          thiz.diguiliv();
+        });
+      }
+    });
+    //停止
+    $('#liv_stop').on('click', function () {
+      if (!thiz.state.isStop) {
+        thiz.state.audio.pause();
+        thiz.state.video.pause();
+        clearTimeout(thiz.state.timeout);
+        thiz.setState({
+          isStop: true
+        });
+      } else {
+        //正在播放的话
+        thiz.setState({
+          isStop: false,
+          isfirst: true
+        }, function () {
+          thiz.diguiliv();
+        });
+      }
     });
   },
   //递归liv播放
@@ -26749,63 +26803,13 @@ var ReadApplication = _react2.default.createClass({
       });
 
       //点击按钮时下载数据并播放
-      if (thiz.state.res != null) {
-        $('#exit').on('click', function () {
-          clearTimeout(thiz.state.timeout);
-          thiz.setState({
-            isStop: true
-          });
+      $('#exit').on('click', function () {
+        clearTimeout(thiz.state.timeout);
+        thiz.setState({
+          isStop: true
         });
+      });
 
-        //向左
-        $('#liv_left').on('click', function () {
-          if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 1) {
-            thiz.state.audio.pause();
-            thiz.state.video.pause();
-            clearTimeout(thiz.state.timeout);
-            thiz.setState({
-              pageIndex: thiz.state.pageIndex - 2,
-              dataNow: 0,
-              isfirst: true
-            }, function () {
-              thiz.diguiliv();
-            });
-          }
-        });
-        //向右
-        $('#liv_right').on('click', function () {
-          if (thiz.state.pageIndex < thiz.state.pageNum - 1) {
-            thiz.state.audio.pause();
-            thiz.state.video.pause();
-            clearTimeout(thiz.state.timeout);
-            thiz.setState({
-              dataNow: 0,
-              isfirst: true
-            }, function () {
-              thiz.diguiliv();
-            });
-          }
-        });
-        //停止
-        $('#liv_stop').on('click', function () {
-          if (!thiz.state.isStop) {
-            thiz.state.audio.pause();
-            thiz.state.video.pause();
-            clearTimeout(thiz.state.timeout);
-            thiz.setState({
-              isStop: true
-            });
-          } else {
-            //正在播放的话
-            thiz.setState({
-              isStop: false,
-              isfirst: true
-            }, function () {
-              thiz.diguiliv();
-            });
-          }
-        });
-      }
       window.addEventListener('resize', this.handleResize);
     }
   },
