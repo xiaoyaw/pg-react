@@ -16,6 +16,7 @@ var Share = React.createClass({
 		if (this.isMounted()) {
 			var u = navigator.userAgent;
 			var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+			var appid=sessionStorage.getItem('appid');
 			if (!isiOS) {
 				$.ajax({
 					async: true,
@@ -23,6 +24,7 @@ var Share = React.createClass({
 					type: "GET",
 					data: {
 						urll: document.location.href,
+						appid:appid
 					},
 					timeout: 5000,
 					success: function(result) {

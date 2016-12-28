@@ -331,12 +331,22 @@ let ReadApplication = React.createClass({
         break;
 
       case "urlvoice":
-        var audio = document.getElementById("myaudio");
-        audio.pause();
-        audio.src = value.url;
+        try {
+          var audio = document.getElementById("myaudio");
+          audio.pause();
+          var waitTime = 200;
+          setTimeout(function() {
+            if (audio.paused) {
+              audio.src = value.url;
+              audio.play();
+            }
+          }, waitTime);
+        } catch (e) {
+          console.log(e);
+        }
+
         // if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
         //   $('body').on('touchstart touchmove touchend click', function() {
-        audio.play();
         //     $('body').unbind();
         //   });
         //   this.setState({
@@ -348,12 +358,23 @@ let ReadApplication = React.createClass({
         break;
 
       case "voice":
-        var audio = document.getElementById("myaudio");
-        audio.pause();
-        audio.src = "data:audio/mpeg;base64," + value.voice;
+
+        try {
+          var audio = document.getElementById("myaudio");
+          audio.pause();
+          var waitTime = 200;
+          setTimeout(function() {
+            if (audio.paused) {
+              audio.src = "data:audio/mpeg;base64," + value.voice;
+              audio.play();
+            }
+          }, waitTime);
+        } catch (e) {
+          console.log(e);
+        }
+
         // if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
         //   $('body').on('touchstart touchmove touchend click', function() { //一次事件触发
-        audio.play();
         //    $('body').unbind();
         //   });
         //   this.setState({
@@ -374,7 +395,7 @@ let ReadApplication = React.createClass({
             $('#myvideo').fadeOut();
             window.clearInterval(is_playFinish);
           }
-        }, 10);
+        }, 100);
         break;
 
       case "openvideo":

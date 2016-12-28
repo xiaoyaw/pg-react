@@ -1,12 +1,21 @@
 <?php
 $code = $_GET['code'];//前端传来的code值
-//奕甲飞播
-// $appid = "wxe818778f16e4400d";
-// $appsecret = "0f96dfcb79cf259c66217b7af95e20fe";//»ñÈ¡openid
-//飞播e课
-$appid = "wx6573103bb78bec40";
-$appsecret = "e80fc19c30db3387232d828d7dfdb402";//»ñÈ¡openid
+$app =$_GET['appid'];//前端传来的appid值
 
+switch ($app) {
+  //奕甲飞播
+  case 'wxe818778f16e4400d':
+    $appid = "wxe818778f16e4400d";  
+    $appsecret = "0f96dfcb79cf259c66217b7af95e20fe";//»ñÈ¡openid
+    $guan="MzIyNzE3NjM1Nw";
+    break;
+    //飞播e课
+  case 'wx6573103bb78bec40':
+    $appid = "wx6573103bb78bec40";
+    $appsecret = "e80fc19c30db3387232d828d7dfdb402";//»ñÈ¡openid
+    $guan="MzIzMDUxNDM0MQ";
+  break;
+}
 
 $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=$appid&secret=$appsecret&code=$code&grant_type=authorization_code";
 $result = https_request($url);
@@ -26,7 +35,7 @@ $jsoninfo2 = json_decode($result2, true);
 $subscribe=$jsoninfo2["subscribe"];
 $nickname=$jsoninfo2["nickname"];
 
-echo $openid.":".$access_token.":".$nickname.":".$subscribe; //把openid 送回前端
+echo $openid.":".$access_token.":".$nickname.":".$subscribe.":".$guan; //把openid 送回前端
 
 
 
