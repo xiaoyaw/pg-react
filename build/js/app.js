@@ -25563,7 +25563,7 @@ var AppJoin = React.createClass({
 			//分享join界面url，先授权获取到username再跳/JOIN
 			//	document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 			//e课
-			_reactRouter.hashHistory.replace('/join');
+			_reactRouter.hashHistory.replace('/');
 			//document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 		}
 	},
