@@ -9,6 +9,7 @@ import PAppRoom from './components/PAppRoom.jsx';
 import AppJoin from './components/AppJoin.jsx';
 import PAppJoin from './components/PAppJoin.jsx';
 import wxLogin from './components/wxLogin.jsx';
+import PcLogin from './components/PcLogin.jsx';
 import EreadRoom from './components/readComponents/EreadRoom.jsx';
 
 import {
@@ -30,7 +31,7 @@ if (is_weixin()) {
 	//PC端路由
 ReactDOM.render(
  <Router history={hashHistory}>
- 	<Route path="/" component={PAppJoin}/>
+ 	<Route path="/" component={PcLogin}/>
   	<Route path="/join" component={PAppJoin}/>
   	<Route path="/eread/:id" component={EreadRoom}/>
    	<Route path="/room/:id" component={PAppRoom}/>
