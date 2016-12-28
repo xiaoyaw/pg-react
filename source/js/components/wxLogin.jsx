@@ -63,12 +63,16 @@ var wxLogin = React.createClass({
 					if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
 						document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=" + arry[4] + "==&scene=110#&wechat_redirect";
 					} else {
-						hashHistory.replace('/join');
+						this.toWhere();
 					}
 				}.bind(this),
 			});
 		} else {
-			switch (this.state.appid) {
+			this.toWhere();
+		}
+	},
+	toWhere:function(){
+		switch (this.state.appid) {
 				//奕甲
 				case 'wxe818778f16e4400d':
 					document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2f' + this.state.release + '%2fbuild&response_type=code&scope=snsapi_userinfo&state='+this.state.appid+'#wechat_redirect';
@@ -78,11 +82,6 @@ var wxLogin = React.createClass({
 					document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2f' + this.state.release + '%2fbuild&response_type=code&scope=snsapi_userinfo&state='+this.state.appid+'#wechat_redirect';
 					break;
 			}
-			//修改授权地址wx6573103bb78bec40
-			//document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
-			//e课
-			//document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
-		}
 	},
 	localSave: function(n, s, o, t) {
 		if (typeof(Storage) !== "undefined") {

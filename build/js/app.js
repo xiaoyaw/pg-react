@@ -29,6 +29,10 @@ var _wxLogin = require('./components/wxLogin.jsx');
 
 var _wxLogin2 = _interopRequireDefault(_wxLogin);
 
+var _PcLogin = require('./components/PcLogin.jsx');
+
+var _PcLogin2 = _interopRequireDefault(_PcLogin);
+
 var _EreadRoom = require('./components/readComponents/EreadRoom.jsx');
 
 var _EreadRoom2 = _interopRequireDefault(_EreadRoom);
@@ -36,6 +40,10 @@ var _EreadRoom2 = _interopRequireDefault(_EreadRoom);
 var _reactRouter = require('react-router');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/* 判断是微信或是PC，走不同的路由
+可直接加room
+*/
 
 if (is_weixin()) {
 	//微信端路由
@@ -52,14 +60,12 @@ if (is_weixin()) {
 	_reactDom2.default.render(_react2.default.createElement(
 		_reactRouter.Router,
 		{ history: _reactRouter.hashHistory },
-		_react2.default.createElement(_reactRouter.Route, { path: '/', component: _PAppJoin2.default }),
+		_react2.default.createElement(_reactRouter.Route, { path: '/', component: _PcLogin2.default }),
 		_react2.default.createElement(_reactRouter.Route, { path: '/join', component: _PAppJoin2.default }),
 		_react2.default.createElement(_reactRouter.Route, { path: '/eread/:id', component: _EreadRoom2.default }),
 		_react2.default.createElement(_reactRouter.Route, { path: '/room/:id', component: _PAppRoom2.default })
 	), document.getElementById('app'));
-} /* 判断是微信或是PC，走不同的路由
-  可直接加room
-  */
+}
 
 function is_weixin() {
 	var ua = navigator.userAgent.toLowerCase();
@@ -70,7 +76,7 @@ function is_weixin() {
 	}
 }
 
-},{"./components/AppJoin.jsx":229,"./components/AppRoom.jsx":230,"./components/PAppJoin.jsx":231,"./components/PAppRoom.jsx":232,"./components/readComponents/EreadRoom.jsx":238,"./components/wxLogin.jsx":253,"react":228,"react-dom":3,"react-router":30}],2:[function(require,module,exports){
+},{"./components/AppJoin.jsx":229,"./components/AppRoom.jsx":230,"./components/PAppJoin.jsx":231,"./components/PAppRoom.jsx":232,"./components/PcLogin.jsx":233,"./components/readComponents/EreadRoom.jsx":239,"./components/wxLogin.jsx":254,"react":228,"react-dom":3,"react-router":30}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -25581,7 +25587,7 @@ var AppJoin = React.createClass({
 
 module.exports = AppJoin;
 
-},{"./joinComponents/JoinInput.jsx":233,"./joinComponents/JoinNav.jsx":234,"./joinComponents/Switch.jsx":237,"react":228,"react-router":30}],230:[function(require,module,exports){
+},{"./joinComponents/JoinInput.jsx":234,"./joinComponents/JoinNav.jsx":235,"./joinComponents/Switch.jsx":238,"react":228,"react-router":30}],230:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -25645,7 +25651,7 @@ var AppRoom = _react2.default.createClass({
 
 module.exports = AppRoom;
 
-},{"./roomComponents/Application.jsx":240,"./roomComponents/NavagationBar.jsx":242,"./roomComponents/NetTip.jsx":243,"./roomComponents/Slider.jsx":245,"react":228,"react-dom":3}],231:[function(require,module,exports){
+},{"./roomComponents/Application.jsx":241,"./roomComponents/NavagationBar.jsx":243,"./roomComponents/NetTip.jsx":244,"./roomComponents/Slider.jsx":246,"react":228,"react-dom":3}],231:[function(require,module,exports){
 'use strict';
 
 var _PJoinInput = require('./joinComponents/PJoinInput.jsx');
@@ -25682,7 +25688,7 @@ var PAppJoin = React.createClass({
 
 module.exports = PAppJoin;
 
-},{"./joinComponents/JoinNav.jsx":234,"./joinComponents/PJoinInput.jsx":235,"./joinComponents/Switch.jsx":237,"react":228}],232:[function(require,module,exports){
+},{"./joinComponents/JoinNav.jsx":235,"./joinComponents/PJoinInput.jsx":236,"./joinComponents/Switch.jsx":238,"react":228}],232:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -25749,7 +25755,123 @@ var PAppRoom = _react2.default.createClass({
 
 module.exports = PAppRoom;
 
-},{"./roomComponents/Application.jsx":240,"./roomComponents/NetTip.jsx":243,"./roomComponents/PNavagationBar.jsx":244,"./roomComponents/Slider.jsx":245,"react":228,"react-dom":3}],233:[function(require,module,exports){
+},{"./roomComponents/Application.jsx":241,"./roomComponents/NetTip.jsx":244,"./roomComponents/PNavagationBar.jsx":245,"./roomComponents/Slider.jsx":246,"react":228,"react-dom":3}],233:[function(require,module,exports){
+'use strict';
+
+var _reactRouter = require('react-router');
+
+var React = require('react');
+
+var PcLogin = React.createClass({
+	displayName: 'PcLogin',
+
+	getInitialState: function getInitialState() {
+		return {
+			username: '',
+			password: ''
+		};
+	},
+	componentDidMount: function componentDidMount() {
+		if (this.isMounted()) {
+			if (sessionStorage.username) {}
+		}
+	},
+	getcode: function getcode(user, pass) {
+		$.post("http://pictoshare.net/index.php?controller=apis&action=login", {
+			login_info: user,
+			password: pass
+		}, function (data, status) {
+			var value = JSON.parse(data);
+			if (value.status == "success") {
+				return value.tokenkey;
+			} else {
+				return;
+			}
+		});
+	},
+	getUserInfo: function getUserInfo(token) {
+		$.post("http://pictoshare.net/index.php?controller=apis&action=getmemberinfo", {
+			tokenkey: token
+		}, function (data, status) {
+			var value = JSON.parse(data);
+			if (value.status == "success") {
+				un = value.info.username;
+				pw = value.info.password;
+				this.localSave(un, pw);
+			} else {}
+		});
+	},
+	localSave: function localSave(u, p) {
+		if (typeof Storage !== "undefined") {
+			sessionStorage.setItem("username", u);
+			sessionStorage.setItem("password", p);
+		}
+	},
+
+	render: function render() {
+		return React.createElement(
+			'nav',
+			{ className: 'navbar navbar-default',
+				role: 'navigation' },
+			React.createElement(
+				'div',
+				{ className: 'container-fluid' },
+				React.createElement(
+					'div',
+					{ className: 'navbar-header' },
+					React.createElement(
+						'a',
+						{ className: 'navbar-brand',
+							href: '#' },
+						' PageShare '
+					),
+					' '
+				),
+				' ',
+				React.createElement(
+					'div',
+					null,
+					React.createElement(
+						'form',
+						{ className: 'navbar-form navbar-right',
+							role: 'search' },
+						React.createElement(
+							'div',
+							{ className: 'form-group' },
+							React.createElement('input', { type: 'text',
+								className: 'form-control',
+								placeholder: 'username' })
+						),
+						' ',
+						React.createElement(
+							'div',
+							{ className: 'form-group' },
+							React.createElement('input', { type: 'text',
+								className: 'form-control',
+								placeholder: 'password' })
+						),
+						' ',
+						React.createElement(
+							'button',
+							{
+								className: 'btn btn-default' },
+							' 登录 '
+						),
+						' '
+					),
+					' '
+				),
+				' '
+			),
+			' '
+		);
+	}
+
+});
+
+module.exports = PcLogin;
+
+},{"react":228,"react-router":30}],234:[function(require,module,exports){
 'use strict';
 
 var _Select = require('./Select.jsx');
@@ -25967,7 +26089,7 @@ var JoinInput = React.createClass({
 
 module.exports = JoinInput;
 
-},{"./Select.jsx":236,"react":228,"react-router":30}],234:[function(require,module,exports){
+},{"./Select.jsx":237,"react":228,"react-router":30}],235:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -26028,7 +26150,7 @@ var JoinNav = React.createClass({
 
 module.exports = JoinNav;
 
-},{"react":228,"react-router":30}],235:[function(require,module,exports){
+},{"react":228,"react-router":30}],236:[function(require,module,exports){
 'use strict';
 
 var _Select = require('./Select.jsx');
@@ -26262,7 +26384,7 @@ var PJoinInput = React.createClass({
 
 module.exports = PJoinInput;
 
-},{"./Select.jsx":236,"react":228,"react-router":30}],236:[function(require,module,exports){
+},{"./Select.jsx":237,"react":228,"react-router":30}],237:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -26337,7 +26459,7 @@ var Select = React.createClass({
 
 module.exports = Select;
 
-},{"react":228,"react-router":30}],237:[function(require,module,exports){
+},{"react":228,"react-router":30}],238:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -26459,7 +26581,7 @@ var Switch = React.createClass({
 
 module.exports = Switch;
 
-},{"react":228}],238:[function(require,module,exports){
+},{"react":228}],239:[function(require,module,exports){
 'use strict';
 
 var _Slider = require('../roomComponents/Slider.jsx');
@@ -26572,7 +26694,7 @@ var EreadRoom = React.createClass({
 
 module.exports = EreadRoom;
 
-},{"../roomComponents/ControlNav/ControlNav.jsx":241,"../roomComponents/Slider.jsx":245,"../roomComponents/navBar/Home.jsx":249,"../roomComponents/navBar/MyAudio.jsx":250,"../roomComponents/navBar/MyVideo.jsx":251,"../roomComponents/navBar/Share.jsx":252,"./ReadApplication.jsx":239,"react":228}],239:[function(require,module,exports){
+},{"../roomComponents/ControlNav/ControlNav.jsx":242,"../roomComponents/Slider.jsx":246,"../roomComponents/navBar/Home.jsx":250,"../roomComponents/navBar/MyAudio.jsx":251,"../roomComponents/navBar/MyVideo.jsx":252,"../roomComponents/navBar/Share.jsx":253,"./ReadApplication.jsx":240,"react":228}],240:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27068,7 +27190,7 @@ var ReadApplication = _react2.default.createClass({
 
 exports.default = ReadApplication;
 
-},{"../roomComponents/blackBoard/BgImage.jsx":246,"../roomComponents/blackBoard/Canvas.jsx":247,"react":228,"react-router":30}],240:[function(require,module,exports){
+},{"../roomComponents/blackBoard/BgImage.jsx":247,"../roomComponents/blackBoard/Canvas.jsx":248,"react":228,"react-router":30}],241:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27587,7 +27709,7 @@ var Application = _react2.default.createClass({
 
 exports.default = Application;
 
-},{"./blackBoard/BgImage.jsx":246,"./blackBoard/Canvas.jsx":247,"react":228,"react-router":30}],241:[function(require,module,exports){
+},{"./blackBoard/BgImage.jsx":247,"./blackBoard/Canvas.jsx":248,"react":228,"react-router":30}],242:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -27661,7 +27783,7 @@ var ControlNav = React.createClass({
 
 module.exports = ControlNav;
 
-},{"react":228}],242:[function(require,module,exports){
+},{"react":228}],243:[function(require,module,exports){
 'use strict';
 
 var _MyAudio = require('./navBar/MyAudio.jsx');
@@ -27757,7 +27879,7 @@ var NavagationBar = React.createClass({
 
 module.exports = NavagationBar;
 
-},{"./navBar/Home.jsx":249,"./navBar/MyAudio.jsx":250,"./navBar/MyVideo.jsx":251,"./navBar/Share.jsx":252,"react":228}],243:[function(require,module,exports){
+},{"./navBar/Home.jsx":250,"./navBar/MyAudio.jsx":251,"./navBar/MyVideo.jsx":252,"./navBar/Share.jsx":253,"react":228}],244:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -27789,7 +27911,7 @@ var NetTip = React.createClass({
 
 module.exports = NetTip;
 
-},{"react":228}],244:[function(require,module,exports){
+},{"react":228}],245:[function(require,module,exports){
 'use strict';
 
 var _MyAudio = require('./navBar/MyAudio.jsx');
@@ -27884,7 +28006,7 @@ var PNavagationBar = React.createClass({
 
 module.exports = PNavagationBar;
 
-},{"./navBar/Edit.jsx":248,"./navBar/Home.jsx":249,"./navBar/MyAudio.jsx":250,"./navBar/MyVideo.jsx":251,"./navBar/Share.jsx":252,"react":228}],245:[function(require,module,exports){
+},{"./navBar/Edit.jsx":249,"./navBar/Home.jsx":250,"./navBar/MyAudio.jsx":251,"./navBar/MyVideo.jsx":252,"./navBar/Share.jsx":253,"react":228}],246:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -27990,7 +28112,7 @@ var Slider = React.createClass({
 
 module.exports = Slider;
 
-},{"react":228}],246:[function(require,module,exports){
+},{"react":228}],247:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28034,7 +28156,7 @@ var BgImage = _react2.default.createClass({
      */
 exports.default = BgImage;
 
-},{"react":228}],247:[function(require,module,exports){
+},{"react":228}],248:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28302,7 +28424,7 @@ var Canvas = _react2.default.createClass({
      */
 exports.default = Canvas;
 
-},{"react":228}],248:[function(require,module,exports){
+},{"react":228}],249:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -28377,7 +28499,7 @@ var Edit = React.createClass({
 
 module.exports = Edit;
 
-},{"react":228}],249:[function(require,module,exports){
+},{"react":228}],250:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -28414,7 +28536,7 @@ var Home = React.createClass({
 
 module.exports = Home;
 
-},{"react":228,"react-router":30}],250:[function(require,module,exports){
+},{"react":228,"react-router":30}],251:[function(require,module,exports){
 'use strict';
 
 /*
@@ -28484,7 +28606,7 @@ var MyAudio = React.createClass({
 
 module.exports = MyAudio;
 
-},{"react":228}],251:[function(require,module,exports){
+},{"react":228}],252:[function(require,module,exports){
 'use strict';
 
 /*
@@ -28554,7 +28676,7 @@ var MyVideo = React.createClass({
 
 module.exports = MyVideo;
 
-},{"react":228}],252:[function(require,module,exports){
+},{"react":228}],253:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -28774,7 +28896,7 @@ var Share = React.createClass({
 
 module.exports = Share;
 
-},{"react":228}],253:[function(require,module,exports){
+},{"react":228}],254:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -28838,25 +28960,24 @@ var wxLogin = React.createClass({
 					if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
 						document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=" + arry[4] + "==&scene=110#&wechat_redirect";
 					} else {
-						_reactRouter.hashHistory.replace('/join');
+						this.toWhere();
 					}
 				}.bind(this)
 			});
 		} else {
-			switch (this.state.appid) {
-				//奕甲
-				case 'wxe818778f16e4400d':
-					document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2f' + this.state.release + '%2fbuild&response_type=code&scope=snsapi_userinfo&state=' + this.state.appid + '#wechat_redirect';
-					break;
-				//e课
-				case 'wx6573103bb78bec40':
-					document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2f' + this.state.release + '%2fbuild&response_type=code&scope=snsapi_userinfo&state=' + this.state.appid + '#wechat_redirect';
-					break;
-			}
-			//修改授权地址wx6573103bb78bec40
-			//document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+			this.toWhere();
+		}
+	},
+	toWhere: function toWhere() {
+		switch (this.state.appid) {
+			//奕甲
+			case 'wxe818778f16e4400d':
+				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2f' + this.state.release + '%2fbuild&response_type=code&scope=snsapi_userinfo&state=' + this.state.appid + '#wechat_redirect';
+				break;
 			//e课
-			//document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+			case 'wx6573103bb78bec40':
+				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2f' + this.state.release + '%2fbuild&response_type=code&scope=snsapi_userinfo&state=' + this.state.appid + '#wechat_redirect';
+				break;
 		}
 	},
 	localSave: function localSave(n, s, o, t) {
