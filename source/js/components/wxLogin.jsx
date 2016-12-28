@@ -32,7 +32,7 @@ var wxLogin = React.createClass({
 					this.setState({
 						code: code,
 						isLogin: true,
-						state: appid
+						appid: appid
 					},function(){
 						this.getuserinfo();
 						sessionStorage.setItem("appid", this.state.appid);
