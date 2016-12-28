@@ -49,6 +49,7 @@ var Switch = React.createClass({
 						top: thiz.state.dy + moveY - thiz.state.downY
 					});
 				}
+				ev.preventDefault();
 			}, false);
 			slider.addEventListener(slideEnd, function(ev) {
 				if (thiz.state.isMove) {
@@ -71,7 +72,7 @@ var Switch = React.createClass({
 		}
 	},
 	render: function() {
-		var shadow = this.state.isMouseDown ? '0px 0px 10px #0AFFB6' : '0px 0px 10px #73FAFF';
+		var shadow = this.state.isMouseDown ? '0px 0px 20px #0AFFB6' : '0px 0px 20px #73FAFF';
 		var roomid = this.props._roomid;
 		var sClass = this.state.isRead ? 'glyphicon glyphicon-book' : 'glyphicon glyphicon-user';
 		var name = this.state.isRead ? '阅读' : '课堂';
@@ -95,7 +96,13 @@ var Switch = React.createClass({
 					cursor: 'pointer'
 				}
 			} >
-			< span className = {
+			< span style = {
+				{
+					color: '#ffaabb'
+				}
+			}
+
+			className = {
 				sClass
 			} > < /span> {name}< /div > );
 	}
