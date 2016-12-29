@@ -25674,11 +25674,9 @@ var PAppJoin = React.createClass({
 	displayName: 'PAppJoin',
 
 
-	componentDidMounted: function componentDidMounted() {
-		if (this.isMounted()) {
-			if (sessionStorage.username) {} else {
-				_reactRouter.hashHistory.replace('/');
-			}
+	componentWillMounted: function componentWillMounted() {
+		if (sessionStorage.username) {} else {
+			_reactRouter.hashHistory.replace('/');
 		}
 	},
 	render: function render() {
@@ -25776,10 +25774,12 @@ var PcLogin = React.createClass({
 	getInitialState: function getInitialState() {
 		return {
 			value: null,
+			width: '',
 			isright: true
 		};
 	},
 	componentWillMount: function componentWillMount() {
+		this.calLogoSize();
 		if (sessionStorage.username) {
 			var once = sessionStorage.username.substring(0, 5);
 			var oncepw = sessionStorage.password.substring(0, 5);
@@ -25800,14 +25800,26 @@ var PcLogin = React.createClass({
 			});
 		}
 	},
-
+	calLogoSize: function calLogoSize() {
+		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+		if (w > h) {
+			this.setState({
+				width: '35%'
+			});
+		} else {
+			this.setState({
+				width: '80%'
+			});
+		}
+	},
 	getcode: function getcode(user, pass) {
 		var thiz = this;
 		$.post("http://www.pictoshare.net/index.php?controller=apis&action=login", {
 			login_info: user,
 			password: pass
 		}, function (data, status) {
-			value = JSON.parse(data);
+			var value = JSON.parse(data);
 			thiz.setState({
 				value: value
 			}, function () {
@@ -25846,64 +25858,65 @@ var PcLogin = React.createClass({
 
 	render: function render() {
 		return React.createElement(
-			'nav',
-			{ className: 'navbar navbar-default',
-				role: 'navigation' },
+			'div',
+			{ className: 'container',
+				style: {
+					margin: '5%',
+					width: this.state.width
+				} },
 			React.createElement(
 				'div',
-				{ className: 'container-fluid' },
+				{ className: 'form-signin' },
+				React.createElement(
+					'h2',
+					{ className: 'form-signin-heading' },
+					' PageShare '
+				),
+				' ',
+				React.createElement(
+					'label',
+					{
+						className: 'sr-only' },
+					' Email address '
+				),
+				' ',
+				React.createElement('input', { id: 'un',
+					className: 'form-control',
+					placeholder: 'Username',
+					required: '' }),
+				React.createElement(
+					'label',
+					{ className: 'sr-only' },
+					' Password '
+				),
+				' ',
+				React.createElement('input', { id: 'pw',
+					className: 'form-control',
+					placeholder: 'Password',
+					required: '',
+					type: 'password' }),
 				React.createElement(
 					'div',
-					{ className: 'navbar-header' },
+					{ className: 'checkbox' },
 					React.createElement(
-						'a',
-						{ className: 'navbar-brand',
-							href: '#' },
-						' PageShare '
+						'label',
+						null,
+						React.createElement('input', { value: 'remember-me',
+							type: 'checkbox' }),
+						' '
 					),
 					' '
 				),
 				' ',
 				React.createElement(
-					'div',
-					null,
-					React.createElement(
-						'div',
-						{ className: 'navbar-form navbar-right',
-							role: 'search' },
-						React.createElement(
-							'div',
-							{ className: 'form-group' },
-							React.createElement('input', { type: 'text',
-								className: 'form-control',
-								id: 'us',
-								placeholder: 'username' })
-						),
-						' ',
-						React.createElement(
-							'div',
-							{ className: 'form-group' },
-							' ',
-							React.createElement('input', { type: 'text',
-								id: 'pw',
-								className: 'form-control',
-								placeholder: 'password' })
-						),
-						' ',
-						React.createElement(
-							'button',
-							{
-								className: 'btn btn-default',
-								id: 'login' },
-							' 登录 '
-						),
-						' '
-					),
-					' '
+					'button',
+					{ className: 'btn btn-lg btn-primary btn-block',
+						type: 'submit',
+						id: 'login' },
+					' Sign in '
 				),
 				' '
-			),
-			' '
+			)
 		);
 	}
 
