@@ -9,10 +9,12 @@ var PcLogin = React.createClass({
 	getInitialState: function() {
 		return {
 			value: null,
+			width: '',
 			isright: true
 		};
 	},
 	componentWillMount: function() {
+		this.calLogoSize();
 		if (sessionStorage.username) {
 			var once = sessionStorage.username.substring(0, 5);
 			var oncepw = sessionStorage.password.substring(0, 5);
@@ -28,12 +30,24 @@ var PcLogin = React.createClass({
 				var un = $('#us').val();
 				var pw = $('#pw').val();
 				if (un != '' && pw != '') {
-					 thiz.getcode(un, pw);
+					thiz.getcode(un, pw);
 				}
 			});
 		}
 	},
-
+	calLogoSize: function() {
+		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+		if (w > h) {
+			this.setState({
+				width: '35%'
+			});
+		} else {
+			this.setState({
+				width: '80%'
+			});
+		}
+	},
 	getcode: function(user, pass) {
 		var thiz = this;
 		$.post("http://www.pictoshare.net/index.php?controller=apis&action=login", {
@@ -41,7 +55,7 @@ var PcLogin = React.createClass({
 				password: pass
 			},
 			function(data, status) {
-				value = JSON.parse(data);
+				var value = JSON.parse(data);
 				thiz.setState({
 					value: value
 				}, function() {
@@ -49,7 +63,7 @@ var PcLogin = React.createClass({
 						thiz.getUserInfo(thiz.state.value.tokenkey);
 					} else {
 						thiz.setState({
-							isright:false 
+							isright: false
 						});
 					}
 				});
@@ -57,7 +71,7 @@ var PcLogin = React.createClass({
 
 	},
 	getUserInfo: function(token) {
-		var thiz=this;
+		var thiz = this;
 		$.post("http://www.pictoshare.net/index.php?controller=apis&action=getmemberinfo", {
 				tokenkey: token
 			},
@@ -83,26 +97,32 @@ var PcLogin = React.createClass({
 	},
 
 	render: function() {
-		return ( < nav className = "navbar navbar-default"
-			role = "navigation" >
-			< div className = "container-fluid" >
-			< div className = "navbar-header" >
-			< a className = "navbar-brand"
-			href = "#" > PageShare < /a> < /div > < div >
-			< div className = "navbar-form navbar-right"
-			role = "search" >
-			< div className = "form-group" >
-			< input type = "text"
+		return ( < div className = "container"
+			style = {
+				{
+					margin: '5%',
+					width: this.state.width
+				}
+			} >
+			< div className = "form-signin" >
+			< h2 className = "form-signin-heading" > PageShare < /h2> < label
+			className = "sr-only" > Email address < /label> < input id = "un"
 			className = "form-control"
-			id = 'us'
-			placeholder = "username" / >
-			< /div> < div className = "form-group" > < input type = "text"
-			id = 'pw'
+			placeholder = "Username"
+			required = "" / >
+			< label className = "sr-only" > Password < /label> < input id = "pw"
 			className = "form-control"
-			placeholder = "password" / >
-			< /div> < button 
-			className = "btn btn-default"
-			id = 'login' > 登录 < /button> < /div > < /div> < /div > < /nav>
+			placeholder = "Password"
+			required = ""
+			type = "password" / >
+			< div className = "checkbox" >
+			< label >
+			< input value = "remember-me"
+			type = "checkbox" / > < /label> < /div > < button className = "btn btn-lg btn-primary btn-block"
+			type = "submit"
+			id = 'login' > Sign in < /button> < /div >
+
+			< /div>
 		);
 	}
 

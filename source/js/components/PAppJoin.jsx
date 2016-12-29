@@ -11,13 +11,11 @@ var React = require('react');
 
 var PAppJoin = React.createClass({
 
-	componentDidMounted:function(){
-		if(this.isMounted()){
-			if(sessionStorage.username){
+	componentWillMounted: function() {
+		if (sessionStorage.username) {
 
-			}else{
-				hashHistory.replace('/');
-			}
+		} else {
+			hashHistory.replace('/');
 		}
 	},
 	render: function() {
@@ -25,7 +23,7 @@ var PAppJoin = React.createClass({
 		return ( < div >
 			< JoinNav / >
 			< PJoinInput / >
-			<Switch/>
+			< Switch / >
 			< /div>
 		);
 	}
