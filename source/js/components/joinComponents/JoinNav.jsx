@@ -17,6 +17,10 @@ var JoinNav = React.createClass({
 			this.setState({
 				nickname: sessionStorage.getItem("nickname")
 			});
+		}else{
+			this.setState({
+				nickname: sessionStorage.getItem("username")
+			});
 		} 
 	},
 	render: function() {

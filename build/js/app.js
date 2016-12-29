@@ -25447,131 +25447,129 @@ var AppJoin = React.createClass({
 	displayName: 'AppJoin',
 
 
-	componentDidMount: function componentDidMount() {
-		if (sessionStorage.nickname) {
-			//分享设置
-			var appid = sessionStorage.getItem('appid');
-			$.ajax({
-				async: true,
-				url: "php/wx_share.php",
-				type: "GET",
-				data: {
-					urll: document.location.href.split('#')[0],
-					appid: appid
-				},
-				timeout: 5000,
-				success: function success(result) {
-					var url_now = document.location.href.split('#')[0];
-					var arry = result.split(":");
-					var appid = arry[0],
-					    timestamp = arry[1],
-					    noncestr = arry[2],
-					    signature = arry[3];
-					//验证签名，监听分享
-					var title = '飞播云板',
-					    desc = '我有东西show你!',
-					    imgurl = 'http://pictoshare.net/dev/build/img/pageshare.png';
-					var is_hasData = setInterval(function () {
-						if (signature != undefined && signature != "" && signature != 'undefined') {
-							//微信分享接口
-							wx.config({
-								debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-								appId: appid, // 必填，公众号的唯一标识
-								timestamp: timestamp, // 必填，生成签名的时间戳
-								nonceStr: noncestr, // 必填，生成签名的随机串
-								signature: signature, // 必填，签名，见附录1
-								jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone', 'onMenuShareWeibo'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-							});
-
-							wx.ready(function () {
-								// config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
-								wx.onMenuShareAppMessage({
-									title: title, // 分享标题
-									desc: desc, // 分享描述
-									link: url_now, // 分享链接
-									imgUrl: imgurl, // 分享图标
-									type: '', // 分享类型,music、video或link，不填默认为link
-									dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-									success: function success() {
-										// 用户确认分享后执行的回调函数
-
-									},
-									cancel: function cancel() {
-										// 用户取消分享后执行的回调函数
-
-									}
-								});
-
-								wx.onMenuShareTimeline({
-									title: title, // 分享标题
-									link: url_now, // 分享链接
-									imgUrl: imgurl, // 分享图标
-									success: function success() {
-										// 用户确认分享后执行的回调函数
-									},
-									cancel: function cancel() {
-										// 用户取消分享后执行的回调函数
-									}
-								});
-
-								wx.onMenuShareQQ({
-									title: title, // 分享标题
-									desc: desc, // 分享描述
-									link: url_now, // 分享链接
-									imgUrl: imgurl, // 分享图标
-									success: function success() {
-										// 用户确认分享后执行的回调函数
-									},
-									cancel: function cancel() {
-										// 用户取消分享后执行的回调函数
-									}
-								});
-
-								wx.onMenuShareWeibo({
-									title: title, // 分享标题
-									desc: desc, // 分享描述
-									link: url_now, // 分享链接
-									imgUrl: imgurl, // 分享图标
-									success: function success() {
-										// 用户确认分享后执行的回调函数
-									},
-									cancel: function cancel() {
-										// 用户取消分享后执行的回调函数
-									}
-								});
-
-								wx.onMenuShareQZone({
-									title: title, // 分享标题
-									desc: desc, // 分享描述
-									link: url_now, // 分享链接
-									imgUrl: imgurl, // 分享图标
-									success: function success() {
-										// 用户确认分享后执行的回调函数
-									},
-									cancel: function cancel() {
-										// 用户取消分享后执行的回调函数
-									}
-								});
-							});
-							wx.error(function (res) {
-
-								console.log('签名失败');
-								console.log(res);
-								// config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-							});
-
-							window.clearInterval(is_hasData);
-						}
-					}, 50);
-				}
-			});
+	componentWillMount: function componentWillMount() {
+		if (sessionStorage.nickname) {//分享设置
 		} else {
-			//分享join界面url，先授权获取到username再跳/JOIN
-			//	document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
-			//e课
 			_reactRouter.hashHistory.replace('/');
-			//document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2fdev%2fbuild&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 		}
+	},
+
+	componentDidMount: function componentDidMount() {
+		var appid = sessionStorage.getItem('appid');
+		$.ajax({
+			async: true,
+			url: "php/wx_share.php",
+			type: "GET",
+			data: {
+				urll: document.location.href.split('#')[0],
+				appid: appid
+			},
+			timeout: 5000,
+			success: function success(result) {
+				var url_now = document.location.href.split('#')[0];
+				var arry = result.split(":");
+				var appid = arry[0],
+				    timestamp = arry[1],
+				    noncestr = arry[2],
+				    signature = arry[3];
+				//验证签名，监听分享
+				var title = '飞播云板',
+				    desc = '我有东西show你!',
+				    imgurl = 'http://pictoshare.net/dev/build/img/pageshare.png';
+				var is_hasData = setInterval(function () {
+					if (signature != undefined && signature != "" && signature != 'undefined') {
+						//微信分享接口
+						wx.config({
+							debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+							appId: appid, // 必填，公众号的唯一标识
+							timestamp: timestamp, // 必填，生成签名的时间戳
+							nonceStr: noncestr, // 必填，生成签名的随机串
+							signature: signature, // 必填，签名，见附录1
+							jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone', 'onMenuShareWeibo'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+						});
+
+						wx.ready(function () {
+							// config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+							wx.onMenuShareAppMessage({
+								title: title, // 分享标题
+								desc: desc, // 分享描述
+								link: url_now, // 分享链接
+								imgUrl: imgurl, // 分享图标
+								type: '', // 分享类型,music、video或link，不填默认为link
+								dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+								success: function success() {
+									// 用户确认分享后执行的回调函数
+
+								},
+								cancel: function cancel() {
+									// 用户取消分享后执行的回调函数
+
+								}
+							});
+
+							wx.onMenuShareTimeline({
+								title: title, // 分享标题
+								link: url_now, // 分享链接
+								imgUrl: imgurl, // 分享图标
+								success: function success() {
+									// 用户确认分享后执行的回调函数
+								},
+								cancel: function cancel() {
+									// 用户取消分享后执行的回调函数
+								}
+							});
+
+							wx.onMenuShareQQ({
+								title: title, // 分享标题
+								desc: desc, // 分享描述
+								link: url_now, // 分享链接
+								imgUrl: imgurl, // 分享图标
+								success: function success() {
+									// 用户确认分享后执行的回调函数
+								},
+								cancel: function cancel() {
+									// 用户取消分享后执行的回调函数
+								}
+							});
+
+							wx.onMenuShareWeibo({
+								title: title, // 分享标题
+								desc: desc, // 分享描述
+								link: url_now, // 分享链接
+								imgUrl: imgurl, // 分享图标
+								success: function success() {
+									// 用户确认分享后执行的回调函数
+								},
+								cancel: function cancel() {
+									// 用户取消分享后执行的回调函数
+								}
+							});
+
+							wx.onMenuShareQZone({
+								title: title, // 分享标题
+								desc: desc, // 分享描述
+								link: url_now, // 分享链接
+								imgUrl: imgurl, // 分享图标
+								success: function success() {
+									// 用户确认分享后执行的回调函数
+								},
+								cancel: function cancel() {
+									// 用户取消分享后执行的回调函数
+								}
+							});
+						});
+						wx.error(function (res) {
+
+							console.log('签名失败');
+							console.log(res);
+							// config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+						});
+
+						window.clearInterval(is_hasData);
+					}
+				}, 50);
+			}
+		});
 	},
 	render: function render() {
 		return React.createElement(
@@ -25666,6 +25664,8 @@ var _Switch = require('./joinComponents/Switch.jsx');
 
 var _Switch2 = _interopRequireDefault(_Switch);
 
+var _reactRouter = require('react-router');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var React = require('react');
@@ -25673,6 +25673,14 @@ var React = require('react');
 var PAppJoin = React.createClass({
 	displayName: 'PAppJoin',
 
+
+	componentDidMounted: function componentDidMounted() {
+		if (this.isMounted()) {
+			if (sessionStorage.username) {} else {
+				_reactRouter.hashHistory.replace('/');
+			}
+		}
+	},
 	render: function render() {
 
 		return React.createElement(
@@ -25688,7 +25696,7 @@ var PAppJoin = React.createClass({
 
 module.exports = PAppJoin;
 
-},{"./joinComponents/JoinNav.jsx":235,"./joinComponents/PJoinInput.jsx":236,"./joinComponents/Switch.jsx":238,"react":228}],232:[function(require,module,exports){
+},{"./joinComponents/JoinNav.jsx":235,"./joinComponents/PJoinInput.jsx":236,"./joinComponents/Switch.jsx":238,"react":228,"react-router":30}],232:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -25771,41 +25779,47 @@ var PcLogin = React.createClass({
 			password: ''
 		};
 	},
-	componentDidMount: function componentDidMount() {
-		if (this.isMounted()) {
-			var thiz = this;
-			if (sessionStorage.username) {
+	componentWillMount: function componentWillMount() {
+		if (sessionStorage.username) {
+			var once = sessionStorage.username.substring(0, 5);
+			var oncepw = sessionStorage.password.substring(0, 5);
+			if (once != 'user_' && oncepw != 'pass_') {
 				_reactRouter.hashHistory.replace('/join');
-			} else {
-				$('#login').on('click', function () {
-					var un = $('#us').val();
-					var pw = $('#pw').val();
-					if (un != '' && pw != '') {
-						console.log(un + "  " + pw);
-						var code = thiz.getcode(un, pw);
-						if (code != undefined && code != null && code != '') {
-							thiz.getUserInfo(code);
-						} else {
-							console.log('错误');
-						}
-					}
-				});
 			}
 		}
 	},
+	componentDidMount: function componentDidMount() {
+		if (this.isMounted()) {
+			var thiz = this;
+			$('#login').on('click', function () {
+				var un = $('#us').val();
+				var pw = $('#pw').val();
+				if (un != '' && pw != '') {
+					console.log(un + "  " + pw);
+					var code = thiz.getcode(un, pw);
+					if (code != undefined && code != null && code != '') {
+						thiz.getUserInfo(code);
+					} else {
+						console.log('错误');
+					}
+				}
+			});
+		}
+	},
+
 	getcode: function getcode(user, pass) {
-		console.log(user + "  " + pass);
+		var value;
 		$.post("http://www.pictoshare.net/index.php?controller=apis&action=login", {
 			login_info: user,
 			password: pass
 		}, function (data, status) {
-			var value = JSON.parse(data);
-			if (value.status == "success") {
-				return value.tokenkey;
-			} else {
-				return;
-			}
+			value = JSON.parse(data);
 		});
+		if (value.status == "success") {
+			return value.tokenkey;
+		} else {
+			return;
+		}
 	},
 	getUserInfo: function getUserInfo(token) {
 		$.post("http://www.pictoshare.net/index.php?controller=apis&action=getmemberinfo", {
@@ -25868,6 +25882,7 @@ var PcLogin = React.createClass({
 						React.createElement(
 							'div',
 							{ className: 'form-group' },
+							' ',
 							React.createElement('input', { type: 'text',
 								id: 'pw',
 								className: 'form-control',
@@ -25877,7 +25892,8 @@ var PcLogin = React.createClass({
 						React.createElement(
 							'button',
 							{
-								className: 'btn btn-default', id: 'login' },
+								className: 'btn btn-default',
+								id: 'login' },
 							' 登录 '
 						),
 						' '
@@ -26132,6 +26148,10 @@ var JoinNav = React.createClass({
 		if (sessionStorage.nickname) {
 			this.setState({
 				nickname: sessionStorage.getItem("nickname")
+			});
+		} else {
+			this.setState({
+				nickname: sessionStorage.getItem("username")
 			});
 		}
 	},
@@ -27327,144 +27347,10 @@ var Application = _react2.default.createClass({
   },
 
 
-  callivMsgSize: function callivMsgSize(res) {
-    var livsize = [];
-    for (var p in res) {
-      livsize.push(p);
-    }
-    return livsize;
-  },
-  playLivFile: function playLivFile(res) {
-    var livsize = this.callivMsgSize(res);
-    this.setState({
-      livsize: livsize,
-      res: res,
-      pageNum: livsize.length
-    }, function () {
-      this.diguiliv();
-    });
-  },
-  //递归liv播放
-  diguiliv: function diguiliv() {
-    var thiz = this;
-    if (!thiz.state.isStop) {
-      if (thiz.state.pageIndex < thiz.state.pageNum) {
-        //页数未到末尾
-        if (thiz.state.dataNow < thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]].length) {
-          //本页未到最后一笔
-          thiz.state.timeout = setTimeout(function () {
-            thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
-            thiz.setState({
-              dataNow: thiz.state.dataNow + 1
-            }, function () {
-              thiz.diguiliv();
-            });
-          }, thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].time);
-        } else {
-          //本页最后一笔画完，翻页并递归
-          thiz.setState({
-            pageIndex: thiz.state.pageIndex + 1,
-            dataNow: 0
-          }, function () {
-            thiz.diguiliv();
-          });
-        }
-      } else {
-        //是否轮播
-        thiz.setState({
-          pageIndex: 0,
-          dataNow: 0
-        }, function () {
-          thiz.diguiliv();
-        });
-      }
-    }
-  },
-
   //渲染以后？ 设置为以前收不到Message
   componentDidMount: function componentDidMount() {
     var thiz = this;
     if (this.isMounted()) {
-      //liv
-      //如果是分享出来的
-
-      //点击按钮时下载数据并播放
-      $('#liv_play').on('click', function () {
-        if (thiz.state.res == null) {
-          $.get('http://203.195.173.135:9000/files/liv?file=' + $('#liv_select').val() + '&format=json', function (res) {
-            thiz.playLivFile(res);
-            $('#liv_Nav').fadeIn();
-
-            $('#exit').on('click', function () {
-              clearTimeout(thiz.state.timeout);
-              thiz.setState({
-                isStop: true
-              });
-            });
-
-            //向左
-            $('#liv_left').on('click', function () {
-              if (thiz.state.pageIndex < thiz.state.pageNum && thiz.state.pageIndex > 1) {
-                thiz.state.audio.pause();
-                thiz.state.video.pause();
-                clearTimeout(thiz.state.timeout);
-                thiz.setState({
-                  pageIndex: thiz.state.pageIndex - 2,
-                  dataNow: 0
-                }, function () {
-                  thiz.diguiliv();
-                });
-              }
-            });
-            //向右
-            $('#liv_right').on('click', function () {
-              if (thiz.state.pageIndex < thiz.state.pageNum - 1) {
-                thiz.state.audio.pause();
-                thiz.state.video.pause();
-                clearTimeout(thiz.state.timeout);
-                thiz.setState({
-                  dataNow: 0
-                }, function () {
-                  thiz.diguiliv();
-                });
-              }
-            });
-            //停止
-            $('#liv_stop').on('click', function () {
-              if (!thiz.state.isStop) {
-                thiz.state.audio.pause();
-                thiz.state.video.pause();
-                clearTimeout(thiz.state.timeout);
-                thiz.setState({
-                  isStop: true
-                });
-              } else {
-                //正在播放的话
-                thiz.setState({
-                  isStop: false
-                }, function () {
-                  thiz.diguiliv();
-                });
-              }
-            });
-          });
-        } else {
-          clearTimeout(thiz.state.timeout);
-          thiz.state.audio.pause();
-          thiz.state.video.pause();
-          thiz.setState({
-            isStop: false,
-            pageIndex: 0,
-            pageNum: 0,
-            res: null,
-            livsize: [],
-            dataNow: 0
-          }, function () {
-            $('#liv_play').click();
-          });
-        }
-      });
-
       //---liv
       //ws连接
       if (typeof Storage !== "undefined") {
