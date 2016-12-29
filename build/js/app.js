@@ -25775,8 +25775,8 @@ var PcLogin = React.createClass({
 
 	getInitialState: function getInitialState() {
 		return {
-			username: '',
-			password: ''
+			value: null,
+			isright: true
 		};
 	},
 	componentWillMount: function componentWillMount() {
@@ -25795,33 +25795,34 @@ var PcLogin = React.createClass({
 				var un = $('#us').val();
 				var pw = $('#pw').val();
 				if (un != '' && pw != '') {
-					console.log(un + "  " + pw);
-					var code = thiz.getcode(un, pw);
-					if (code != undefined && code != null && code != '') {
-						thiz.getUserInfo(code);
-					} else {
-						console.log('错误');
-					}
+					thiz.getcode(un, pw);
 				}
 			});
 		}
 	},
 
 	getcode: function getcode(user, pass) {
-		var value;
+		var thiz = this;
 		$.post("http://www.pictoshare.net/index.php?controller=apis&action=login", {
 			login_info: user,
 			password: pass
 		}, function (data, status) {
 			value = JSON.parse(data);
+			thiz.setState({
+				value: value
+			}, function () {
+				if (thiz.state.value.status == "success") {
+					thiz.getUserInfo(thiz.state.value.tokenkey);
+				} else {
+					thiz.setState({
+						isright: false
+					});
+				}
+			});
 		});
-		if (value.status == "success") {
-			return value.tokenkey;
-		} else {
-			return;
-		}
 	},
 	getUserInfo: function getUserInfo(token) {
+		var thiz = this;
 		$.post("http://www.pictoshare.net/index.php?controller=apis&action=getmemberinfo", {
 			tokenkey: token
 		}, function (data, status) {
@@ -25829,7 +25830,7 @@ var PcLogin = React.createClass({
 			if (value.status == "success") {
 				un = value.info.username;
 				pw = value.info.password;
-				this.localSave(un, pw);
+				thiz.localSave(un, pw);
 				if (un != '' && un != null && pw != '' && pw != null) {
 					_reactRouter.hashHistory.replace('/join');
 				}
