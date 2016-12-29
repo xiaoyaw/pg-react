@@ -19,9 +19,10 @@ var PcLogin = React.createClass({
 				hashHistory.replace('/join');
 			}else{
 				$('#login').on('click',function(){
-					var un=$('#un').val();
+					var un=$('#us').val();
 					var pw=$('#pw').val();
 					if(un!=''&&pw!=''){
+						console.log(un+"  "+pw);
 						var code=thiz.getcode(un,pw);
 						if(code!=undefined&&code!=null&&code!=''){
 							thiz.getUserInfo(code);
@@ -34,7 +35,8 @@ var PcLogin = React.createClass({
 		}
 	},
 	getcode: function(user, pass) {
-		$.post("http://pictoshare.net/index.php?controller=apis&action=login", {
+		console.log(user+"  "+pass);
+		$.post("http://www.pictoshare.net/index.php?controller=apis&action=login", {
 				login_info: user,
 				password: pass
 			},
@@ -48,7 +50,7 @@ var PcLogin = React.createClass({
 			});
 	},
 	getUserInfo: function(token) {
-		$.post("http://pictoshare.net/index.php?controller=apis&action=getmemberinfo", {
+		$.post("http://www.pictoshare.net/index.php?controller=apis&action=getmemberinfo", {
 				tokenkey: token
 			},
 			function(data, status) {
@@ -57,6 +59,9 @@ var PcLogin = React.createClass({
 					un = value.info.username;
 					pw = value.info.password;
 					this.localSave(un, pw);
+					if(un!=''&&un!=null&&pw!=''&&pw!=null){
+						hashHistory.replace('/join');
+					}
 				} else {
 
 				}
