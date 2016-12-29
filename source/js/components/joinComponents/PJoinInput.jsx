@@ -24,12 +24,7 @@ var PJoinInput = React.createClass({
 		var password = "pass_" + Math.random();
 		this.localSave(username, password);
 	},
-	localSave: function(u, p) {
-		if (typeof(Storage) !== "undefined") {
-			sessionStorage.setItem("username", u);
-			sessionStorage.setItem("password", p);
-		}
-	},
+
 	calLogoSize: function() {
 		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
