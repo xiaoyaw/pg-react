@@ -62,7 +62,10 @@ var wxLogin = React.createClass({
 					this.localSave(arry[2], arry[3], arry[0], arry[1]);
 					if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
 						document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=" + arry[4] + "==&scene=110#&wechat_redirect";
-					} else {
+					}
+					if(arry[2]!=''&&arry[0]!=''&&arry[1]!=''&&arry[3]!=''){
+						hashHistory.replace('/join');
+					}else{
 						this.toWhere();
 					}
 				}.bind(this),

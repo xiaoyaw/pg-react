@@ -25773,7 +25773,23 @@ var PcLogin = React.createClass({
 	},
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
-			if (sessionStorage.username) {}
+			var thiz = this;
+			if (sessionStorage.username) {
+				_reactRouter.hashHistory.replace('/join');
+			} else {
+				$('#login').on('click', function () {
+					var un = $('#un').val();
+					var pw = $('#pw').val();
+					if (un != '' && pw != '') {
+						var code = thiz.getcode(un, pw);
+						if (code != undefined && code != null && code != '') {
+							thiz.getUserInfo(code);
+						} else {
+							console.log('错误');
+						}
+					}
+				});
+			}
 		}
 	},
 	getcode: function getcode(user, pass) {
@@ -25832,7 +25848,7 @@ var PcLogin = React.createClass({
 					'div',
 					null,
 					React.createElement(
-						'form',
+						'div',
 						{ className: 'navbar-form navbar-right',
 							role: 'search' },
 						React.createElement(
@@ -25840,6 +25856,7 @@ var PcLogin = React.createClass({
 							{ className: 'form-group' },
 							React.createElement('input', { type: 'text',
 								className: 'form-control',
+								id: 'us',
 								placeholder: 'username' })
 						),
 						' ',
@@ -25847,6 +25864,7 @@ var PcLogin = React.createClass({
 							'div',
 							{ className: 'form-group' },
 							React.createElement('input', { type: 'text',
+								id: 'pw',
 								className: 'form-control',
 								placeholder: 'password' })
 						),
@@ -25854,7 +25872,7 @@ var PcLogin = React.createClass({
 						React.createElement(
 							'button',
 							{
-								className: 'btn btn-default' },
+								className: 'btn btn-default', id: 'login' },
 							' 登录 '
 						),
 						' '
@@ -26180,12 +26198,7 @@ var PJoinInput = React.createClass({
 		var password = "pass_" + Math.random();
 		this.localSave(username, password);
 	},
-	localSave: function localSave(u, p) {
-		if (typeof Storage !== "undefined") {
-			sessionStorage.setItem("username", u);
-			sessionStorage.setItem("password", p);
-		}
-	},
+
 	calLogoSize: function calLogoSize() {
 		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
@@ -28959,6 +28972,9 @@ var wxLogin = React.createClass({
 					this.localSave(arry[2], arry[3], arry[0], arry[1]);
 					if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
 						document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=" + arry[4] + "==&scene=110#&wechat_redirect";
+					}
+					if (arry[2] != '' && arry[0] != '' && arry[1] != '' && arry[3] != '') {
+						_reactRouter.hashHistory.replace('/join');
 					} else {
 						this.toWhere();
 					}
