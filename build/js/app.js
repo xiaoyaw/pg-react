@@ -25796,6 +25796,12 @@ var PcLogin = React.createClass({
 				var pw = $('#pw').val();
 				if (un != '' && pw != '') {
 					thiz.getcode(un, pw);
+				} else {
+					thiz.setState({
+						warning: '请输入账号密码'
+					}, function () {
+						thiz.handleMsg();
+					});
 				}
 			});
 		}
@@ -25830,10 +25836,7 @@ var PcLogin = React.createClass({
 						thiz.setState({
 							warning: '账号密码输入有误！！！'
 						}, function () {
-							$('#warning').fadeIn();
-							setTimeout(function () {
-								$('#warning').fadeOut();
-							}, 2000);
+							thiz.handleMsg();
 						});
 					}
 				});
@@ -25841,10 +25844,7 @@ var PcLogin = React.createClass({
 				thiz.setState({
 					warning: '密码位数不正确！！！'
 				}, function () {
-					$('#warning').fadeIn();
-					setTimeout(function () {
-						$('#warning').fadeOut();
-					}, 2000);
+					thiz.handleMsg();
 				});
 			}
 		});
@@ -25866,10 +25866,7 @@ var PcLogin = React.createClass({
 				thiz.setState({
 					warning: '系统繁忙！！！'
 				}, function () {
-					$('#warning').fadeIn();
-					setTimeout(function () {
-						$('#warning').fadeOut();
-					}, 2000);
+					thiz.handleMsg();
 				});
 			}
 		});
@@ -25880,7 +25877,12 @@ var PcLogin = React.createClass({
 			sessionStorage.setItem("password", p);
 		}
 	},
-
+	handleMsg: function handleMsg() {
+		$('#warning').fadeIn();
+		setTimeout(function () {
+			$('#warning').fadeOut();
+		}, 2000);
+	},
 	render: function render() {
 		return React.createElement(
 			'div',
@@ -26278,9 +26280,6 @@ var PJoinInput = React.createClass({
 	},
 	componentWillMount: function componentWillMount() {
 		this.calLogoSize();
-		var username = "user_" + Math.random();
-		var password = "pass_" + Math.random();
-		this.localSave(username, password);
 	},
 
 	calLogoSize: function calLogoSize() {
