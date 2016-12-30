@@ -25774,7 +25774,8 @@ var PcLogin = React.createClass({
 	getInitialState: function getInitialState() {
 		return {
 			value: null,
-			width: ''
+			width: '',
+			warning: ''
 		};
 	},
 	componentWillMount: function componentWillMount() {
@@ -25818,16 +25819,34 @@ var PcLogin = React.createClass({
 			login_info: user,
 			password: pass
 		}, function (data, status) {
-			var value = JSON.parse(data);
-			thiz.setState({
-				value: value
-			}, function () {
-				if (thiz.state.value.status == "success") {
-					thiz.getUserInfo(thiz.state.value.tokenkey);
-				} else {
-					console.log('账号密码是错误的');
-				}
-			});
+			if (data != '') {
+				var value = JSON.parse(data);
+				thiz.setState({
+					value: value
+				}, function () {
+					if (thiz.state.value.status == "success") {
+						thiz.getUserInfo(thiz.state.value.tokenkey);
+					} else {
+						thiz.setState({
+							warning: '账号密码输入有误！！！'
+						}, function () {
+							$('#warning').fadeIn();
+							setTimeout(function () {
+								$('#warning').fadeOut();
+							}, 2000);
+						});
+					}
+				});
+			} else {
+				thiz.setState({
+					warning: '密码位数不正确！！！'
+				}, function () {
+					$('#warning').fadeIn();
+					setTimeout(function () {
+						$('#warning').fadeOut();
+					}, 2000);
+				});
+			}
 		});
 	},
 	getUserInfo: function getUserInfo(token) {
@@ -25837,14 +25856,21 @@ var PcLogin = React.createClass({
 		}, function (data, status) {
 			var value = JSON.parse(data);
 			if (value.status == "success") {
-				un = value.info.username;
-				pw = value.info.password;
+				var un = value.info.username;
+				var pw = value.info.password;
 				thiz.localSave(un, pw);
 				if (un != '' && un != null && pw != '' && pw != null) {
 					_reactRouter.hashHistory.replace('/join');
 				}
 			} else {
-				console.log('没拿到用户信息');
+				thiz.setState({
+					warning: '系统繁忙！！！'
+				}, function () {
+					$('#warning').fadeIn();
+					setTimeout(function () {
+						$('#warning').fadeOut();
+					}, 2000);
+				});
 			}
 		});
 	},
@@ -25914,7 +25940,27 @@ var PcLogin = React.createClass({
 						id: 'login' },
 					' Sign in '
 				),
-				' '
+				'  ',
+				React.createElement(
+					'div',
+					{ style: {
+							textAlign: 'center',
+							textShadow: '2px 2px 5px #9B30FF',
+							marginTop: '35px',
+							display: 'none'
+						},
+						id: 'warning' },
+					' ',
+					React.createElement(
+						'font',
+						{ style: {
+								fontSize: '16px'
+							} },
+						' ',
+						this.state.warning,
+						' '
+					)
+				)
 			)
 		);
 	}
