@@ -16,7 +16,7 @@ var wxLogin = React.createClass({
 			code: '',
 			isLogin: false,
 			appid: '',
-			release: 'dev'
+			release: 'PageShare'
 		};
 	},
 	componentDidMount: function() {

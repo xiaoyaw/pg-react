@@ -84,6 +84,10 @@ var JoinInput = React.createClass({
 			}, 2000);
 		} else {
 			$(this.refs.textinput).blur();
+			var audio = document.getElementById("myaudio");
+			audio.src = 'img/sure.mp3';
+			audio.play();
+
 			hashHistory.replace('/room/' + this.state.text);
 		}
 	},
