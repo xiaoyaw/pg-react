@@ -20,9 +20,6 @@ var PJoinInput = React.createClass({
 	},
 	componentWillMount: function() {
 		this.calLogoSize();
-		var username = "user_" + Math.random();
-		var password = "pass_" + Math.random();
-		this.localSave(username, password);
 	},
 
 	calLogoSize: function() {
