@@ -33,7 +33,7 @@ var PcLogin = React.createClass({
 					thiz.getcode(un, pw);
 				} else {
 					thiz.setState({
-						warning: '请输入账号密码'
+						warning: '请输入账号密码！'
 					}, function() {
 						thiz.handleMsg();
 					});
@@ -70,7 +70,7 @@ var PcLogin = React.createClass({
 							thiz.getUserInfo(thiz.state.value.tokenkey);
 						} else {
 							thiz.setState({
-								warning: '账号密码输入有误！！！'
+								warning: '账号密码输入有误！'
 							}, function() {
 								thiz.handleMsg();
 							});
@@ -78,7 +78,7 @@ var PcLogin = React.createClass({
 					});
 				} else {
 					thiz.setState({
-						warning: '密码位数不正确！！！'
+						warning: '密码位数不正确！'
 					}, function() {
 						thiz.handleMsg();
 					});
@@ -101,7 +101,7 @@ var PcLogin = React.createClass({
 					}
 				} else {
 					thiz.setState({
-						warning: '系统繁忙！！！'
+						warning: '系统繁忙！'
 					}, function() {
 						thiz.handleMsg();
 					});
@@ -139,7 +139,7 @@ var PcLogin = React.createClass({
 			placeholder = "Password"
 			required = ""
 			type = "password" / >
-			< div className = "checkbox" >
+			< div className = "checkbox pull-right" >
 			< label >
 			< input value = "remember-me"
 			type = "checkbox" / > < /label> < /div > < button className = "btn btn-lg btn-primary btn-block"

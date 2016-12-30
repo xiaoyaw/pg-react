@@ -25806,7 +25806,7 @@ var PcLogin = React.createClass({
 					thiz.getcode(un, pw);
 				} else {
 					thiz.setState({
-						warning: '请输入账号密码'
+						warning: '请输入账号密码！'
 					}, function () {
 						thiz.handleMsg();
 					});
@@ -25842,7 +25842,7 @@ var PcLogin = React.createClass({
 						thiz.getUserInfo(thiz.state.value.tokenkey);
 					} else {
 						thiz.setState({
-							warning: '账号密码输入有误！！！'
+							warning: '账号密码输入有误！'
 						}, function () {
 							thiz.handleMsg();
 						});
@@ -25850,7 +25850,7 @@ var PcLogin = React.createClass({
 				});
 			} else {
 				thiz.setState({
-					warning: '密码位数不正确！！！'
+					warning: '密码位数不正确！'
 				}, function () {
 					thiz.handleMsg();
 				});
@@ -25872,7 +25872,7 @@ var PcLogin = React.createClass({
 				}
 			} else {
 				thiz.setState({
-					warning: '系统繁忙！！！'
+					warning: '系统繁忙！'
 				}, function () {
 					thiz.handleMsg();
 				});
@@ -25932,7 +25932,7 @@ var PcLogin = React.createClass({
 					type: 'password' }),
 				React.createElement(
 					'div',
-					{ className: 'checkbox' },
+					{ className: 'checkbox pull-right' },
 					React.createElement(
 						'label',
 						null,
@@ -26071,10 +26071,6 @@ var JoinInput = React.createClass({
 			}, 2000);
 		} else {
 			$(this.refs.textinput).blur();
-			var audio = document.getElementById("myaudio");
-			audio.src = 'img/sure.mp3';
-			audio.play();
-
 			_reactRouter.hashHistory.replace('/room/' + this.state.text);
 		}
 	},
@@ -26363,9 +26359,6 @@ var PJoinInput = React.createClass({
 			}, 2000);
 		} else {
 			$(this.refs.textinput).blur();
-			var audio = document.getElementById("myaudio");
-			audio.src = 'img/sure.mp3';
-			audio.play();
 			_reactRouter.hashHistory.replace('/room/' + this.state.text);
 		}
 	},
@@ -26510,9 +26503,6 @@ var Select = React.createClass({
 
 			$('#liv_select').on('change', function () {
 				if ($(liv_select).val() != '请选择待播文件') {
-					var audio = document.getElementById("myaudio");
-					audio.src = 'img/sure.mp3';
-					audio.play();
 					_reactRouter.hashHistory.push('/eread/' + $('#liv_select').val().split('.')[0]);
 				}
 			});
@@ -28522,29 +28512,55 @@ var MyAudio = React.createClass({
 
 	getInitialState: function getInitialState() {
 		return {
-			clicked: false
+			clicked: false,
+			isOpened: false,
+			isFirstClick: false
 		};
+	},
+	componentWillMount: function componentWillMount() {
+		if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) {} else {
+			this.setState({
+				isOpened: true,
+				isFirstClick: true
+			});
+		}
 	},
 	handleClick: function handleClick() {
 		var thiz = this;
-		this.setState({
-			clicked: !this.state.clicked
-		});
 		var audio = document.getElementById("myaudio");
-		if (this.state.clicked) {
-			if (audio.duration > 0) {
+		if (this.state.isFirstClick) {
+			this.setState({
+				clicked: !this.state.clicked
+			});
+			if (this.state.clicked) {
+				if (audio.duration > 0) {
+					audio.play();
+					var is_playFinish = setInterval(function () {
+						if (audio.ended) {
+							thiz.setState({
+								clicked: false
+							});
+							window.clearInterval(is_playFinish);
+						}
+					}, 10);
+				}
+			} else {
+				audio.pause();
+			}
+		} else {
+			this.setState({
+				isOpened: true,
+				isFirstClick: true
+			}, function () {
+				audio.src = 'img/sure.mp3';
 				audio.play();
 				var is_playFinish = setInterval(function () {
 					if (audio.ended) {
-						thiz.setState({
-							clicked: false
-						});
+						audio.src = '';
 						window.clearInterval(is_playFinish);
 					}
 				}, 10);
-			}
-		} else {
-			audio.pause();
+			});
 		}
 	},
 	componentDidMount: function componentDidMount() {
@@ -28556,7 +28572,12 @@ var MyAudio = React.createClass({
 	},
 	render: function render() {
 		//设置按钮状态
-		var voiceImg = this.state.clicked ? 'glyphicon glyphicon-pause' : 'glyphicon glyphicon-headphones';
+		if (this.state.isOpened) {
+			var voiceImg = this.state.clicked ? 'glyphicon glyphicon-pause' : 'glyphicon glyphicon-headphones';
+		} else {
+			var voiceImg = 'glyphicon glyphicon-volume-off';
+		}
+
 		//设置audio的播放还是暂停
 
 		return React.createElement(

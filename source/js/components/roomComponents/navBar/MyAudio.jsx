@@ -9,33 +9,62 @@ var MyAudio = React.createClass({
 
 	getInitialState: function() {
 		return {
-			clicked: false
+			clicked: false,
+			isOpened: false,
+			isFirstClick: false
 		};
+	},
+	componentWillMount: function() {
+		if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+
+		} else {
+			this.setState({
+				isOpened:true,
+				isFirstClick:true 
+			});
+		}
 	},
 	handleClick: function() {
 		var thiz = this;
-		this.setState({
-			clicked: !this.state.clicked
-		});
 		var audio = document.getElementById("myaudio");
-		if (this.state.clicked) {
-			if (audio.duration > 0) {
+		if (this.state.isFirstClick) {
+			this.setState({
+				clicked: !this.state.clicked
+			});
+			if (this.state.clicked) {
+				if (audio.duration > 0) {
+					audio.play();
+					var is_playFinish = setInterval(
+						function() {
+							if (audio.ended) {
+								thiz.setState({
+									clicked: false
+								});
+								window
+									.clearInterval(is_playFinish);
+							}
+						}, 10);
+				}
+			} else {
+				audio.pause();
+			}
+		} else {
+			this.setState({
+				isOpened: true,
+				isFirstClick: true
+			}, function() {
+				audio.src = 'img/sure.mp3';
 				audio.play();
 				var is_playFinish = setInterval(
 					function() {
 						if (audio.ended) {
-							thiz.setState({
-								clicked: false
-							});
+							audio.src = '';
 							window
 								.clearInterval(is_playFinish);
 						}
 					}, 10);
-			}
-		} else {
-			audio.pause();
+			});
 		}
-
 	},
 	componentDidMount: function() {
 		var voice = this.refs.btnAudio;
@@ -47,7 +76,12 @@ var MyAudio = React.createClass({
 	},
 	render: function() {
 		//设置按钮状态
-		var voiceImg = this.state.clicked ? 'glyphicon glyphicon-pause' : 'glyphicon glyphicon-headphones';
+		if (this.state.isOpened) {
+			var voiceImg = this.state.clicked ? 'glyphicon glyphicon-pause' : 'glyphicon glyphicon-headphones';
+		} else {
+			var voiceImg = 'glyphicon glyphicon-volume-off';
+		}
+
 		//设置audio的播放还是暂停
 
 		return ( < a ref = "btnAudio"
