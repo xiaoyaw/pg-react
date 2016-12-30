@@ -25674,9 +25674,17 @@ var PAppJoin = React.createClass({
 	displayName: 'PAppJoin',
 
 
-	componentWillMounted: function componentWillMounted() {
+	componentWillMount: function componentWillMount() {
 		if (sessionStorage.username) {} else {
 			_reactRouter.hashHistory.replace('/');
+		}
+	},
+	componentDidMount: function componentDidMount() {
+		if (this.isMounted()) {
+			$('#headimage').on('click', function () {
+				sessionStorage.clear();
+				_reactRouter.hashHistory.replace('/');
+			});
 		}
 	},
 	render: function render() {
