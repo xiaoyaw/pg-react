@@ -18,9 +18,6 @@ var Select = React.createClass({
 
 			$('#liv_select').on('change', function() {
 				if ($(liv_select).val() != '请选择待播文件') {
-					var audio = document.getElementById("myaudio");
-					audio.src = 'img/sure.mp3';
-					audio.play();
 					hashHistory.push('/eread/' + $('#liv_select').val().split('.')[0]);
 				}
 			});
