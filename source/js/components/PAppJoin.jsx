@@ -11,11 +11,19 @@ var React = require('react');
 
 var PAppJoin = React.createClass({
 
-	componentWillMounted: function() {
+	componentWillMount: function() {
 		if (sessionStorage.username) {
 
 		} else {
 			hashHistory.replace('/');
+		}
+	},
+	componentDidMount:function(){
+		if(this.isMounted()){
+			$('#headimage').on('click',function(){
+				sessionStorage.clear();
+				hashHistory.replace('/');
+			})
 		}
 	},
 	render: function() {
