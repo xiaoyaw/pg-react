@@ -25774,8 +25774,7 @@ var PcLogin = React.createClass({
 	getInitialState: function getInitialState() {
 		return {
 			value: null,
-			width: '',
-			isright: true
+			width: ''
 		};
 	},
 	componentWillMount: function componentWillMount() {
@@ -25826,9 +25825,7 @@ var PcLogin = React.createClass({
 				if (thiz.state.value.status == "success") {
 					thiz.getUserInfo(thiz.state.value.tokenkey);
 				} else {
-					thiz.setState({
-						isright: false
-					});
+					console.log('账号密码是错误的');
 				}
 			});
 		});
@@ -25846,7 +25843,9 @@ var PcLogin = React.createClass({
 				if (un != '' && un != null && pw != '' && pw != null) {
 					_reactRouter.hashHistory.replace('/join');
 				}
-			} else {}
+			} else {
+				console.log('没拿到用户信息');
+			}
 		});
 	},
 	localSave: function localSave(u, p) {
@@ -25880,7 +25879,7 @@ var PcLogin = React.createClass({
 					' Email address '
 				),
 				' ',
-				React.createElement('input', { id: 'un',
+				React.createElement('input', { id: 'us',
 					className: 'form-control',
 					placeholder: 'Username',
 					required: '' }),
