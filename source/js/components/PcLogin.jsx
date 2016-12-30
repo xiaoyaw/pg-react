@@ -9,8 +9,7 @@ var PcLogin = React.createClass({
 	getInitialState: function() {
 		return {
 			value: null,
-			width: '',
-			isright: true
+			width: ''
 		};
 	},
 	componentWillMount: function() {
@@ -62,9 +61,7 @@ var PcLogin = React.createClass({
 					if (thiz.state.value.status == "success") {
 						thiz.getUserInfo(thiz.state.value.tokenkey);
 					} else {
-						thiz.setState({
-							isright: false
-						});
+						console.log('账号密码是错误的');
 					}
 				});
 			});
@@ -85,7 +82,7 @@ var PcLogin = React.createClass({
 						hashHistory.replace('/join');
 					}
 				} else {
-
+					console.log('没拿到用户信息');
 				}
 			});
 	},
@@ -106,7 +103,7 @@ var PcLogin = React.createClass({
 			} >
 			< div className = "form-signin" >
 			< h2 className = "form-signin-heading" > PageShare < /h2> < label
-			className = "sr-only" > Email address < /label> < input id = "un"
+			className = "sr-only" > Email address < /label> < input id = "us"
 			className = "form-control"
 			placeholder = "Username"
 			required = "" / >
