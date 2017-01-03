@@ -33,13 +33,12 @@ var wxLogin = React.createClass({
 						code: code,
 						isLogin: true,
 						appid: appid
-					},function(){
+					}, function() {
 						this.getuserinfo();
 						sessionStorage.setItem("appid", this.state.appid);
 					});
-					
-				};
 
+				}
 			}
 		}
 	},
@@ -63,9 +62,9 @@ var wxLogin = React.createClass({
 					if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
 						document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=" + arry[4] + "==&scene=110#&wechat_redirect";
 					}
-					if(arry[2]!=''&&arry[0]!=''&&arry[1]!=''&&arry[3]!=''){
+					if (arry[2] != '' && arry[0] != '' && arry[1] != '' && arry[3] != '') {
 						hashHistory.replace('/join');
-					}else{
+					} else {
 						this.toWhere();
 					}
 				}.bind(this),
@@ -74,17 +73,17 @@ var wxLogin = React.createClass({
 			this.toWhere();
 		}
 	},
-	toWhere:function(){
+	toWhere: function() {
 		switch (this.state.appid) {
-				//奕甲
-				case 'wxe818778f16e4400d':
-					document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fpictoshare.net%2f' + this.state.release + '%2fbuild&response_type=code&scope=snsapi_userinfo&state='+this.state.appid+'#wechat_redirect';
-					break;
-					//e课
-				case 'wx6573103bb78bec40':
-					document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2f' + this.state.release + '%2fbuild&response_type=code&scope=snsapi_userinfo&state='+this.state.appid+'#wechat_redirect';
-					break;
-			}
+			//奕甲
+			case 'wxe818778f16e4400d':
+				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2f' + this.state.release + '%2fbuild&response_type=code&scope=snsapi_userinfo&state=' + this.state.appid + '#wechat_redirect';
+				break;
+				//e课
+			case 'wx6573103bb78bec40':
+				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2f' + this.state.release + '%2fbuild&response_type=code&scope=snsapi_userinfo&state=' + this.state.appid + '#wechat_redirect';
+				break;
+		}
 	},
 	localSave: function(n, s, o, t) {
 		if (typeof(Storage) !== "undefined") {
