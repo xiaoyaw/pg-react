@@ -48,14 +48,7 @@ var PcLogin = React.createClass({
 				file_name: $('#test').val()
 			},
 			function(data, status) {
-				//var value = JSON.parse(data);
-				if (value.status == "success") {
-					console.log('备份success');
 					console.log(data);
-				} else {
-					console.log('备份fail');
-					console.log(data);
-				}
 			});
 	},
 	testgetBackup: function(token) {
@@ -65,14 +58,7 @@ var PcLogin = React.createClass({
 				file_name: $('#test').val()
 			},
 			function(data, status) {
-				//var value = JSON.parse(data);
-				if (value.status == "success") {
-					console.log('下载success');
 					console.log(data);
-				} else {
-					console.log('下载fail');
-					console.log(data);
-				}
 			});
 	},
 	testdeleteBackup: function(token) {
@@ -82,14 +68,7 @@ var PcLogin = React.createClass({
 				file_name: $('#test').val()
 			},
 			function(data, status) {
-				//var value = JSON.parse(data);
-				if (value.status == "success") {
-					console.log('删除success');
-					console.log(data);
-				} else {
-					console.log('删除fail');
-					console.log(data);
-				}
+				console.log(data);
 			});
 	},
 	testlistBackup: function(token) {
@@ -99,14 +78,7 @@ var PcLogin = React.createClass({
 				file_name: $('#test').val()
 			},
 			function(data, status) {
-				//var value = JSON.parse(data);
-				if (value.status == "success") {
-					console.log('列表success');
 					console.log(data);
-				} else {
-					console.log('列表fail');
-					console.log(data);
-				}
 			});
 	},
 	calLogoSize: function() {
