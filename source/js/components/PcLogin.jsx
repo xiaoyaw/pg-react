@@ -41,6 +41,74 @@ var PcLogin = React.createClass({
 			});
 		}
 	},
+	testBackup: function(token) {
+		var thiz = this;
+		$.post(" http://www.pictoshare.net/index.php?controller=apis&action=backup_putFile", {
+				Tokenkey: token,
+				file_name: $('#test').val()
+			},
+			function(data, status) {
+				//var value = JSON.parse(data);
+				if (value.status == "success") {
+					console.log('备份success');
+					console.log(data);
+				} else {
+					console.log('备份fail');
+					console.log(data);
+				}
+			});
+	},
+	testgetBackup: function(token) {
+		var thiz = this;
+		$.post(" http://www.pictoshare.net/index.php?controller=apis&action=backup_putFile", {
+				Tokenkey: token,
+				file_name: $('#test').val()
+			},
+			function(data, status) {
+				//var value = JSON.parse(data);
+				if (value.status == "success") {
+					console.log('下载success');
+					console.log(data);
+				} else {
+					console.log('下载fail');
+					console.log(data);
+				}
+			});
+	},
+	testdeleteBackup: function(token) {
+		var thiz = this;
+		$.post(" http://www.pictoshare.net/index.php?controller=apis&action=backup_delFile", {
+				Tokenkey: token,
+				file_name: $('#test').val()
+			},
+			function(data, status) {
+				//var value = JSON.parse(data);
+				if (value.status == "success") {
+					console.log('删除success');
+					console.log(data);
+				} else {
+					console.log('删除fail');
+					console.log(data);
+				}
+			});
+	},
+	testlistBackup: function(token) {
+		var thiz = this;
+		$.post(" http://www.pictoshare.net/index.php?controller=apis&action=backup_listFile", {
+				Tokenkey: token,
+				file_name: $('#test').val()
+			},
+			function(data, status) {
+				//var value = JSON.parse(data);
+				if (value.status == "success") {
+					console.log('列表success');
+					console.log(data);
+				} else {
+					console.log('列表fail');
+					console.log(data);
+				}
+			});
+	},
 	calLogoSize: function() {
 		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
@@ -86,7 +154,23 @@ var PcLogin = React.createClass({
 			});
 	},
 	getUserInfo: function(token) {
+
+
 		var thiz = this;
+
+		$('#up').on('click', function() {
+			thiz.testBackup(token);
+		})
+		$('#load').on('click', function() {
+			thiz.testgetBackup();
+		})
+		$('#delete').on('click', function() {
+			thiz.testdeleteBackup();
+		})
+		$('#list').on('click', function() {
+			thiz.testlistBackup();
+		})
+
 		$.post("http://www.pictoshare.net/index.php?controller=apis&action=getmemberinfo", {
 				tokenkey: token
 			},
@@ -97,7 +181,7 @@ var PcLogin = React.createClass({
 					var pw = value.info.password;
 					thiz.localSave(un, pw);
 					if (un != '' && un != null && pw != '' && pw != null) {
-						hashHistory.replace('/join');
+						//hashHistory.replace('/join');
 					}
 				} else {
 					thiz.setState({
@@ -139,6 +223,7 @@ var PcLogin = React.createClass({
 			placeholder = "Password"
 			required = ""
 			type = "password" / >
+			< input id = 'test' / >
 			< div className = "checkbox pull-right" >
 			< label >
 			< input value = "remember-me"
@@ -158,9 +243,7 @@ var PcLogin = React.createClass({
 	} > {
 		this.state.warning
 	} < /font></div >
-	< /div >
-
-	< /div>
+	< /div > < button id = 'up' > up < /button > < button id = 'load' > load < /button > < button id = 'delete' > delete < /button > < button id = 'list' > list < /button > < /div>
 );
 }
 
