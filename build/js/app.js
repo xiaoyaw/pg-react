@@ -25817,7 +25817,7 @@ var PcLogin = React.createClass({
 	testBackup: function testBackup(token) {
 		var thiz = this;
 		$.post(" http://www.pictoshare.net/index.php?controller=apis&action=backup_putFile", {
-			Tokenkey: token,
+			tokenkey: token,
 			file_name: $('#test').val()
 		}, function (data, status) {
 			console.log(data);
@@ -25826,7 +25826,7 @@ var PcLogin = React.createClass({
 	testgetBackup: function testgetBackup(token) {
 		var thiz = this;
 		$.post(" http://www.pictoshare.net/index.php?controller=apis&action=backup_putFile", {
-			Tokenkey: token,
+			tokenkey: token,
 			file_name: $('#test').val()
 		}, function (data, status) {
 			console.log(data);
@@ -25835,7 +25835,7 @@ var PcLogin = React.createClass({
 	testdeleteBackup: function testdeleteBackup(token) {
 		var thiz = this;
 		$.post(" http://www.pictoshare.net/index.php?controller=apis&action=backup_delFile", {
-			Tokenkey: token,
+			tokenkey: token,
 			file_name: $('#test').val()
 		}, function (data, status) {
 			console.log(data);
@@ -25845,7 +25845,7 @@ var PcLogin = React.createClass({
 		var thiz = this;
 		$.post(" http://www.pictoshare.net/index.php?controller=apis&action=backup_listFile", {
 			Tokenkey: token,
-			file_name: $('#test').val()
+			dir: $('#test').val()
 		}, function (data, status) {
 			console.log(data);
 		});
