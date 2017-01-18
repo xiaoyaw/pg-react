@@ -45,7 +45,8 @@ let ReadApplication = React.createClass({
       img_width: null, //将图片原始宽高传递过去，计算加入者尺寸和图片尺寸比例
       img_height: null, //将图片原始宽高传递过去，计算加入者尺寸和图片尺寸比例
       startVideo: '',
-      allVideo: ''
+      allVideo: '',
+      isfirstPlay: true
     };
   },
 
@@ -207,9 +208,13 @@ let ReadApplication = React.createClass({
     var thiz = this;
     if (this.isMounted()) {
       //liv
+      $('#voice').on('click', function() {
+        thiz.setState({
+          isfirstPlay: false
+        });
+      });
       //如果是分享出来的
-
-      $.get('http://203.195.173.135:9000/files/liv?file=' + thiz.props.file + '.liv&format=json', function(res) {
+      $.get('http://203.195.173.135:9000/files/liv?file=' + encodeURI(thiz.props.file) + '.liv&format=json', function(res) {
         thiz.playLivFile(res);
       });
 
@@ -331,58 +336,39 @@ let ReadApplication = React.createClass({
         break;
 
       case "urlvoice":
-        try {
-          var audio = document.getElementById("myaudio");
-          audio.pause();
-          var waitTime = 200;
-          setTimeout(function() {
-            if (audio.paused) {
-              audio.src = value.url;
-              audio.play();
-            }
-          }, waitTime);
-        } catch (e) {
-          console.log(e);
+        if (!this.state.isfirstPlay) {
+          try {
+            var audio = document.getElementById("myaudio");
+            audio.pause();
+            var waitTime = 200;
+            setTimeout(function() {
+              if (audio.paused) {
+                audio.src = value.url;
+                audio.play();
+              }
+            }, waitTime);
+          } catch (e) {
+            console.log(e);
+          }
         }
-
-        // if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
-        //   $('body').on('touchstart touchmove touchend click', function() {
-        //     $('body').unbind();
-        //   });
-        //   this.setState({
-        //     hastouch: false
-        //   });
-        // } else {
-        //   audio.play();
-        // }
         break;
 
       case "voice":
-
-        try {
-          var audio = document.getElementById("myaudio");
-          audio.pause();
-          var waitTime = 200;
-          setTimeout(function() {
-            if (audio.paused) {
-              audio.src = "data:audio/mpeg;base64," + value.voice;
-              audio.play();
-            }
-          }, waitTime);
-        } catch (e) {
-          console.log(e);
+        if (!this.state.isfirstPlay) {
+          try {
+            var audio = document.getElementById("myaudio");
+            audio.pause();
+            var waitTime = 200;
+            setTimeout(function() {
+              if (audio.paused) {
+                audio.src = "data:audio/mpeg;base64," + value.voice;
+                audio.play();
+              }
+            }, waitTime);
+          } catch (e) {
+            console.log(e);
+          }
         }
-
-        // if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
-        //   $('body').on('touchstart touchmove touchend click', function() { //一次事件触发
-        //    $('body').unbind();
-        //   });
-        //   this.setState({
-        //     hastouch: false
-        //   });
-        // } else {
-        //   audio.play();
-        // }
         break;
 
       case "urlvideo":

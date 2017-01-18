@@ -51,7 +51,8 @@ let Application = React.createClass({
       img_width: null, //将图片原始宽高传递过去，计算加入者尺寸和图片尺寸比例
       img_height: null, //将图片原始宽高传递过去，计算加入者尺寸和图片尺寸比例
       startVideo: '',
-      allVideo: ''
+      allVideo: '',
+      isfirstPlay: true
     };
   },
 
@@ -102,6 +103,11 @@ let Application = React.createClass({
     var thiz = this;
     if (this.isMounted()) {
       //---liv
+      $('#voice').on('click', function() {
+        thiz.setState({
+          isfirstPlay: false
+        });
+      });
       //ws连接
       if (typeof(Storage) !== "undefined") {
         if (sessionStorage.username) {
@@ -244,37 +250,21 @@ let Application = React.createClass({
         break;
 
       case "urlvoice":
-        var audio = document.getElementById("myaudio");
-        audio.pause();
-        audio.src = value.url;
-        // if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
-        //   $('body').on('touchstart touchmove touchend click', function() {
-        audio.play();
-        //     $('body').unbind();
-        //   });
-        //   this.setState({
-        //     hastouch: false
-        //   });
-        // } else {
-        //   audio.play();
-        // }
+        if (!this.state.isfirstPlay) {
+          var audio = document.getElementById("myaudio");
+          audio.pause();
+          audio.src = value.url;
+          audio.play();
+        }
         break;
 
       case "voice":
-        var audio = document.getElementById("myaudio");
-        audio.pause();
-        audio.src = "data:audio/mpeg;base64," + value.voice;
-        // if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
-        //   $('body').on('touchstart touchmove touchend click', function() { //一次事件触发
-        audio.play();
-        //    $('body').unbind();
-        //   });
-        //   this.setState({
-        //     hastouch: false
-        //   });
-        // } else {
-        //   audio.play();
-        // }
+        if (!this.state.isfirstPlay) {
+          var audio = document.getElementById("myaudio");
+          audio.pause();
+          audio.src = "data:audio/mpeg;base64," + value.voice;
+          audio.play();
+        }
         break;
 
       case "urlvideo":

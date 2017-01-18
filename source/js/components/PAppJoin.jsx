@@ -13,7 +13,6 @@ var PAppJoin = React.createClass({
 
 	componentWillMount: function() {
 		if (sessionStorage.username) {
-
 		} else {
 			hashHistory.replace('/');
 		}

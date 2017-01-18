@@ -25814,42 +25814,6 @@ var PcLogin = React.createClass({
 			});
 		}
 	},
-	testBackup: function testBackup(token) {
-		var thiz = this;
-		$.post(" http://www.pictoshare.net/index.php?controller=apis&action=backup_putFile", {
-			tokenkey: token,
-			file_name: $('#test').val()
-		}, function (data, status) {
-			console.log(data);
-		});
-	},
-	testgetBackup: function testgetBackup(token) {
-		var thiz = this;
-		$.post(" http://www.pictoshare.net/index.php?controller=apis&action=backup_putFile", {
-			tokenkey: token,
-			file_name: $('#test').val()
-		}, function (data, status) {
-			console.log(data);
-		});
-	},
-	testdeleteBackup: function testdeleteBackup(token) {
-		var thiz = this;
-		$.post(" http://www.pictoshare.net/index.php?controller=apis&action=backup_delFile", {
-			tokenkey: token,
-			file_name: $('#test').val()
-		}, function (data, status) {
-			console.log(data);
-		});
-	},
-	testlistBackup: function testlistBackup(token) {
-		var thiz = this;
-		$.post(" http://www.pictoshare.net/index.php?controller=apis&action=backup_listFile", {
-			Tokenkey: token,
-			dir: $('#test').val()
-		}, function (data, status) {
-			console.log(data);
-		});
-	},
 	calLogoSize: function calLogoSize() {
 		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
@@ -25894,22 +25858,7 @@ var PcLogin = React.createClass({
 		});
 	},
 	getUserInfo: function getUserInfo(token) {
-
 		var thiz = this;
-
-		$('#up').on('click', function () {
-			thiz.testBackup(token);
-		});
-		$('#load').on('click', function () {
-			thiz.testgetBackup();
-		});
-		$('#delete').on('click', function () {
-			thiz.testdeleteBackup();
-		});
-		$('#list').on('click', function () {
-			thiz.testlistBackup();
-		});
-
 		$.post("http://www.pictoshare.net/index.php?controller=apis&action=getmemberinfo", {
 			tokenkey: token
 		}, function (data, status) {
@@ -26023,32 +25972,7 @@ var PcLogin = React.createClass({
 						' '
 					)
 				)
-			),
-			' ',
-			React.createElement(
-				'button',
-				{ id: 'up' },
-				' up '
-			),
-			' ',
-			React.createElement(
-				'button',
-				{ id: 'load' },
-				' load '
-			),
-			' ',
-			React.createElement(
-				'button',
-				{ id: 'delete' },
-				' delete '
-			),
-			' ',
-			React.createElement(
-				'button',
-				{ id: 'list' },
-				' list '
-			),
-			' '
+			)
 		);
 	}
 
@@ -26148,10 +26072,6 @@ var JoinInput = React.createClass({
 			}, 2000);
 		} else {
 			$(this.refs.textinput).blur();
-			var audio = document.getElementById("myaudio");
-			audio.src = 'img/sure.mp3';
-			audio.play();
-
 			_reactRouter.hashHistory.replace('/room/' + this.state.text);
 		}
 	},
@@ -26440,9 +26360,6 @@ var PJoinInput = React.createClass({
 			}, 2000);
 		} else {
 			$(this.refs.textinput).blur();
-			var audio = document.getElementById("myaudio");
-			audio.src = 'img/sure.mp3';
-			audio.play();
 			_reactRouter.hashHistory.replace('/room/' + this.state.text);
 		}
 	},
@@ -26577,65 +26494,296 @@ var Select = React.createClass({
 
 	getInitialState: function getInitialState() {
 		return {
-			course: ['请选择待播文件']
+			usnClick: true,
+			clnClick: false,
+			flnClick: false,
+			course: [],
+			usn: [],
+			cln: [],
+			displayFile: []
 		};
 	},
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
-
+			var that = this;
 			this.queryAllLiv();
+			this.handleSearch();
+			this.handleSelect();
+			$('#toread').on('click', function () {
 
-			$('#liv_select').on('change', function () {
-				if ($(liv_select).val() != '请选择待播文件') {
-					var audio = document.getElementById("myaudio");
-					audio.src = 'img/sure.mp3';
-					audio.play();
-					_reactRouter.hashHistory.push('/eread/' + $('#liv_select').val().split('.')[0]);
+				if (that.state.flnClick) {
+					var res = that.catchValue();
+					if (res != undefined) {
+						_reactRouter.hashHistory.replace('/eread/' + res);
+					}
+				} else {
+					_reactRouter.hashHistory.replace('/eread/' + $('#liv_select').val().split('.')[0]);
+				}
+			});
+			$(document).keydown(function (e) {
+				var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+				if (eCode == "13") {
+					//keyCode=13是回车键
+					if ($('liv_select') != '') {
+						$('#toread').click();
+					}
 				}
 			});
 		}
 	},
-	queryAllLiv: function queryAllLiv() {
+	catchValue: function catchValue() {
+		var x = $('#liv_select').val();
+		var res = this.state.course;
+		for (var i = 0; i < res.length; i++) {
+			if (res[i].split('_')[2].split('.')[0] == x) {
+				return res[i];
+			}
+		}
+	},
+	handleSelect: function handleSelect() {
 		var that = this;
-		$.ajax({
-			async: true,
-			url: 'http://203.195.173.135:9000/files/list?format=json',
-			type: 'GET',
-			timeout: 5000,
-			success: function success(res) {
-				that.setState({
-					course: that.state.course.concat(res)
-				});
+		$('#search').on('change', function () {
+			if (that.state.usnClick) {
+				that.usnDisplay();
+			} else if (that.state.clnClick) {
+				that.clnDisplay();
 			}
 		});
 	},
+	handleSearch: function handleSearch() {
+		var that = this;
+		$("#usn").on('click', function () {
+			that.setState({
+				usnClick: true,
+				clnClick: false,
+				flnClick: false
+			}, function () {
+				that.usnDisplay();
+				that.handleSelect();
+			});
+		});
+		$("#cln").on('click', function () {
+			that.setState({
+				usnClick: false,
+				clnClick: true,
+				flnClick: false
+			}, function () {
+				that.clnDisplay();
+				that.handleSelect();
+			});
+		});
+		$("#fln").on('click', function () {
+			that.setState({
+				usnClick: false,
+				clnClick: false,
+				flnClick: true
+			});
+		});
+	},
+	queryAllLiv: function queryAllLiv() {
+		var that = this;
+		// $.ajax({
+		// 	async: true,
+		// 	url: 'http://203.195.173.135:9000/files/list?format=json',
+		// 	type: 'GET',
+		// 	timeout: 5000,
+		// 	success: function(res) {
+		// 		that.setState({
+		// 			course: that.state.course.concat(res)
+		// 		});
+		// 	}
+		// })
+		var res = ['add_addxx_爱睡觉-2017-01-11-18:28:33.liv', 'add_add11_爱吃饭-2017-01-11-18:28:33.liv', 'add_addxx_filename3-2017-01-11-18:28:33.liv', 'add_add22_filename4-2017-01-11-18:28:33.liv', 'lgd_lgdxx_filename5-2017-01-11-18:28:33.liv'];
+		var usn = [],
+		    rss = [],
+		    cln = [];
+
+		for (var i = 0; i < res.length; i++) {
+			rss.push(decodeURI(res[i]));
+		}
+
+		for (var i = 0; i < rss.length; i++) {
+			if (usn.indexOf(rss[i].split("_")[0]) == -1) {
+				usn.push(rss[i].split("_")[0]);
+			}
+			if (cln.indexOf(rss[i].split("_")[1]) == -1) {
+				cln.push(rss[i].split("_")[1]);
+			}
+		}
+
+		that.setState({
+			course: rss,
+			usn: usn,
+			cln: cln
+		}, function () {
+			that.usnDisplay();
+		});
+	},
+	usnDisplay: function usnDisplay() {
+		var tip = $('#search').val(),
+		    res = this.state.course,
+		    fln = [];
+		for (var i = 0; i < res.length; i++) {
+			if (res[i].split("_")[0] == tip) {
+				fln.push(res[i]);
+			}
+		}
+		this.setState({
+			displayFile: fln
+		});
+	},
+	clnDisplay: function clnDisplay() {
+		var tip = $('#search').val(),
+		    res = this.state.course,
+		    fln = [];
+		for (var i = 0; i < res.length; i++) {
+			if (res[i].split("_")[1] == tip) {
+				fln.push(res[i]);
+			}
+		}
+		this.setState({
+			displayFile: fln
+		});
+	},
 	render: function render() {
+		var usnColor = this.state.usnClick ? "" : "#DCDCDC";
+		var clnColor = this.state.clnClick ? "" : "#DCDCDC";
+		var flnColor = this.state.flnClick ? "" : "#DCDCDC";
 		return React.createElement(
 			'div',
-			null,
-			' ',
+			{ className: 'panel panel-info' },
 			React.createElement(
-				'select',
-				{ name: 'livfile',
-					className: 'container',
-					id: 'liv_select' },
-				' ',
-				this.state.course.map(function (name) {
-					return React.createElement(
-						'option',
-						{ key: name,
-							value: name },
-						' ',
-						name.split('.')[0],
+				'div',
+				{ className: 'panel-heading' },
+				React.createElement(
+					'span',
+					{ className: 'glyphicon glyphicon-search pull-left' },
+					' '
+				),
+				React.createElement(
+					'a',
+					{ className: 'search',
+						id: 'usn',
+						style: {
+							color: usnColor
+						} },
+					' 用户 '
+				),
+				React.createElement(
+					'a',
+					{ className: 'search',
+						id: 'cln',
+						style: {
+							color: clnColor
+						} },
+					' 课号 '
+				),
+				React.createElement(
+					'a',
+					{ className: 'search',
+						id: 'fln',
+						style: {
+							color: flnColor
+						} },
+					' 课程 '
+				),
+				React.createElement(
+					'a',
+					{ id: 'toread' },
+					' ',
+					React.createElement(
+						'span',
+						{ className: 'glyphicon glyphicon-log-in pull-right',
+							style: {
+								color: '#00BFFF',
+								fontSize: '20px'
+							} },
 						' '
-					);
-				}),
+					)
+				)
+			),
+			React.createElement(
+				'div',
+				{ className: 'panel-body' },
+				' ',
+				this.state.flnClick ? React.createElement(
+					'span',
+					null,
+					' ',
+					React.createElement('input', { className: 'form-control',
+						id: 'liv_select',
+						list: 'flnlist' }),
+					' ',
+					React.createElement(
+						'datalist',
+						{ id: 'flnlist' },
+						' ',
+						this.state.course.map(function (name) {
+							return React.createElement(
+								'option',
+								{ key: name,
+									value: name.split('_')[2].split('.')[0] },
+								' ',
+								name.split('_')[2].split('.')[0],
+								' '
+							);
+						}),
+						' '
+					),
+					' '
+				) : React.createElement(
+					'span',
+					null,
+					' ',
+					React.createElement(
+						'select',
+						{ id: 'search' },
+						' ',
+						this.state.clnClick ? this.state.cln.map(function (cn) {
+							return React.createElement(
+								'option',
+								{ key: cn,
+									value: cn },
+								' ',
+								cn,
+								' '
+							);
+						}) : this.state.usn.map(function (un) {
+							return React.createElement(
+								'option',
+								{ key: un,
+									value: un },
+								' ',
+								un,
+								' '
+							);
+						}),
+						' '
+					),
+					' ',
+					React.createElement(
+						'select',
+						{ id: 'liv_select' },
+						' ',
+						this.state.displayFile.map(function (df) {
+							return React.createElement(
+								'option',
+								{ key: df,
+									value: df },
+								' ',
+								df.split('_')[2].split('.')[0],
+								' '
+							);
+						}),
+						' '
+					),
+					' '
+				),
 				' '
 			),
 			' '
 		);
 	}
-
 });
 
 module.exports = Select;
@@ -26806,7 +26954,7 @@ var EreadRoom = React.createClass({
 		return React.createElement(
 			'div',
 			null,
-			React.createElement(_Slider2.default, { _roomid: file.split('.')[0]
+			React.createElement(_Slider2.default, { _roomid: file.split('_')[2].split('-')[0]
 			}),
 			React.createElement(_ReadApplication2.default, { file: file }),
 			React.createElement(_ControlNav2.default, null),
@@ -26941,7 +27089,8 @@ var ReadApplication = _react2.default.createClass({
       img_width: null, //将图片原始宽高传递过去，计算加入者尺寸和图片尺寸比例
       img_height: null, //将图片原始宽高传递过去，计算加入者尺寸和图片尺寸比例
       startVideo: '',
-      allVideo: ''
+      allVideo: '',
+      isfirstPlay: true
     };
   },
 
@@ -27107,9 +27256,13 @@ var ReadApplication = _react2.default.createClass({
     var thiz = this;
     if (this.isMounted()) {
       //liv
+      $('#voice').on('click', function () {
+        thiz.setState({
+          isfirstPlay: false
+        });
+      });
       //如果是分享出来的
-
-      $.get('http://203.195.173.135:9000/files/liv?file=' + thiz.props.file + '.liv&format=json', function (res) {
+      $.get('http://203.195.173.135:9000/files/liv?file=' + encodeURI(thiz.props.file) + '.liv&format=json', function (res) {
         thiz.playLivFile(res);
       });
 
@@ -27233,58 +27386,39 @@ var ReadApplication = _react2.default.createClass({
         break;
 
       case "urlvoice":
-        try {
-          var audio = document.getElementById("myaudio");
-          audio.pause();
-          var waitTime = 200;
-          setTimeout(function () {
-            if (audio.paused) {
-              audio.src = value.url;
-              audio.play();
-            }
-          }, waitTime);
-        } catch (e) {
-          console.log(e);
+        if (!this.state.isfirstPlay) {
+          try {
+            var audio = document.getElementById("myaudio");
+            audio.pause();
+            var waitTime = 200;
+            setTimeout(function () {
+              if (audio.paused) {
+                audio.src = value.url;
+                audio.play();
+              }
+            }, waitTime);
+          } catch (e) {
+            console.log(e);
+          }
         }
-
-        // if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
-        //   $('body').on('touchstart touchmove touchend click', function() {
-        //     $('body').unbind();
-        //   });
-        //   this.setState({
-        //     hastouch: false
-        //   });
-        // } else {
-        //   audio.play();
-        // }
         break;
 
       case "voice":
-
-        try {
-          var audio = document.getElementById("myaudio");
-          audio.pause();
-          var waitTime = 200;
-          setTimeout(function () {
-            if (audio.paused) {
-              audio.src = "data:audio/mpeg;base64," + value.voice;
-              audio.play();
-            }
-          }, waitTime);
-        } catch (e) {
-          console.log(e);
+        if (!this.state.isfirstPlay) {
+          try {
+            var audio = document.getElementById("myaudio");
+            audio.pause();
+            var waitTime = 200;
+            setTimeout(function () {
+              if (audio.paused) {
+                audio.src = "data:audio/mpeg;base64," + value.voice;
+                audio.play();
+              }
+            }, waitTime);
+          } catch (e) {
+            console.log(e);
+          }
         }
-
-        // if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
-        //   $('body').on('touchstart touchmove touchend click', function() { //一次事件触发
-        //    $('body').unbind();
-        //   });
-        //   this.setState({
-        //     hastouch: false
-        //   });
-        // } else {
-        //   audio.play();
-        // }
         break;
 
       case "urlvideo":
@@ -27443,7 +27577,8 @@ var Application = _react2.default.createClass({
       img_width: null, //将图片原始宽高传递过去，计算加入者尺寸和图片尺寸比例
       img_height: null, //将图片原始宽高传递过去，计算加入者尺寸和图片尺寸比例
       startVideo: '',
-      allVideo: ''
+      allVideo: '',
+      isfirstPlay: true
     };
   },
 
@@ -27495,6 +27630,11 @@ var Application = _react2.default.createClass({
     var thiz = this;
     if (this.isMounted()) {
       //---liv
+      $('#voice').on('click', function () {
+        thiz.setState({
+          isfirstPlay: false
+        });
+      });
       //ws连接
       if (typeof Storage !== "undefined") {
         if (sessionStorage.username) {
@@ -27639,37 +27779,21 @@ var Application = _react2.default.createClass({
         break;
 
       case "urlvoice":
-        var audio = document.getElementById("myaudio");
-        audio.pause();
-        audio.src = value.url;
-        // if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
-        //   $('body').on('touchstart touchmove touchend click', function() {
-        audio.play();
-        //     $('body').unbind();
-        //   });
-        //   this.setState({
-        //     hastouch: false
-        //   });
-        // } else {
-        //   audio.play();
-        // }
+        if (!this.state.isfirstPlay) {
+          var audio = document.getElementById("myaudio");
+          audio.pause();
+          audio.src = value.url;
+          audio.play();
+        }
         break;
 
       case "voice":
-        var audio = document.getElementById("myaudio");
-        audio.pause();
-        audio.src = "data:audio/mpeg;base64," + value.voice;
-        // if (this.state.hastouch) { //判断是否为触屏设备，是的话触屏后播放，并设置为false，以后则不需再次事件触发
-        //   $('body').on('touchstart touchmove touchend click', function() { //一次事件触发
-        audio.play();
-        //    $('body').unbind();
-        //   });
-        //   this.setState({
-        //     hastouch: false
-        //   });
-        // } else {
-        //   audio.play();
-        // }
+        if (!this.state.isfirstPlay) {
+          var audio = document.getElementById("myaudio");
+          audio.pause();
+          audio.src = "data:audio/mpeg;base64," + value.voice;
+          audio.play();
+        }
         break;
 
       case "urlvideo":
@@ -28584,7 +28708,7 @@ var Home = React.createClass({
 module.exports = Home;
 
 },{"react":228,"react-router":30}],251:[function(require,module,exports){
-'use strict';
+"use strict";
 
 /*
  * 播放音频，暂停音频
@@ -28594,58 +28718,75 @@ module.exports = Home;
 var React = require('react');
 
 var MyAudio = React.createClass({
-	displayName: 'MyAudio',
+	displayName: "MyAudio",
 
 
 	getInitialState: function getInitialState() {
 		return {
-			clicked: false
+			clicked: false,
+			playState: "glyphicon glyphicon-volume-off",
+			isfirst: true
 		};
 	},
 	handleClick: function handleClick() {
-		var thiz = this;
-		this.setState({
-			clicked: !this.state.clicked
-		});
 		var audio = document.getElementById("myaudio");
-		if (this.state.clicked) {
-			if (audio.duration > 0) {
+		var thiz = this;
+		if (this.state.isfirst) {
+			//第一次点击还原按钮，并触发声音
+			this.setState({
+				playState: "glyphicon glyphicon-headphones",
+				isfirst: false
+			}, function () {
+				audio.src = 'img/sure.mp3';
 				audio.play();
-				var is_playFinish = setInterval(function () {
-					if (audio.ended) {
-						thiz.setState({
-							clicked: false
-						});
-						window.clearInterval(is_playFinish);
-					}
-				}, 10);
-			}
+			});
 		} else {
-			audio.pause();
+			//不是第一次点击，根据clicked状态设置按钮状态
+			this.setState({
+				clicked: !this.state.clicked
+			}, function () {
+				if (thiz.state.clicked) {
+					if (audio.duration > 0) {
+						audio.play();
+						var is_playFinish = setInterval(function () {
+							if (audio.ended) {
+								thiz.setState({
+									clicked: false,
+									playState: "glyphicon glyphicon-headphones"
+								});
+								window.clearInterval(is_playFinish);
+							}
+						}, 10);
+					}
+					thiz.setState({
+						playState: "glyphicon glyphicon-pause"
+					});
+				} else {
+					audio.pause();
+					thiz.setState({
+						playState: "glyphicon glyphicon-headphones"
+					});
+				}
+			});
 		}
 	},
 	componentDidMount: function componentDidMount() {
 		var voice = this.refs.btnAudio;
-
 		if (this.isMounted()) {
 			voice.addEventListener('click', this.handleClick);
 		}
 	},
 	render: function render() {
-		//设置按钮状态
-		var voiceImg = this.state.clicked ? 'glyphicon glyphicon-pause' : 'glyphicon glyphicon-headphones';
-		//设置audio的播放还是暂停
-
 		return React.createElement(
-			'a',
-			{ ref: 'btnAudio',
-				id: 'voice' },
+			"a",
+			{ ref: "btnAudio",
+				id: "voice" },
 			React.createElement(
-				'span',
-				{ className: voiceImg },
-				' '
+				"span",
+				{ className: this.state.playState },
+				" "
 			),
-			'  '
+			"  "
 		);
 	}
 

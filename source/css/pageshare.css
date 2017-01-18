@@ -102,15 +102,15 @@ body{
     margin-top: 30%;
 }
 #liv_select{
-    width: 100%;
+    width: 65%;
     height: 35px;
-    margin: 5px;
+    margin-left: 1%;
     border-color:#DCDCDC;
     border-radius: 5px;
 }
 #liv_left,#liv_right,#liv_stop{
     border-style: outset;
-     border: 1px solid;
+    border: 1px solid;
     margin: 30px;
     width: 42px;
     height: 42px;
@@ -123,4 +123,18 @@ body{
     border-style: inset;
     cursor:default;
     background: #00FFFF;
+}
+.search{
+    margin-left: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+#search{
+    width: 30%;
+    height: 35px;
+    border-color:#DCDCDC;
+    border-radius: 5px;
+}
+.form-control{
+    width: 80%;
 }

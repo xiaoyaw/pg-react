@@ -13,7 +13,7 @@ var EreadRoom = React.createClass({
 	render: function() {
 		var file=this.props.params.id;
 		return ( < div >
-			< Slider _roomid = {file.split('.')[0]}
+			< Slider _roomid = {file.split('_')[2].split('-')[0]}
 			/ > 
 			<ReadApplication file={file}/>
 			<ControlNav/>

@@ -30,11 +30,6 @@ gulp.task('build-html-for-development', function () {
         .pipe(gulp.dest('./build'));
 });
 
-gulp.task('build-htaccess-for-development', function () {
-  return gulp
-        .src('./source/*.htaccess')
-        .pipe(gulp.dest('./build'));
-});
 
 gulp.task('build-img-for-development', function () {
   return gulp
@@ -66,12 +61,11 @@ gulp.task('build-html-for-production', function () {
 gulp.task('watch', function () {
   gulp.watch('./source/js/**/*.{jsx,js}', ['build-js-for-development']);
   gulp.watch('./source/**/*.html', ['build-html-for-development']);
-  gulp.watch('./source/**/*.htaccess', ['build-htaccess-for-development']);
   gulp.watch('./source/css/*.css', ['build-css-for-development']);
   gulp.watch('./source/php/*.php', ['build-php-for-development']);
 });
 
-gulp.task('build-for-development', ['build-js-for-development', 'build-html-for-development', 'build-img-for-development','build-css-for-development','build-php-for-development','build-htaccess-for-development']);
+gulp.task('build-for-development', ['build-js-for-development', 'build-html-for-development', 'build-img-for-development','build-css-for-development','build-php-for-development']);
 gulp.task('build-for-production', ['build-js-for-production', 'build-html-for-production']);
 
 gulp.task('default', ['build-for-development', 'watch']);
