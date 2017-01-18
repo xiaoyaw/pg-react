@@ -106,7 +106,9 @@ var Select = React.createClass({
 					cln = [];
 
 				for (var i = 0; i < res.length; i++) {
-					rss.push(decodeURI(res[i]));
+					if (res[i].split("_").length == 3) {
+						rss.push(decodeURI(res[i]));
+					}
 				}
 
 				for (var i = 0; i < rss.length; i++) {
@@ -125,6 +127,7 @@ var Select = React.createClass({
 				}, function() {
 					that.usnDisplay();
 				});
+
 			}
 		})
 

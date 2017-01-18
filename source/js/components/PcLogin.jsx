@@ -97,7 +97,7 @@ var PcLogin = React.createClass({
 					var pw = value.info.password;
 					thiz.localSave(un, pw);
 					if (un != '' && un != null && pw != '' && pw != null) {
-						//hashHistory.replace('/join');
+						hashHistory.replace('/join');
 					}
 				} else {
 					thiz.setState({

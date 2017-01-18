@@ -25868,7 +25868,7 @@ var PcLogin = React.createClass({
 				var pw = value.info.password;
 				thiz.localSave(un, pw);
 				if (un != '' && un != null && pw != '' && pw != null) {
-					//hashHistory.replace('/join');
+					_reactRouter.hashHistory.replace('/join');
 				}
 			} else {
 				thiz.setState({
@@ -26592,7 +26592,9 @@ var Select = React.createClass({
 				    cln = [];
 
 				for (var i = 0; i < res.length; i++) {
-					rss.push(decodeURI(res[i]));
+					if (res[i].split("_").length == 3) {
+						rss.push(decodeURI(res[i]));
+					}
 				}
 
 				for (var i = 0; i < rss.length; i++) {
