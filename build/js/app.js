@@ -25930,7 +25930,6 @@ var PcLogin = React.createClass({
 					placeholder: 'Password',
 					required: '',
 					type: 'password' }),
-				React.createElement('input', { id: 'test' }),
 				React.createElement(
 					'div',
 					{ className: 'checkbox pull-right' },
@@ -26055,12 +26054,12 @@ var JoinInput = React.createClass({
 		if (w > h) {
 			this.setState({
 				width: h * 0.4,
-				inputWidth: '60%'
+				inputWidth: w * 0.6 + 'px'
 			});
 		} else {
 			this.setState({
 				width: w * 0.6,
-				inputWidth: '80%'
+				inputWidth: w * 0.8 + 'px'
 			});
 		}
 	},
@@ -26582,41 +26581,37 @@ var Select = React.createClass({
 	},
 	queryAllLiv: function queryAllLiv() {
 		var that = this;
-		// $.ajax({
-		// 	async: true,
-		// 	url: 'http://203.195.173.135:9000/files/list?format=json',
-		// 	type: 'GET',
-		// 	timeout: 5000,
-		// 	success: function(res) {
-		// 		that.setState({
-		// 			course: that.state.course.concat(res)
-		// 		});
-		// 	}
-		// })
-		var res = ['add_addxx_爱睡觉-2017-01-11-18:28:33.liv', 'add_add11_爱吃饭-2017-01-11-18:28:33.liv', 'add_addxx_filename3-2017-01-11-18:28:33.liv', 'add_add22_filename4-2017-01-11-18:28:33.liv', 'lgd_lgdxx_filename5-2017-01-11-18:28:33.liv'];
-		var usn = [],
-		    rss = [],
-		    cln = [];
+		$.ajax({
+			async: true,
+			url: 'http://203.195.173.135:9000/files/list?format=json',
+			type: 'GET',
+			timeout: 5000,
+			success: function success(res) {
+				var usn = [],
+				    rss = [],
+				    cln = [];
 
-		for (var i = 0; i < res.length; i++) {
-			rss.push(decodeURI(res[i]));
-		}
+				for (var i = 0; i < res.length; i++) {
+					rss.push(decodeURI(res[i]));
+				}
 
-		for (var i = 0; i < rss.length; i++) {
-			if (usn.indexOf(rss[i].split("_")[0]) == -1) {
-				usn.push(rss[i].split("_")[0]);
+				for (var i = 0; i < rss.length; i++) {
+					if (usn.indexOf(rss[i].split("_")[0]) == -1) {
+						usn.push(rss[i].split("_")[0]);
+					}
+					if (cln.indexOf(rss[i].split("_")[1]) == -1) {
+						cln.push(rss[i].split("_")[1]);
+					}
+				}
+
+				that.setState({
+					course: rss,
+					usn: usn,
+					cln: cln
+				}, function () {
+					that.usnDisplay();
+				});
 			}
-			if (cln.indexOf(rss[i].split("_")[1]) == -1) {
-				cln.push(rss[i].split("_")[1]);
-			}
-		}
-
-		that.setState({
-			course: rss,
-			usn: usn,
-			cln: cln
-		}, function () {
-			that.usnDisplay();
 		});
 	},
 	usnDisplay: function usnDisplay() {

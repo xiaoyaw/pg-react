@@ -139,7 +139,6 @@ var PcLogin = React.createClass({
 			placeholder = "Password"
 			required = ""
 			type = "password" / >
-			< input id = 'test' / >
 			< div className = "checkbox pull-right" >
 			< label >
 			< input value = "remember-me"
