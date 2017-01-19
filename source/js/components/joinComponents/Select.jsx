@@ -28,7 +28,8 @@ var Select = React.createClass({
 				if (that.state.flnClick) {
 					var res = that.catchValue();
 					if (res != undefined) {
-						hashHistory.replace('/eread/' + res);
+						console.log(res);
+						hashHistory.replace('/eread/' + res.split(".")[0]);
 					}
 				} else {
 					hashHistory.replace('/eread/' + $('#liv_select').val().split('.')[0]);
@@ -101,6 +102,19 @@ var Select = React.createClass({
 			type: 'GET',
 			timeout: 5000,
 			success: function(res) {
+				$.ajax({
+					async: true,
+					url: 'hhttp://203.195.173.135:9000/files/liv?file=' + res[0],
+					type: 'GET',
+					timeout: 5000,
+					success: function(es) {
+						console.log(es);
+
+					}
+				})
+
+
+
 				var usn = [],
 					rss = [],
 					cln = [];

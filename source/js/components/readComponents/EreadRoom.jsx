@@ -12,6 +12,7 @@ var EreadRoom = React.createClass({
 
 	render: function() {
 		var file=this.props.params.id;
+		console.log(file);
 		return ( < div >
 			< Slider _roomid = {file.split('_')[2].split('-')[0]}
 			/ > 

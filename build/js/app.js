@@ -26513,7 +26513,8 @@ var Select = React.createClass({
 				if (that.state.flnClick) {
 					var res = that.catchValue();
 					if (res != undefined) {
-						_reactRouter.hashHistory.replace('/eread/' + res);
+						console.log(res);
+						_reactRouter.hashHistory.replace('/eread/' + res.split(".")[0]);
 					}
 				} else {
 					_reactRouter.hashHistory.replace('/eread/' + $('#liv_select').val().split('.')[0]);
@@ -26587,6 +26588,16 @@ var Select = React.createClass({
 			type: 'GET',
 			timeout: 5000,
 			success: function success(res) {
+				$.ajax({
+					async: true,
+					url: 'hhttp://203.195.173.135:9000/files/liv?file=' + res[0],
+					type: 'GET',
+					timeout: 5000,
+					success: function success(es) {
+						console.log(es);
+					}
+				});
+
 				var usn = [],
 				    rss = [],
 				    cln = [];
@@ -26948,6 +26959,7 @@ var EreadRoom = React.createClass({
 
 	render: function render() {
 		var file = this.props.params.id;
+		console.log(file);
 		return React.createElement(
 			'div',
 			null,
