@@ -37,7 +37,7 @@ var Select = React.createClass({
 			$(document).keydown(function(e) {
 				var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
 				if (eCode == "13") { //keyCode=13是回车键
-					if ($('liv_select') != '') {
+					if ($('#liv_select').val() != '') {
 						$('#toread').click();
 					}
 				}
@@ -48,7 +48,7 @@ var Select = React.createClass({
 		var x = $('#liv_select').val();
 		var res = this.state.course;
 		for (var i = 0; i < res.length; i++) {
-			if (res[i].split('_')[2].split('.')[0] == x) {
+			if (res[i].split('_')[2] == x.split("_")[0] && res[i].split('_')[3].split(".")[0] == x.split("_")[1]) {
 				return res[i];
 			}
 		}
@@ -106,7 +106,7 @@ var Select = React.createClass({
 					cln = [];
 
 				for (var i = 0; i < res.length; i++) {
-					if (res[i].split("_").length == 3) {
+					if (res[i].split("_").length == 4) {
 						rss.push(decodeURI(res[i]));
 					}
 				}
@@ -208,9 +208,9 @@ var Select = React.createClass({
 							name
 						}
 						value = {
-							name.split('_')[2].split('.')[0]
+							name.split('_')[2] + "_" + name.split('_')[3].split(".")[0]
 						} > {
-							name.split('_')[2].split('.')[0]
+							name.split('_')[2] + "_" + name.split('_')[3].split(".")[0]
 						} < /option>
 					})
 				} < /datalist> </span > : < span > < select id = "search" > {
@@ -242,7 +242,7 @@ var Select = React.createClass({
 					value = {
 						df
 					} > {
-						df.split('_')[2].split('.')[0]
+						df.split('_')[2]
 					} < /option>
 				})
 			} < /select > < /span >
