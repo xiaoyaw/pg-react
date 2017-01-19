@@ -102,21 +102,6 @@ var Select = React.createClass({
 			type: 'GET',
 			timeout: 5000,
 			success: function(res) {
-				$.ajax({
-					async: true,
-					url: 'http://203.195.173.135:9000/files/liv?file=' + res[0]+'&format=json',
-					type: 'GET',
-					timeout: 5000,
-					success: function(es) {
-						console.log(es);
-
-					}
-				})
-				$.get('http://203.195.173.135:9000/files/liv?file='+res[0]+'&format=json', function(ss) {
-					console.log(ss);
-				});
-
-
 				var usn = [],
 					rss = [],
 					cln = [];

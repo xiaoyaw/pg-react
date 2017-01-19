@@ -26588,19 +26588,6 @@ var Select = React.createClass({
 			type: 'GET',
 			timeout: 5000,
 			success: function success(res) {
-				$.ajax({
-					async: true,
-					url: 'http://203.195.173.135:9000/files/liv?file=' + res[0] + '&format=json',
-					type: 'GET',
-					timeout: 5000,
-					success: function success(es) {
-						console.log(es);
-					}
-				});
-				$.get('http://203.195.173.135:9000/files/liv?file=' + res[0] + '&format=json', function (ss) {
-					console.log(ss);
-				});
-
 				var usn = [],
 				    rss = [],
 				    cln = [];
@@ -26962,7 +26949,6 @@ var EreadRoom = React.createClass({
 
 	render: function render() {
 		var file = this.props.params.id;
-		console.log(file);
 		return React.createElement(
 			'div',
 			null,
@@ -27274,7 +27260,13 @@ var ReadApplication = _react2.default.createClass({
         });
       });
       //如果是分享出来的
-      $.get('http://203.195.173.135:9000/files/liv?file=' + encodeURI(thiz.props.file) + '.liv&format=json', function (res) {
+      var fileName = thiz.props.file;
+      var usn = fileName.split('_')[0],
+          cln = fileName.split('_')[1],
+          fln = fileName.split('_')[2],
+          time = fileName.split('_')[3];
+      var newFile = usn + "_" + cln + "_" + fln + "_";
+      $.get('http://203.195.173.135:9000/files/liv?file=' + encodeURI(encodeURI(newFile)) + time + '.liv&format=json', function (res) {
         thiz.playLivFile(res);
       });
 

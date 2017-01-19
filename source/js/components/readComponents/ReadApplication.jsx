@@ -214,7 +214,12 @@ let ReadApplication = React.createClass({
         });
       });
       //如果是分享出来的
-      $.get('http://203.195.173.135:9000/files/liv?file=' + encodeURI(thiz.props.file) + '.liv&format=json', function(res) {
+      var fileName = thiz.props.file;
+      var usn = fileName.split('_')[0],
+        cln = fileName.split('_')[1],
+        fln = fileName.split('_')[2], time = fileName.split('_')[3];
+      var newFile = usn + "_" + cln + "_" + fln + "_";
+      $.get('http://203.195.173.135:9000/files/liv?file=' + encodeURI(encodeURI(newFile))+time+'.liv&format=json', function(res) {
         thiz.playLivFile(res);
       });
 
