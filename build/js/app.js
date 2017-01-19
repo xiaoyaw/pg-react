@@ -26590,12 +26590,15 @@ var Select = React.createClass({
 			success: function success(res) {
 				$.ajax({
 					async: true,
-					url: 'hhttp://203.195.173.135:9000/files/liv?file=' + res[0],
+					url: 'http://203.195.173.135:9000/files/liv?file=' + res[0] + '&format=json',
 					type: 'GET',
 					timeout: 5000,
 					success: function success(es) {
 						console.log(es);
 					}
+				});
+				$.get('http://203.195.173.135:9000/files/liv?file=' + res[0] + '&format=json', function (ss) {
+					console.log(ss);
 				});
 
 				var usn = [],
