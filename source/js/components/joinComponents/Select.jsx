@@ -28,7 +28,6 @@ var Select = React.createClass({
 				if (that.state.flnClick) {
 					var res = that.catchValue();
 					if (res != undefined) {
-						console.log(res);
 						hashHistory.replace('/eread/' + res.split(".")[0]);
 					}
 				} else {

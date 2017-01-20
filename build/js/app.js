@@ -26513,7 +26513,6 @@ var Select = React.createClass({
 				if (that.state.flnClick) {
 					var res = that.catchValue();
 					if (res != undefined) {
-						console.log(res);
 						_reactRouter.hashHistory.replace('/eread/' + res.split(".")[0]);
 					}
 				} else {
@@ -27364,111 +27363,113 @@ var ReadApplication = _react2.default.createClass({
     this.setState({
       isResize: false
     });
-    var value = msg;
-    switch (value.cmd) {
-      case "startSession":
-        //不知道什么时候触发
-        this.calculateImgProp('img/welcome.png');
-        break;
-      case "joinSession":
-        //加入房间后触发，先判断有无历史记录背景图
-        if (value.image != undefined) {
-          this.calculateImgProp('data:image/png;base64,' + value.image);
-        } else {
-          //没有背景图计算并展示welcome
+    if (msg != null && msg != "") {
+      var value = msg;
+      switch (value.cmd) {
+        case "startSession":
+          //不知道什么时候触发
           this.calculateImgProp('img/welcome.png');
-        }
-        break;
-
-      case "image":
-        //注意：换background的时候，需要将data置空
-        this.setState({
-          data: null
-        });
-        this.calculateImgProp('data:image/png;base64,' + value.image);
-
-        break;
-
-      case "urlvoice":
-        if (!this.state.isfirstPlay) {
-          try {
-            var audio = document.getElementById("myaudio");
-            audio.pause();
-            var waitTime = 200;
-            setTimeout(function () {
-              if (audio.paused) {
-                audio.src = value.url;
-                audio.play();
-              }
-            }, waitTime);
-          } catch (e) {
-            console.log(e);
+          break;
+        case "joinSession":
+          //加入房间后触发，先判断有无历史记录背景图
+          if (value.image != undefined) {
+            this.calculateImgProp('data:image/png;base64,' + value.image);
+          } else {
+            //没有背景图计算并展示welcome
+            this.calculateImgProp('img/welcome.png');
           }
-        }
-        break;
+          break;
 
-      case "voice":
-        if (!this.state.isfirstPlay) {
-          try {
-            var audio = document.getElementById("myaudio");
-            audio.pause();
-            var waitTime = 200;
-            setTimeout(function () {
-              if (audio.paused) {
-                audio.src = "data:audio/mpeg;base64," + value.voice;
-                audio.play();
-              }
-            }, waitTime);
-          } catch (e) {
-            console.log(e);
-          }
-        }
-        break;
-
-      case "urlvideo":
-        $('#myvideo').fadeIn();
-        var video = document.getElementById('myvideo');
-        video.src = value.url;
-        video.play();
-        var is_playFinish = setInterval(function () {
-          if (video.ended) {
-            $('#myvideo').fadeOut();
-            window.clearInterval(is_playFinish);
-          }
-        }, 100);
-        break;
-
-      case "openvideo":
-        this.setState({
-          startVideo: this.state.startVideo + value.video,
-          allVideo: ''
-        });
-        break;
-
-      case "video":
-        if (this.state.startVideo != '') {
-          //过滤若为历史记录video片段
-          $('#myvideo').fadeIn();
+        case "image":
+          //注意：换background的时候，需要将data置空
           this.setState({
-            allVideo: this.state.startVideo + value.video,
-            startVideo: ''
+            data: null
           });
+          this.calculateImgProp('data:image/png;base64,' + value.image);
+
+          break;
+
+        case "urlvoice":
+          if (!this.state.isfirstPlay) {
+            try {
+              var audio = document.getElementById("myaudio");
+              audio.pause();
+              var waitTime = 200;
+              setTimeout(function () {
+                if (audio.paused) {
+                  audio.src = value.url;
+                  audio.play();
+                }
+              }, waitTime);
+            } catch (e) {
+              console.log(e);
+            }
+          }
+          break;
+
+        case "voice":
+          if (!this.state.isfirstPlay) {
+            try {
+              var audio = document.getElementById("myaudio");
+              audio.pause();
+              var waitTime = 200;
+              setTimeout(function () {
+                if (audio.paused) {
+                  audio.src = "data:audio/mpeg;base64," + value.voice;
+                  audio.play();
+                }
+              }, waitTime);
+            } catch (e) {
+              console.log(e);
+            }
+          }
+          break;
+
+        case "urlvideo":
+          $('#myvideo').fadeIn();
           var video = document.getElementById('myvideo');
-          video.src = 'data:video/mp4;base64,' + this.state.allVideo;
+          video.src = value.url;
           video.play();
           var is_playFinish = setInterval(function () {
-            if (video.ended || video.paused) {
+            if (video.ended) {
               $('#myvideo').fadeOut();
               window.clearInterval(is_playFinish);
             }
-          }, 10);
-        }
-        break;
+          }, 100);
+          break;
 
-      default:
-        this.setState({
-          data: value
-        });
+        case "openvideo":
+          this.setState({
+            startVideo: this.state.startVideo + value.video,
+            allVideo: ''
+          });
+          break;
+
+        case "video":
+          if (this.state.startVideo != '') {
+            //过滤若为历史记录video片段
+            $('#myvideo').fadeIn();
+            this.setState({
+              allVideo: this.state.startVideo + value.video,
+              startVideo: ''
+            });
+            var video = document.getElementById('myvideo');
+            video.src = 'data:video/mp4;base64,' + this.state.allVideo;
+            video.play();
+            var is_playFinish = setInterval(function () {
+              if (video.ended || video.paused) {
+                $('#myvideo').fadeOut();
+                window.clearInterval(is_playFinish);
+              }
+            }, 10);
+          }
+          break;
+
+        default:
+          this.setState({
+            data: value
+          });
+      }
     }
   },
 
