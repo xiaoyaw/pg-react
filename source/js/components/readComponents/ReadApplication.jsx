@@ -24,6 +24,7 @@ let ReadApplication = React.createClass({
 
     return {
       //liv
+      url_getLiv:'http://203.195.173.135:8080/download/repo/',
       timeout: null,
       isStop: false,
       isfirst: true,
@@ -215,12 +216,10 @@ let ReadApplication = React.createClass({
       });
       //如果是分享出来的
       var fileName = thiz.props.file;
-      var usn = fileName.split('_')[0],
-        cln = fileName.split('_')[1],
-        fln = fileName.split('_')[2],
-        time = fileName.split('_')[3];
-      var newFile = usn + "_" + cln + "_" + fln + "_";
-      $.get('http://203.195.173.135:9000/files/liv?file=' + encodeURI(encodeURI(newFile)) + time + '.liv&format=json', function(res) {
+      var url=thiz.state.url_getLiv + encodeURI(encodeURI(fileName)) + '.liv';
+       console.log(url);
+      $.get(url, function(res) {
+        console.log(res);
         thiz.playLivFile(res);
       });
 
@@ -231,8 +230,7 @@ let ReadApplication = React.createClass({
           isStop: true
         });
       })
-
-
+      
       window.addEventListener('resize', this.handleResize);
     }
   },

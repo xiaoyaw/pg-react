@@ -8,6 +8,7 @@ import {
 var Select = React.createClass({
 	getInitialState: function() {
 		return {
+			url_litLiv:'http://203.195.173.135:9000/files/list?format=json',
 			usnClick: true,
 			clnClick: false,
 			flnClick: false,
@@ -97,7 +98,7 @@ var Select = React.createClass({
 		var that = this;
 		$.ajax({
 			async: true,
-			url: 'http://203.195.173.135:9000/files/list?format=json',
+			url: that.state.url_litLiv,
 			type: 'GET',
 			timeout: 5000,
 			success: function(res) {

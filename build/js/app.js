@@ -26493,6 +26493,7 @@ var Select = React.createClass({
 
 	getInitialState: function getInitialState() {
 		return {
+			url_litLiv: 'http://203.195.173.135:9000/files/list?format=json',
 			usnClick: true,
 			clnClick: false,
 			flnClick: false,
@@ -26583,7 +26584,7 @@ var Select = React.createClass({
 		var that = this;
 		$.ajax({
 			async: true,
-			url: 'http://203.195.173.135:9000/files/list?format=json',
+			url: that.state.url_litLiv,
 			type: 'GET',
 			timeout: 5000,
 			success: function success(res) {
@@ -27065,6 +27066,7 @@ var ReadApplication = _react2.default.createClass({
 
     return {
       //liv
+      url_getLiv: 'http://203.195.173.135:8080/download/repo/',
       timeout: null,
       isStop: false,
       isfirst: true,
@@ -27260,12 +27262,10 @@ var ReadApplication = _react2.default.createClass({
       });
       //如果是分享出来的
       var fileName = thiz.props.file;
-      var usn = fileName.split('_')[0],
-          cln = fileName.split('_')[1],
-          fln = fileName.split('_')[2],
-          time = fileName.split('_')[3];
-      var newFile = usn + "_" + cln + "_" + fln + "_";
-      $.get('http://203.195.173.135:9000/files/liv?file=' + encodeURI(encodeURI(newFile)) + time + '.liv&format=json', function (res) {
+      var url = thiz.state.url_getLiv + encodeURI(encodeURI(fileName)) + '.liv';
+      console.log(url);
+      $.get(url, function (res) {
+        console.log(res);
         thiz.playLivFile(res);
       });
 
@@ -29107,7 +29107,7 @@ var wxLogin = React.createClass({
 			code: '',
 			isLogin: false,
 			appid: '',
-			release: 'PageShare'
+			release: 'dev'
 		};
 	},
 	componentDidMount: function componentDidMount() {
