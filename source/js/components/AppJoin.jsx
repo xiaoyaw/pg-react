@@ -13,9 +13,16 @@ import {
 var React = require('react');
 
 var AppJoin = React.createClass({
-
+	getInitialState: function() {
+		return {
+			nickname: '飞播e课'
+		};
+	},
 	componentWillMount: function() {
 		if (sessionStorage.nickname) { //分享设置
+			this.setState({
+				nickname: sessionStorage.getItem("nickname")
+			});
 		} else {
 			hashHistory.replace('/');
 		}
@@ -147,8 +154,10 @@ var AppJoin = React.createClass({
 	},
 	render: function() {
 		return ( < div >
-			< JoinNav / >
-			< JoinInput / >
+			< JoinNav nickname = {
+				this.state.nickname
+			}
+			/ > < JoinInput / >
 			< Switch / >
 			< /div>
 		);

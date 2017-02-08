@@ -25446,9 +25446,17 @@ var React = require('react');
 var AppJoin = React.createClass({
 	displayName: 'AppJoin',
 
-
+	getInitialState: function getInitialState() {
+		return {
+			nickname: '飞播e课'
+		};
+	},
 	componentWillMount: function componentWillMount() {
-		if (sessionStorage.nickname) {//分享设置
+		if (sessionStorage.nickname) {
+			//分享设置
+			this.setState({
+				nickname: sessionStorage.getItem("nickname")
+			});
 		} else {
 			_reactRouter.hashHistory.replace('/');
 		}
@@ -25575,7 +25583,9 @@ var AppJoin = React.createClass({
 		return React.createElement(
 			'div',
 			null,
-			React.createElement(_JoinNav2.default, null),
+			React.createElement(_JoinNav2.default, { nickname: this.state.nickname
+			}),
+			' ',
 			React.createElement(_JoinInput2.default, null),
 			React.createElement(_Switch2.default, null)
 		);
@@ -25673,10 +25683,21 @@ var React = require('react');
 var PAppJoin = React.createClass({
 	displayName: 'PAppJoin',
 
+	getInitialState: function getInitialState() {
+		return {
+			nickname: '飞播e课'
+		};
+	},
 	componentWillMount: function componentWillMount() {
 		if (sessionStorage.username || this.props.params.id == 'guest') {
 			if (this.props.params.id == 'guest') {
 				this.visitorLogin('guest', '111111');
+			} else {
+				if (sessionStorage.username) {
+					this.setState({
+						nickname: sessionStorage.getItem('username')
+					});
+				}
 			}
 		} else {
 			_reactRouter.hashHistory.replace('/');
@@ -25695,7 +25716,7 @@ var PAppJoin = React.createClass({
 		$.post("http://www.pictoshare.net/index.php?controller=apis&action=login", {
 			login_info: user,
 			password: pass
-		}, async, function (data, status) {
+		}, function (data, status) {
 			if (data != '') {
 				var value = JSON.parse(data);
 				if (value.status == "success") {
@@ -25710,11 +25731,14 @@ var PAppJoin = React.createClass({
 		var thiz = this;
 		$.post("http://www.pictoshare.net/index.php?controller=apis&action=getmemberinfo", {
 			tokenkey: token
-		}, async, function (data, status) {
+		}, function (data, status) {
 			var value = JSON.parse(data);
 			if (value.status == "success") {
 				var un = value.info.username;
 				var pw = value.info.password;
+				thiz.setState({
+					nickname: un.substring(0, 5)
+				});
 				thiz.localSave(un, pw);
 			} else {
 				_reactRouter.hashHistory.replace('/');
@@ -25732,7 +25756,9 @@ var PAppJoin = React.createClass({
 		return React.createElement(
 			'div',
 			null,
-			React.createElement(_JoinNav2.default, null),
+			React.createElement(_JoinNav2.default, { nickname: this.state.nickname
+			}),
+			' ',
 			React.createElement(_PJoinInput2.default, null),
 			React.createElement(_Switch2.default, null)
 		);
@@ -26243,34 +26269,6 @@ var React = require('react');
 var JoinNav = React.createClass({
 	displayName: 'JoinNav',
 
-	getInitialState: function getInitialState() {
-		return {
-			nickname: '飞播e课'
-		};
-	},
-
-	componentDidMount: function componentDidMount() {
-		if (this.isMounted()) {
-			if (sessionStorage.nickname) {
-				this.setState({
-					nickname: sessionStorage.getItem("nickname")
-				});
-			} else {
-				var usn = sessionStorage.getItem("username");
-				if (usn != null) {
-					if (usn.substring(0, 5) == 'guest') {
-						this.setState({
-							nickname: usn.substring(0, 5)
-						});
-					} else {
-						this.setState({
-							nickname: usn
-						});
-					}
-				}
-			}
-		}
-	},
 	render: function render() {
 		return React.createElement(
 			'nav',
@@ -26297,7 +26295,7 @@ var JoinNav = React.createClass({
 						{ className: 'glyphicon glyphicon-user',
 							id: 'span' },
 						' ',
-						this.state.nickname,
+						this.props.nickname,
 						' '
 					)
 				)
@@ -26595,14 +26593,13 @@ var Select = React.createClass({
 			success: function success(res) {
 				var userRes = [];
 				for (var i = 0; i < res.length; i++) {
-					if (decodeURI(res[i].split('_')[0]) == user && res[i].split('_').length == 4) {
+					if (decodeURI(res[i].split('_')[0]) == user && res[i].split('_').length == 3) {
 						userRes.push(decodeURI(res[i].split('.')[0]));
 					}
 				}
 				that.setState({
 					displayFile: userRes
 				});
-				console.log(res);
 			}
 		});
 		//var res = ["add_addxx_add1_time.liv", "add_addzz_add2_time.liv", "lgd_lgd_lgd1_time.liv", "guest_lgdd_lgd2_time.liv", "guest_www_www1_time.liv", "guest_wwwzz_www2_time.liv", "allread.liv", "allread2.liv", "sijj_isdjai.liv"];
@@ -26621,7 +26618,7 @@ var Select = React.createClass({
 						{ key: name,
 							value: name },
 						' ',
-						name.split('_')[2] + '_' + name.split('_')[3],
+						name.split('_')[2],
 						' '
 					);
 				}),

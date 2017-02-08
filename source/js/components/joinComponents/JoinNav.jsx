@@ -6,35 +6,6 @@ import {
 var React = require('react');
 
 var JoinNav = React.createClass({
-	getInitialState: function() {
-		return {
-			nickname: '飞播e课'
-		};
-	},
-
-	componentDidMount: function() {
-		if (this.isMounted()) {
-			if (sessionStorage.nickname) {
-				this.setState({
-					nickname: sessionStorage.getItem("nickname")
-				});
-			} else {
-				var usn = sessionStorage.getItem("username");
-				if (usn != null) {
-					if (usn.substring(0, 5) == 'guest') {
-						this.setState({
-							nickname: usn.substring(0, 5)
-						});
-					} else {
-						this.setState({
-							nickname: usn
-						});
-					}
-				}
-			}
-		}
-
-	},
 	render: function() {
 		return ( < nav className = "navbar navbar-default"
 			role = "navigation"
@@ -54,7 +25,7 @@ var JoinNav = React.createClass({
 				}
 			} > < span className = "glyphicon glyphicon-user"
 			id = "span" > {
-				this.state.nickname
+				this.props.nickname
 			} < /span></a >
 			< /div>  < /nav >
 		);

@@ -10,10 +10,21 @@ import {
 var React = require('react');
 
 var PAppJoin = React.createClass({
+	getInitialState: function() {
+		return {
+			nickname: '飞播e课'
+		};
+	},
 	componentWillMount: function() {
 		if (sessionStorage.username || this.props.params.id == 'guest') {
 			if (this.props.params.id == 'guest') {
 				this.visitorLogin('guest', '111111');
+			} else {
+				if (sessionStorage.username) {
+					this.setState({
+						nickname: sessionStorage.getItem('username')
+					});
+				}
 			}
 		} else {
 			hashHistory.replace('/');
@@ -33,15 +44,14 @@ var PAppJoin = React.createClass({
 				login_info: user,
 				password: pass
 			},
-			async:false,
 			function(data, status) {
 				if (data != '') {
 					var value = JSON.parse(data);
-						if (value.status == "success") {
-							thiz.getUserInfo(value.tokenkey);
-						} else {
-							hashHistory.replace('/');
-						}
+					if (value.status == "success") {
+						thiz.getUserInfo(value.tokenkey);
+					} else {
+						hashHistory.replace('/');
+					}
 				}
 			});
 	},
@@ -50,12 +60,14 @@ var PAppJoin = React.createClass({
 		$.post("http://www.pictoshare.net/index.php?controller=apis&action=getmemberinfo", {
 				tokenkey: token
 			},
-			async:false,
 			function(data, status) {
 				var value = JSON.parse(data);
 				if (value.status == "success") {
 					var un = value.info.username;
 					var pw = value.info.password;
+					thiz.setState({
+						nickname: un.substring(0, 5)
+					});
 					thiz.localSave(un, pw);
 				} else {
 					hashHistory.replace('/');
@@ -71,8 +83,10 @@ var PAppJoin = React.createClass({
 	render: function() {
 
 		return ( < div >
-			< JoinNav / >
-			< PJoinInput / >
+			< JoinNav nickname = {
+				this.state.nickname
+			}
+			/ > < PJoinInput / >
 			< Switch / >
 			< /div>
 		);
