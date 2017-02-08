@@ -37,7 +37,7 @@ var PAppJoin = React.createClass({
 				if (data != '') {
 					var value = JSON.parse(data);
 						if (thiz.state.value.status == "success") {
-							thiz.getUserInfo(thiz.state.value.tokenkey);
+							thiz.getUserInfo(value.tokenkey);
 						} else {
 							hashHistory.replace('/');
 						}
