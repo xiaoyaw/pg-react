@@ -8,6 +8,7 @@
 import React from 'react';
 import Canvas from './blackBoard/Canvas.jsx';
 import BgImage from './blackBoard/BgImage.jsx';
+import OpenAudio from './alertComponent/OpenAudio.jsx';
 import {
   hashHistory
 } from 'react-router';
@@ -51,8 +52,7 @@ let Application = React.createClass({
       img_width: null, //将图片原始宽高传递过去，计算加入者尺寸和图片尺寸比例
       img_height: null, //将图片原始宽高传递过去，计算加入者尺寸和图片尺寸比例
       startVideo: '',
-      allVideo: '',
-      isfirstPlay: true
+      allVideo: ''
     };
   },
 
@@ -102,12 +102,6 @@ let Application = React.createClass({
   componentDidMount: function() {
     var thiz = this;
     if (this.isMounted()) {
-      //---liv
-      $('#voice').on('click', function() {
-        thiz.setState({
-          isfirstPlay: false
-        });
-      });
       //ws连接
       if (typeof(Storage) !== "undefined") {
         if (sessionStorage.username) {
@@ -250,20 +244,24 @@ let Application = React.createClass({
         break;
 
       case "urlvoice":
-        if (!this.state.isfirstPlay) {
-          var audio = document.getElementById("myaudio");
-          audio.pause();
-          audio.src = value.url;
+        var audio = document.getElementById("myaudio");
+        audio.pause();
+        audio.src = value.url;
+        if (sessionStorage.getItem('openaudio') == 'isOpen') {
           audio.play();
+        } else {
+          $('#openaudio').fadeIn();
         }
         break;
 
       case "voice":
-        if (!this.state.isfirstPlay) {
-          var audio = document.getElementById("myaudio");
-          audio.pause();
-          audio.src = "data:audio/mpeg;base64," + value.voice;
+        var audio = document.getElementById("myaudio");
+        audio.pause();
+        audio.src = "data:audio/mpeg;base64," + value.voice;
+        if (sessionStorage.getItem('openaudio') == 'isOpen') {
           audio.play();
+        } else {
+          $('#openaudio').fadeIn();
         }
         break;
 
@@ -366,7 +364,9 @@ let Application = React.createClass({
     _height = {
       this.state.height
     }
-    / >   < /div >
+    / >   < OpenAudio / >
+
+      < /div >
   );
 }
 

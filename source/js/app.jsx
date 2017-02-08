@@ -32,7 +32,7 @@ if (is_weixin()) {
 ReactDOM.render(
  <Router history={hashHistory}>
  	<Route path="/" component={PcLogin}/>
-  	<Route path="/join" component={PAppJoin}/>
+  	<Route path="/join(/:id)" component={PAppJoin}/>
   	<Route path="/eread/:id" component={EreadRoom}/>
    	<Route path="/room/:id" component={PAppRoom}/>
 </Router>,document.getElementById('app'));	

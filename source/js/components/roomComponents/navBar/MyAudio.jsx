@@ -9,64 +9,57 @@ var MyAudio = React.createClass({
 
 	getInitialState: function() {
 		return {
-			clicked: false,
-			playState: "glyphicon glyphicon-volume-off",
-			isfirst: true
+			isFirst: true,
+			clicked: false
 		};
 	},
 	handleClick: function() {
-		var audio = document.getElementById("myaudio");
 		var thiz = this;
-		if (this.state.isfirst) { //第一次点击还原按钮，并触发声音
-			this.setState({
-				playState: "glyphicon glyphicon-headphones",
-				isfirst: false
-			}, function() {
-				audio.src = 'img/sure.mp3';
-				audio.play();
-			});
-		} else { //不是第一次点击，根据clicked状态设置按钮状态
+		if (!this.state.isFirst) {
 			this.setState({
 				clicked: !this.state.clicked
-			}, function() {
-				if (thiz.state.clicked) {
-					if (audio.duration > 0) {
-						audio.play();
-						var is_playFinish = setInterval(
-							function() {
-								if (audio.ended) {
-									thiz.setState({
-										clicked: false,
-										playState: "glyphicon glyphicon-headphones"
-									});
-									window
-										.clearInterval(is_playFinish);
-								}
-							}, 10);
-					}
-					thiz.setState({
-						playState: "glyphicon glyphicon-pause"
-					});
-				} else {
-					audio.pause();
-					thiz.setState({
-						playState: "glyphicon glyphicon-headphones"
-					});
-				}
 			});
+			var audio = document.getElementById("myaudio");
+			if (this.state.clicked) {
+				if (audio.duration > 0) {
+					audio.play();
+					var is_playFinish = setInterval(
+						function() {
+							if (audio.ended) {
+								thiz.setState({
+									clicked: false
+								});
+								window
+									.clearInterval(is_playFinish);
+							}
+						}, 10);
+				}
+			} else {
+				audio.pause();
+			}
 		}
 	},
 	componentDidMount: function() {
 		var voice = this.refs.btnAudio;
+		var that=this;
 		if (this.isMounted()) {
 			voice.addEventListener('click', this.handleClick);
+			$('#openaudio').on('click',function(){
+				that.setState({
+					isFirst:false 
+				});
+			});
 		}
 	},
 	render: function() {
+		//设置按钮状态
+		var voiceImg = this.state.clicked ? 'glyphicon glyphicon-pause' : 'glyphicon glyphicon-headphones';
+		//设置audio的播放还是暂停
+
 		return ( < a ref = "btnAudio"
 			id = 'voice' >
 			< span className = {
-				this.state.playState
+				voiceImg
 			} > < /span>	 < /a >
 		);
 	}

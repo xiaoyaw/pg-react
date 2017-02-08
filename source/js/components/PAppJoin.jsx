@@ -10,19 +10,70 @@ import {
 var React = require('react');
 
 var PAppJoin = React.createClass({
-
+	getInitialState: function() {
+		return {
+			value: null
+		};
+	},
 	componentWillMount: function() {
-		if (sessionStorage.username) {
+		if (sessionStorage.username || this.props.params.id == 'guest') {
+			if (this.props.params.id == 'guest') {
+				this.visitorLogin('guest', '111111');
+			}
 		} else {
 			hashHistory.replace('/');
 		}
 	},
-	componentDidMount:function(){
-		if(this.isMounted()){
-			$('#headimage').on('click',function(){
+	componentDidMount: function() {
+		if (this.isMounted()) {
+			$('#headimage').on('click', function() {
 				sessionStorage.clear();
 				hashHistory.replace('/');
 			})
+		}
+	},
+	visitorLogin: function(user, pass) {
+		var thiz = this;
+		$.post("http://www.pictoshare.net/index.php?controller=apis&action=login", {
+				login_info: user,
+				password: pass
+			},
+			function(data, status) {
+				if (data != '') {
+					var value = JSON.parse(data);
+					thiz.setState({
+						value: value
+					}, function() {
+						if (thiz.state.value.status == "success") {
+							thiz.getUserInfo(thiz.state.value.tokenkey);
+						} else {
+							hashHistory.replace('/');
+						}
+					});
+				}
+			});
+	},
+	getUserInfo: function(token) {
+		var thiz = this;
+		$.post("http://www.pictoshare.net/index.php?controller=apis&action=getmemberinfo", {
+				tokenkey: token
+			},
+			function(data, status) {
+				var value = JSON.parse(data);
+				if (value.status == "success") {
+					var un = value.info.username;
+					var pw = value.info.password;
+					thiz.localSave(un, pw);
+				} else {
+					hashHistory.replace('/');
+				}
+			});
+	},
+	localSave: function(u, p) {
+		console.log(u);
+		if (typeof(Storage) !== "undefined") {
+			sessionStorage.setItem("username", "guest" + Math.random());
+			sessionStorage.setItem("password", p);
 		}
 	},
 	render: function() {

@@ -75,6 +75,7 @@ body{
     margin: 3px;
     cursor:default;
 }
+
 /*on click btn css*/
 #voice:active,#film:active,#share:active,#edit:active,#exit:active,#liv:active{
     border-style: inset;
@@ -101,10 +102,10 @@ body{
     z-index: 110;
     margin-top: 30%;
 }
+
 #liv_select{
-    width: 65%;
+    width: 80%;
     height: 35px;
-    margin-left: 1%;
     border-color:#DCDCDC;
     border-radius: 5px;
 }
@@ -124,14 +125,13 @@ body{
     cursor:default;
     background: #00FFFF;
 }
-.search{
-    margin-left: 5px;
-    margin-right: 5px;
-    cursor: pointer;
-}
-#search{
-    width: 30%;
-    height: 35px;
-    border-color:#DCDCDC;
-    border-radius: 5px;
+               
+#openaudio{
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    z-index: 150;
+    opacity: 0.8;
+    display: none;
+    border-radius: 50%;
 }

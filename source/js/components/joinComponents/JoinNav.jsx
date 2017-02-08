@@ -17,11 +17,19 @@ var JoinNav = React.createClass({
 			this.setState({
 				nickname: sessionStorage.getItem("nickname")
 			});
-		}else{
-			this.setState({
-				nickname: sessionStorage.getItem("username")
-			});
-		} 
+		} else {
+			var usn = sessionStorage.getItem("username");
+			if (usn.substring(0, 5) == 'guest') {
+				this.setState({
+					nickname: usn.substring(0, 5)
+				});
+			} else {
+				this.setState({
+					nickname: usn
+				});
+			}
+
+		}
 	},
 	render: function() {
 		return ( < nav className = "navbar navbar-default"
@@ -32,7 +40,7 @@ var JoinNav = React.createClass({
 					display: 'block'
 				}
 			} >
-			< div   className = "navbar-header" >
+			< div className = "navbar-header" >
 			< a className = "navbar-brand navbar-left"
 			href = "#"
 			id = 'headimage'
@@ -41,9 +49,10 @@ var JoinNav = React.createClass({
 					color: "#B452CD"
 				}
 			} > < span className = "glyphicon glyphicon-user"
-			id = "span" > {this.state.nickname} < /span></a >
-			< /div> 
-			< /nav >
+			id = "span" > {
+				this.state.nickname
+			} < /span></a >
+			< /div>  < /nav >
 		);
 	}
 

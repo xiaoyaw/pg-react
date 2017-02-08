@@ -217,9 +217,7 @@ let ReadApplication = React.createClass({
       //如果是分享出来的
       var fileName = thiz.props.file;
       var url=thiz.state.url_getLiv + encodeURI(encodeURI(fileName)) + '.liv';
-       console.log(url);
       $.get(url, function(res) {
-        console.log(res);
         thiz.playLivFile(res);
       });
 
@@ -229,8 +227,7 @@ let ReadApplication = React.createClass({
         thiz.setState({
           isStop: true
         });
-      })
-      
+      });
       window.addEventListener('resize', this.handleResize);
     }
   },
