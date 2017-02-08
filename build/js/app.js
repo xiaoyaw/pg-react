@@ -25673,16 +25673,10 @@ var React = require('react');
 var PAppJoin = React.createClass({
 	displayName: 'PAppJoin',
 
-	getInitialState: function getInitialState() {
-		return {
-			value: null
-		};
-	},
 	componentWillMount: function componentWillMount() {
 		if (sessionStorage.username || this.props.params.id == 'guest') {
 			if (this.props.params.id == 'guest') {
 				this.visitorLogin('guest', '111111');
-				console.log("guest login");
 			}
 		} else {
 			_reactRouter.hashHistory.replace('/');
@@ -25703,17 +25697,12 @@ var PAppJoin = React.createClass({
 			password: pass
 		}, function (data, status) {
 			if (data != '') {
-				console.log(data);
 				var value = JSON.parse(data);
-				thiz.setState({
-					value: value
-				}, function () {
-					if (thiz.state.value.status == "success") {
-						thiz.getUserInfo(thiz.state.value.tokenkey);
-					} else {
-						_reactRouter.hashHistory.replace('/');
-					}
-				});
+				if (thiz.state.value.status == "success") {
+					thiz.getUserInfo(thiz.state.value.tokenkey);
+				} else {
+					_reactRouter.hashHistory.replace('/');
+				}
 			}
 		});
 	},
@@ -25733,7 +25722,6 @@ var PAppJoin = React.createClass({
 		});
 	},
 	localSave: function localSave(u, p) {
-		console.log(u);
 		if (typeof Storage !== "undefined") {
 			sessionStorage.setItem("username", "guest" + Math.random());
 			sessionStorage.setItem("password", p);
