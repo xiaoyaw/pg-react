@@ -7,20 +7,8 @@ import {
 } from 'react-router';
 var Select = React.createClass({
 	getInitialState: function() {
-		var user;
-		if (sessionStorage.getItem('username')) {
-			if (sessionStorage.getItem('username').substring(0, 5) == 'guest') {
-				user = 'guest';
-			} else {
-				user = sessionStorage.getItem("username");
-			}
 
-		}
-		if (sessionStorage.getItem('nickname')) {
-			user = 'wechat';
-		}
 		return {
-			user: user,
 			url_litLiv: 'http://203.195.173.135:9000/files/list?format=json',
 			displayFile: []
 		};
@@ -28,9 +16,9 @@ var Select = React.createClass({
 	componentDidMount: function() {
 		if (this.isMounted()) {
 			var that = this;
-			var user = this.state.user;
+			var user=this.getUser();
 			if (user != null && user != undefined) {
-				this.queryAllLiv();
+				this.queryAllLiv(user);
 			}
 			$('#toread').on('click', function() {
 				hashHistory.replace('/eread/' + $('#liv_select').val());
@@ -45,8 +33,22 @@ var Select = React.createClass({
 			});
 		}
 	},
+	getUser: function() {
+		var user;
+		if (sessionStorage.getItem('username')) {
+			if (sessionStorage.getItem('username').substring(0, 5) == 'guest') {
+				user = 'guest';
+			} else {
+				user = sessionStorage.getItem("username");
+			}
 
-	queryAllLiv: function() {
+		}
+		if (sessionStorage.getItem('nickname')) {
+			user = 'wechat';
+		}
+		return user
+	},
+	queryAllLiv: function(user) {
 		var that = this;
 		$.ajax({
 				async: true,
@@ -56,7 +58,7 @@ var Select = React.createClass({
 				success: function(res) {
 					var userRes = [];
 					for (var i = 0; i < res.length; i++) {
-						if (decodeURI(res[i].split('_')[0]) == that.state.user && res[i].split('_').length == 4) {
+						if (decodeURI(res[i].split('_')[0]) == user && res[i].split('_').length == 4) {
 							userRes.push(decodeURI(res[i].split('.')[0]));
 						}
 					}

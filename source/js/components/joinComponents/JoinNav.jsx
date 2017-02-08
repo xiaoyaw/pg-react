@@ -20,16 +20,17 @@ var JoinNav = React.createClass({
 				});
 			} else {
 				var usn = sessionStorage.getItem("username");
-				if (usn.substring(0, 5) == 'guest') {
-					this.setState({
-						nickname: usn.substring(0, 5)
-					});
-				} else {
-					this.setState({
-						nickname: usn
-					});
+				if (usn != null) {
+					if (usn.substring(0, 5) == 'guest') {
+						this.setState({
+							nickname: usn.substring(0, 5)
+						});
+					} else {
+						this.setState({
+							nickname: usn
+						});
+					}
 				}
-
 			}
 		}
 

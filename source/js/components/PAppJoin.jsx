@@ -33,6 +33,7 @@ var PAppJoin = React.createClass({
 				login_info: user,
 				password: pass
 			},
+			async:false,
 			function(data, status) {
 				if (data != '') {
 					var value = JSON.parse(data);
@@ -49,6 +50,7 @@ var PAppJoin = React.createClass({
 		$.post("http://www.pictoshare.net/index.php?controller=apis&action=getmemberinfo", {
 				tokenkey: token
 			},
+			async:false,
 			function(data, status) {
 				var value = JSON.parse(data);
 				if (value.status == "success") {

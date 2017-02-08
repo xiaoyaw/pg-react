@@ -25695,7 +25695,7 @@ var PAppJoin = React.createClass({
 		$.post("http://www.pictoshare.net/index.php?controller=apis&action=login", {
 			login_info: user,
 			password: pass
-		}, function (data, status) {
+		}, async, function (data, status) {
 			if (data != '') {
 				var value = JSON.parse(data);
 				if (value.status == "success") {
@@ -25710,7 +25710,7 @@ var PAppJoin = React.createClass({
 		var thiz = this;
 		$.post("http://www.pictoshare.net/index.php?controller=apis&action=getmemberinfo", {
 			tokenkey: token
-		}, function (data, status) {
+		}, async, function (data, status) {
 			var value = JSON.parse(data);
 			if (value.status == "success") {
 				var un = value.info.username;
@@ -26257,14 +26257,16 @@ var JoinNav = React.createClass({
 				});
 			} else {
 				var usn = sessionStorage.getItem("username");
-				if (usn.substring(0, 5) == 'guest') {
-					this.setState({
-						nickname: usn.substring(0, 5)
-					});
-				} else {
-					this.setState({
-						nickname: usn
-					});
+				if (usn != null) {
+					if (usn.substring(0, 5) == 'guest') {
+						this.setState({
+							nickname: usn.substring(0, 5)
+						});
+					} else {
+						this.setState({
+							nickname: usn
+						});
+					}
 				}
 			}
 		}
@@ -26542,19 +26544,8 @@ var Select = React.createClass({
 	displayName: 'Select',
 
 	getInitialState: function getInitialState() {
-		var user;
-		if (sessionStorage.getItem('username')) {
-			if (sessionStorage.getItem('username').substring(0, 5) == 'guest') {
-				user = 'guest';
-			} else {
-				user = sessionStorage.getItem("username");
-			}
-		}
-		if (sessionStorage.getItem('nickname')) {
-			user = 'wechat';
-		}
+
 		return {
-			user: user,
 			url_litLiv: 'http://203.195.173.135:9000/files/list?format=json',
 			displayFile: []
 		};
@@ -26562,9 +26553,9 @@ var Select = React.createClass({
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
 			var that = this;
-			var user = this.state.user;
+			var user = this.getUser();
 			if (user != null && user != undefined) {
-				this.queryAllLiv();
+				this.queryAllLiv(user);
 			}
 			$('#toread').on('click', function () {
 				_reactRouter.hashHistory.replace('/eread/' + $('#liv_select').val());
@@ -26580,8 +26571,21 @@ var Select = React.createClass({
 			});
 		}
 	},
-
-	queryAllLiv: function queryAllLiv() {
+	getUser: function getUser() {
+		var user;
+		if (sessionStorage.getItem('username')) {
+			if (sessionStorage.getItem('username').substring(0, 5) == 'guest') {
+				user = 'guest';
+			} else {
+				user = sessionStorage.getItem("username");
+			}
+		}
+		if (sessionStorage.getItem('nickname')) {
+			user = 'wechat';
+		}
+		return user;
+	},
+	queryAllLiv: function queryAllLiv(user) {
 		var that = this;
 		$.ajax({
 			async: true,
@@ -26591,7 +26595,7 @@ var Select = React.createClass({
 			success: function success(res) {
 				var userRes = [];
 				for (var i = 0; i < res.length; i++) {
-					if (decodeURI(res[i].split('_')[0]) == that.state.user && res[i].split('_').length == 4) {
+					if (decodeURI(res[i].split('_')[0]) == user && res[i].split('_').length == 4) {
 						userRes.push(decodeURI(res[i].split('.')[0]));
 					}
 				}
