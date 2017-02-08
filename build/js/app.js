@@ -25698,7 +25698,7 @@ var PAppJoin = React.createClass({
 		}, function (data, status) {
 			if (data != '') {
 				var value = JSON.parse(data);
-				if (thiz.state.value.status == "success") {
+				if (value.status == "success") {
 					thiz.getUserInfo(value.tokenkey);
 				} else {
 					_reactRouter.hashHistory.replace('/');
