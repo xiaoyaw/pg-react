@@ -19,6 +19,7 @@ var PAppJoin = React.createClass({
 		if (sessionStorage.username || this.props.params.id == 'guest') {
 			if (this.props.params.id == 'guest') {
 				this.visitorLogin('guest', '111111');
+				console.log("guest login");
 			}
 		} else {
 			hashHistory.replace('/');
@@ -40,6 +41,7 @@ var PAppJoin = React.createClass({
 			},
 			function(data, status) {
 				if (data != '') {
+					console.log(data);
 					var value = JSON.parse(data);
 					thiz.setState({
 						value: value

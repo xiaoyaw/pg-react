@@ -25682,6 +25682,7 @@ var PAppJoin = React.createClass({
 		if (sessionStorage.username || this.props.params.id == 'guest') {
 			if (this.props.params.id == 'guest') {
 				this.visitorLogin('guest', '111111');
+				console.log("guest login");
 			}
 		} else {
 			_reactRouter.hashHistory.replace('/');
@@ -25702,6 +25703,7 @@ var PAppJoin = React.createClass({
 			password: pass
 		}, function (data, status) {
 			if (data != '') {
+				console.log(data);
 				var value = JSON.parse(data);
 				thiz.setState({
 					value: value
@@ -26259,21 +26261,23 @@ var JoinNav = React.createClass({
 		};
 	},
 
-	componentWillMount: function componentWillMount() {
-		if (sessionStorage.nickname) {
-			this.setState({
-				nickname: sessionStorage.getItem("nickname")
-			});
-		} else {
-			var usn = sessionStorage.getItem("username");
-			if (usn.substring(0, 5) == 'guest') {
+	componentDidMount: function componentDidMount() {
+		if (this.isMounted()) {
+			if (sessionStorage.nickname) {
 				this.setState({
-					nickname: usn.substring(0, 5)
+					nickname: sessionStorage.getItem("nickname")
 				});
 			} else {
-				this.setState({
-					nickname: usn
-				});
+				var usn = sessionStorage.getItem("username");
+				if (usn.substring(0, 5) == 'guest') {
+					this.setState({
+						nickname: usn.substring(0, 5)
+					});
+				} else {
+					this.setState({
+						nickname: usn
+					});
+				}
 			}
 		}
 	},
