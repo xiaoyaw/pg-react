@@ -26975,11 +26975,11 @@ var ReadApplication = _react2.default.createClass({
 
 
   callivMsgSize: function callivMsgSize(res) {
-    var ls = 0;
+    var livsize = [];
     for (var p in res) {
-      ls++;
+      livsize.push(p);
     }
-    return ls;
+    return livsize;
   },
   playLivFile: function playLivFile(res) {
     var livsize = this.callivMsgSize(res);
@@ -27129,7 +27129,7 @@ var ReadApplication = _react2.default.createClass({
       var fileName = thiz.props.file;
       var url = thiz.state.url_getLiv + encodeURI(encodeURI(fileName)) + '.liv';
       $.get(url, function (res) {
-        thiz.playLivFile(res);
+        thiz.playLivFile(JSON.parse(res));
       });
 
       //点击按钮时下载数据并播放
