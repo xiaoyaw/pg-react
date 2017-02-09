@@ -27090,14 +27090,6 @@ var ReadApplication = _react2.default.createClass({
               thiz.diguiliv();
             });
           }
-        } else {
-          //是否轮播
-          thiz.setState({
-            pageIndex: 0,
-            dataNow: 0
-          }, function () {
-            thiz.diguiliv();
-          });
         }
       }
     }
@@ -27107,12 +27099,6 @@ var ReadApplication = _react2.default.createClass({
   componentDidMount: function componentDidMount() {
     var thiz = this;
     if (this.isMounted()) {
-      //liv
-      $('#voice').on('click', function () {
-        thiz.setState({
-          isfirstPlay: false
-        });
-      });
       //如果是分享出来的
       var fileName = thiz.props.file;
       var url = thiz.state.url_getLiv + encodeURI(encodeURI(fileName)) + '.liv';
