@@ -26905,17 +26905,14 @@ var _BgImage = require('../roomComponents/blackBoard/BgImage.jsx');
 
 var _BgImage2 = _interopRequireDefault(_BgImage);
 
+var _OpenAudio = require('../roomComponents/alertComponent/OpenAudio.jsx');
+
+var _OpenAudio2 = _interopRequireDefault(_OpenAudio);
+
 var _reactRouter = require('react-router');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*
- * 包裹canvas,bgimg的组件
- * 连接websocket，handleMessage
- * 计算尺寸大小位置以及resize以后重新计算
- * 在handleMessage中播放video，audio。1、没有加入video子组件的原因是 导航栏按钮无法获取此子组件的DOM节点
- * 2、没有放在canvas中处理视频的原因是 此组件任何state变化都会导致render方法执行，从而导致视频或音频重复播放
- */
 var ReadApplication = _react2.default.createClass({
   displayName: 'ReadApplication',
 
@@ -26953,8 +26950,7 @@ var ReadApplication = _react2.default.createClass({
       img_width: null, //将图片原始宽高传递过去，计算加入者尺寸和图片尺寸比例
       img_height: null, //将图片原始宽高传递过去，计算加入者尺寸和图片尺寸比例
       startVideo: '',
-      allVideo: '',
-      isfirstPlay: true
+      allVideo: ''
     };
   },
 
@@ -27070,14 +27066,6 @@ var ReadApplication = _react2.default.createClass({
               thiz.diguiliv();
             });
           }
-        } else {
-          //是否轮播
-          thiz.setState({
-            pageIndex: 0,
-            dataNow: 0
-          }, function () {
-            thiz.diguiliv();
-          });
         }
       } else {
         //停留时间
@@ -27252,38 +27240,24 @@ var ReadApplication = _react2.default.createClass({
           break;
 
         case "urlvoice":
-          if (!this.state.isfirstPlay) {
-            try {
-              var audio = document.getElementById("myaudio");
-              audio.pause();
-              var waitTime = 200;
-              setTimeout(function () {
-                if (audio.paused) {
-                  audio.src = value.url;
-                  audio.play();
-                }
-              }, waitTime);
-            } catch (e) {
-              console.log(e);
-            }
+          var audio = document.getElementById("myaudio");
+          audio.pause();
+          audio.src = value.url;
+          if (sessionStorage.getItem('openaudio') == 'isOpen') {
+            audio.play();
+          } else {
+            $('#openaudio').fadeIn();
           }
           break;
 
         case "voice":
-          if (!this.state.isfirstPlay) {
-            try {
-              var audio = document.getElementById("myaudio");
-              audio.pause();
-              var waitTime = 200;
-              setTimeout(function () {
-                if (audio.paused) {
-                  audio.src = "data:audio/mpeg;base64," + value.voice;
-                  audio.play();
-                }
-              }, waitTime);
-            } catch (e) {
-              console.log(e);
-            }
+          var audio = document.getElementById("myaudio");
+          audio.pause();
+          audio.src = "data:audio/mpeg;base64," + value.voice;
+          if (sessionStorage.getItem('openaudio') == 'isOpen') {
+            audio.play();
+          } else {
+            $('#openaudio').fadeIn();
           }
           break;
 
@@ -27364,15 +27338,22 @@ var ReadApplication = _react2.default.createClass({
         _width: this.state.width,
         _height: this.state.height
       }),
-      '   '
+      '   ',
+      _react2.default.createElement(_OpenAudio2.default, null),
+      ' '
     );
   }
 
-});
-
+}); /*
+     * 包裹canvas,bgimg的组件
+     * 连接websocket，handleMessage
+     * 计算尺寸大小位置以及resize以后重新计算
+     * 在handleMessage中播放video，audio。1、没有加入video子组件的原因是 导航栏按钮无法获取此子组件的DOM节点
+     * 2、没有放在canvas中处理视频的原因是 此组件任何state变化都会导致render方法执行，从而导致视频或音频重复播放
+     */
 exports.default = ReadApplication;
 
-},{"../roomComponents/blackBoard/BgImage.jsx":248,"../roomComponents/blackBoard/Canvas.jsx":249,"react":228,"react-router":30}],241:[function(require,module,exports){
+},{"../roomComponents/alertComponent/OpenAudio.jsx":247,"../roomComponents/blackBoard/BgImage.jsx":248,"../roomComponents/blackBoard/Canvas.jsx":249,"react":228,"react-router":30}],241:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

@@ -8,6 +8,7 @@
 import React from 'react';
 import Canvas from '../roomComponents/blackBoard/Canvas.jsx';
 import BgImage from '../roomComponents/blackBoard/BgImage.jsx';
+import OpenAudio from '../roomComponents/alertComponent/OpenAudio.jsx';
 import {
   hashHistory
 } from 'react-router';
@@ -24,7 +25,7 @@ let ReadApplication = React.createClass({
 
     return {
       //liv
-      url_getLiv:'http://203.195.173.135:8080/download/repo/',
+      url_getLiv: 'http://203.195.173.135:8080/download/repo/',
       timeout: null,
       isStop: false,
       isfirst: true,
@@ -46,8 +47,7 @@ let ReadApplication = React.createClass({
       img_width: null, //将图片原始宽高传递过去，计算加入者尺寸和图片尺寸比例
       img_height: null, //将图片原始宽高传递过去，计算加入者尺寸和图片尺寸比例
       startVideo: '',
-      allVideo: '',
-      isfirstPlay: true
+      allVideo: ''
     };
   },
 
@@ -159,14 +159,6 @@ let ReadApplication = React.createClass({
               thiz.diguiliv();
             });
           }
-        } else {
-          //是否轮播
-          thiz.setState({
-            pageIndex: 0,
-            dataNow: 0
-          }, function() {
-            thiz.diguiliv();
-          });
         }
       } else {
         //停留时间
@@ -216,7 +208,7 @@ let ReadApplication = React.createClass({
       });
       //如果是分享出来的
       var fileName = thiz.props.file;
-      var url=thiz.state.url_getLiv + encodeURI(encodeURI(fileName)) + '.liv';
+      var url = thiz.state.url_getLiv + encodeURI(encodeURI(fileName)) + '.liv';
       $.get(url, function(res) {
         thiz.playLivFile(JSON.parse(res));
       });
@@ -338,38 +330,24 @@ let ReadApplication = React.createClass({
           break;
 
         case "urlvoice":
-          if (!this.state.isfirstPlay) {
-            try {
-              var audio = document.getElementById("myaudio");
-              audio.pause();
-              var waitTime = 200;
-              setTimeout(function() {
-                if (audio.paused) {
-                  audio.src = value.url;
-                  audio.play();
-                }
-              }, waitTime);
-            } catch (e) {
-              console.log(e);
-            }
+          var audio = document.getElementById("myaudio");
+          audio.pause();
+          audio.src = value.url;
+          if (sessionStorage.getItem('openaudio') == 'isOpen') {
+            audio.play();
+          } else {
+            $('#openaudio').fadeIn();
           }
           break;
 
         case "voice":
-          if (!this.state.isfirstPlay) {
-            try {
-              var audio = document.getElementById("myaudio");
-              audio.pause();
-              var waitTime = 200;
-              setTimeout(function() {
-                if (audio.paused) {
-                  audio.src = "data:audio/mpeg;base64," + value.voice;
-                  audio.play();
-                }
-              }, waitTime);
-            } catch (e) {
-              console.log(e);
-            }
+          var audio = document.getElementById("myaudio");
+          audio.pause();
+          audio.src = "data:audio/mpeg;base64," + value.voice;
+          if (sessionStorage.getItem('openaudio') == 'isOpen') {
+            audio.play();
+          } else {
+            $('#openaudio').fadeIn();
           }
           break;
 
@@ -473,7 +451,7 @@ let ReadApplication = React.createClass({
     _height = {
       this.state.height
     }
-    / >   < /div >
+    / >   < OpenAudio / > < /div >
   );
 }
 
