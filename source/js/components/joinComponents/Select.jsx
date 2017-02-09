@@ -21,7 +21,9 @@ var Select = React.createClass({
 				this.queryAllLiv(user);
 			}
 			$('#toread').on('click', function() {
-				hashHistory.replace('/eread/' + $('#liv_select').val());
+				if($('#liv_select').val()!=''&&$('#liv_select').val()!=null){
+					hashHistory.replace('/eread/' + $('#liv_select').val());
+				}
 			});
 			$(document).keydown(function(e) {
 				var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
@@ -83,7 +85,7 @@ var Select = React.createClass({
 						name.split('_')[2]
 					} < /option>
 				})
-			} < /select > < a id = 'toread' > <span className = "glyphicon glyphicon-log-in" > < /span > < /a > < /div > );
+			} < /select > < button className='btn btn-default' id = 'toread' > <span className = "glyphicon glyphicon-log-in" > < /span > < /button > < /div > );
 	}
 });
 

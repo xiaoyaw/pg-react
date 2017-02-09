@@ -26,6 +26,9 @@ var PcLogin = React.createClass({
 	componentDidMount: function() {
 		if (this.isMounted()) {
 			var thiz = this;
+			$('#guestlogin').on('click',function(){
+				hashHistory.replace('/join/guest');
+			});
 			$('#login').on('click', function() {
 				var un = $('#us').val();
 				var pw = $('#pw').val();
@@ -141,8 +144,7 @@ var PcLogin = React.createClass({
 			type = "password" / >
 			< div className = "checkbox pull-right" >
 			< label >
-			< input value = "remember-me"
-			type = "checkbox" / > < /label> < /div > < button className = "btn btn-lg btn-primary btn-block"
+			<a id='guestlogin'>guest</a> < /label> < /div > < button className = "btn btn-lg btn-primary btn-block"
 			type = "submit"
 			id = 'login' > Sign in < /button>  < div style = { {
 			textAlign: 'center',

@@ -67,11 +67,11 @@ let ReadApplication = React.createClass({
   },
 
   callivMsgSize: function(res) {
-    var livsize = []
+    var ls=0;
     for (var p in res) {
-      livsize.push(p);
+      ls++;
     }
-    return livsize;
+    return ls;
   },
   playLivFile: function(res) {
     var livsize = this.callivMsgSize(res);

@@ -25865,6 +25865,9 @@ var PcLogin = React.createClass({
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
 			var thiz = this;
+			$('#guestlogin').on('click', function () {
+				_reactRouter.hashHistory.replace('/join/guest');
+			});
 			$('#login').on('click', function () {
 				var un = $('#us').val();
 				var pw = $('#pw').val();
@@ -26002,8 +26005,11 @@ var PcLogin = React.createClass({
 					React.createElement(
 						'label',
 						null,
-						React.createElement('input', { value: 'remember-me',
-							type: 'checkbox' }),
+						React.createElement(
+							'a',
+							{ id: 'guestlogin' },
+							'guest'
+						),
 						' '
 					),
 					' '
@@ -26556,7 +26562,9 @@ var Select = React.createClass({
 				this.queryAllLiv(user);
 			}
 			$('#toread').on('click', function () {
-				_reactRouter.hashHistory.replace('/eread/' + $('#liv_select').val());
+				if ($('#liv_select').val() != '' && $('#liv_select').val() != null) {
+					_reactRouter.hashHistory.replace('/eread/' + $('#liv_select').val());
+				}
 			});
 			$(document).keydown(function (e) {
 				var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
@@ -26626,8 +26634,8 @@ var Select = React.createClass({
 			),
 			' ',
 			React.createElement(
-				'a',
-				{ id: 'toread' },
+				'button',
+				{ className: 'btn btn-default', id: 'toread' },
 				' ',
 				React.createElement(
 					'span',
@@ -26967,11 +26975,11 @@ var ReadApplication = _react2.default.createClass({
 
 
   callivMsgSize: function callivMsgSize(res) {
-    var livsize = [];
+    var ls = 0;
     for (var p in res) {
-      livsize.push(p);
+      ls++;
     }
-    return livsize;
+    return ls;
   },
   playLivFile: function playLivFile(res) {
     var livsize = this.callivMsgSize(res);
