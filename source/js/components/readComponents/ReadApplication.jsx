@@ -34,6 +34,7 @@ let ReadApplication = React.createClass({
       res: null,
       livsize: [],
       dataNow: 0,
+      pathover: false,
       audio: audio,
       video: video,
       scaleX: null, //给canvas  X轴图片或笔迹伸缩量
@@ -89,53 +90,72 @@ let ReadApplication = React.createClass({
     var thiz = this;
     //向左
     $('#liv_left').on('click', function() {
-      console.log(thiz.state.pageIndex+'------'+thiz.state.pageNum);
-        // if (thiz.state.pageIndex <= thiz.state.pageNum && thiz.state.pageIndex > 0) {
-        //   thiz.state.audio.pause();
-        //   thiz.state.video.pause();
-        //   clearTimeout(thiz.state.timeout);
-        //   thiz.setState({
-        //     pageIndex: thiz.state.pageIndex - 2,
-        //     dataNow: 0,
-        //     isfirst: true
-        //   }, function() {
-        //     thiz.diguiliv();
-        //   });
-        // }
+        if (thiz.state.pageIndex <= thiz.state.pageNum) {
+          thiz.state.audio.pause();
+          thiz.state.video.pause();
+          clearTimeout(thiz.state.timeout);
+          if (!thiz.state.pathover) {
+            thiz.setState({
+              pageIndex: thiz.state.pageIndex - 1,
+              dataNow: 0,
+              isfirst: true
+            }, function() {
+              thiz.diguiliv();
+            });
+          } else {
+            thiz.setState({
+              pageIndex: thiz.state.pageIndex - 2,
+              dataNow: 0,
+              isfirst: true
+            }, function() {
+              thiz.diguiliv();
+            });
+          }
+        }
       })
       //向右
     $('#liv_right').on('click', function() {
-      console.log(thiz.state.pageIndex+'------'+thiz.state.pageNum);
-        // if (thiz.state.pageIndex < thiz.state.pageNum) {
-        //   thiz.state.audio.pause();
-        //   thiz.state.video.pause();
-        //   clearTimeout(thiz.state.timeout);
-        //   thiz.setState({
-        //     dataNow: 0,
-        //     isfirst: true
-        //   }, function() {
-        //     thiz.diguiliv();
-        //   });
-        // }
+        if (thiz.state.pageIndex < thiz.state.pageNum) {
+          thiz.state.audio.pause();
+          thiz.state.video.pause();
+          clearTimeout(thiz.state.timeout);
+          if (!thiz.state.pathover) {
+            thiz.setState({
+              dataNow: 0,
+              pageIndex: thiz.state.pageIndex + 1,
+              isfirst: true
+            }, function() {
+              thiz.diguiliv();
+            });
+          } else {
+            if (!thiz.state.pathover) {
+              thiz.setState({
+                dataNow: 0,
+                isfirst: true
+              }, function() {
+                thiz.diguiliv();
+              });
+            }
+          }
+        }
       })
       //停止
     $('#liv_stop').on('click', function() {
-      console.log(thiz.state.pageIndex+'------'+thiz.state.pageNum);
-      // if (!thiz.state.isStop) {
-      //   thiz.state.audio.pause();
-      //   thiz.state.video.pause();
-      //   clearTimeout(thiz.state.timeout);
-      //   thiz.setState({
-      //     isStop: true
-      //   });
-      // } else { //正在播放的话
-      //   thiz.setState({
-      //     isStop: false
-      //   }, function() {
-      //     thiz.state.audio.play();
-      //     thiz.diguiliv();
-      //   });
-      // }
+      if (!thiz.state.isStop) {
+        thiz.state.audio.pause();
+        thiz.state.video.pause();
+        clearTimeout(thiz.state.timeout);
+        thiz.setState({
+          isStop: true
+        });
+      } else { //正在播放的话
+        thiz.setState({
+          isStop: false
+        }, function() {
+          thiz.state.audio.play();
+          thiz.diguiliv();
+        });
+      }
     })
   },
   //递归liv播放
@@ -150,6 +170,7 @@ let ReadApplication = React.createClass({
             thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
             thiz.setState({
               dataNow: thiz.state.dataNow + 1,
+              pathover: false,
               isfirst: false
             }, function() {
               thiz.diguiliv();
@@ -157,13 +178,12 @@ let ReadApplication = React.createClass({
           } else { //本页最后一笔画完，翻页并递归
             thiz.setState({
               pageIndex: thiz.state.pageIndex + 1,
+              pathover: true,
               dataNow: 0
             }, function() {
               thiz.diguiliv();
             });
           }
-        } else {
-          $('#liv_Nav').fadeOut();
         }
       } else {
         //停留时间
@@ -174,7 +194,8 @@ let ReadApplication = React.createClass({
             thiz.state.timeout = setTimeout(function() {
               thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
               thiz.setState({
-                dataNow: thiz.state.dataNow + 1
+                dataNow: thiz.state.dataNow + 1,
+                pathover: false
               }, function() {
                 thiz.diguiliv();
               });
@@ -182,13 +203,12 @@ let ReadApplication = React.createClass({
           } else { //本页最后一笔画完，翻页并递归
             thiz.setState({
               pageIndex: thiz.state.pageIndex + 1,
+              pathover: true,
               dataNow: 0
             }, function() {
               thiz.diguiliv();
             });
           }
-        } else {
-          $('#liv_Nav').fadeOut();
         }
       }
 
