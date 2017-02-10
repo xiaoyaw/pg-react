@@ -28358,12 +28358,20 @@ var Canvas = _react2.default.createClass({
                                 var x1 = path[0].x * sX * oX;
                                 var y1 = path[0].y * sY * oY;
                                 //path第一个点处理
-                                canvas.moveTo(x1, y1);
+                                if (canvas.lineWidth % 2 === 0) {
+                                    canvas.moveTo(x1, y1);
+                                } else {
+                                    canvas.moveTo(x1 + 0.5, y1 + 0.5);
+                                }
                                 var ref = path.slice(1);
                                 for (var j = 0; j < ref.length; j++) {
                                     var lx = path[j].x * sX * oX;
                                     var ly = path[j].y * sY * oY;
-                                    canvas.lineTo(lx, ly);
+                                    if (canvas.lineWidth % 2 === 0) {
+                                        canvas.lineTo(lx, ly);
+                                    } else {
+                                        canvas.lineTo(lx + 0.5, ly + 0.5);
+                                    }
                                 }
                             }
                         }
@@ -29030,7 +29038,7 @@ var wxLogin = React.createClass({
 			code: '',
 			isLogin: false,
 			appid: '',
-			release: 'dev'
+			release: 'PageShare'
 		};
 	},
 	componentDidMount: function componentDidMount() {
