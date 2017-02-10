@@ -90,7 +90,7 @@ let ReadApplication = React.createClass({
     var thiz = this;
     //向左
     $('#liv_left').on('click', function() {
-        if (thiz.state.pageIndex <= thiz.state.pageNum) {
+        if (thiz.state.pageIndex <= thiz.state.pageNum&&thiz.state.pageIndex>0) {
           thiz.state.audio.pause();
           thiz.state.video.pause();
           clearTimeout(thiz.state.timeout);
@@ -128,14 +128,12 @@ let ReadApplication = React.createClass({
               thiz.diguiliv();
             });
           } else {
-            if (!thiz.state.pathover) {
               thiz.setState({
                 dataNow: 0,
                 isfirst: true
               }, function() {
                 thiz.diguiliv();
               });
-            }
           }
         }
       })

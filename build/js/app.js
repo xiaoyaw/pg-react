@@ -26994,7 +26994,7 @@ var ReadApplication = _react2.default.createClass({
     var thiz = this;
     //向左
     $('#liv_left').on('click', function () {
-      if (thiz.state.pageIndex <= thiz.state.pageNum) {
+      if (thiz.state.pageIndex <= thiz.state.pageNum && thiz.state.pageIndex > 0) {
         thiz.state.audio.pause();
         thiz.state.video.pause();
         clearTimeout(thiz.state.timeout);
@@ -27032,14 +27032,12 @@ var ReadApplication = _react2.default.createClass({
             thiz.diguiliv();
           });
         } else {
-          if (!thiz.state.pathover) {
-            thiz.setState({
-              dataNow: 0,
-              isfirst: true
-            }, function () {
-              thiz.diguiliv();
-            });
-          }
+          thiz.setState({
+            dataNow: 0,
+            isfirst: true
+          }, function () {
+            thiz.diguiliv();
+          });
         }
       }
     });
@@ -28360,20 +28358,12 @@ var Canvas = _react2.default.createClass({
                                 var x1 = path[0].x * sX * oX;
                                 var y1 = path[0].y * sY * oY;
                                 //path第一个点处理
-                                if (canvas.lineWidth % 2 === 0) {
-                                    canvas.moveTo(x1, y1);
-                                } else {
-                                    canvas.moveTo(x1 + 0.5, y1 + 0.5);
-                                }
+                                canvas.moveTo(x1, y1);
                                 var ref = path.slice(1);
                                 for (var j = 0; j < ref.length; j++) {
                                     var lx = path[j].x * sX * oX;
                                     var ly = path[j].y * sY * oY;
-                                    if (canvas.lineWidth % 2 === 0) {
-                                        canvas.lineTo(lx, ly);
-                                    } else {
-                                        canvas.lineTo(lx + 0.5, ly + 0.5);
-                                    }
+                                    canvas.lineTo(lx, ly);
                                 }
                             }
                         }
