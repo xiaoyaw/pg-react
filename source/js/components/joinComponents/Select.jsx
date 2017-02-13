@@ -9,7 +9,8 @@ var Select = React.createClass({
 	getInitialState: function() {
 
 		return {
-			url_litLiv: 'http://203.195.173.135:9000/files/list?format=json',
+			// url_litLiv: 'http://203.195.173.135:9000/files/list?format=json',
+			url_litLiv: 'http://182.254.223.23:9000/files/list?format=json',
 			displayFile: []
 		};
 	},
@@ -43,7 +44,6 @@ var Select = React.createClass({
 			} else {
 				user = sessionStorage.getItem("username");
 			}
-
 		}
 		if (sessionStorage.getItem('nickname')) {
 			user = 'wechat';
@@ -58,15 +58,16 @@ var Select = React.createClass({
 				type: 'GET',
 				timeout: 5000,
 				success: function(res) {
-					var userRes = [];
-					for (var i = 0; i < res.length; i++) {
-						if (decodeURI(res[i].split('_')[0]) == user && res[i].split('_').length == 3) {
-							userRes.push(decodeURI(res[i].split('.')[0]));
-						}
-					}
-					that.setState({
-						displayFile: userRes
-					});
+					console.log(res);
+					// var userRes = [];
+					// for (var i = 0; i < res.length; i++) {
+					// 	if (decodeURI(res[i].split('_')[0]) == user && res[i].split('_').length == 3) {
+					// 		userRes.push(decodeURI(res[i].split('.')[0]));
+					// 	}
+					// }
+					// that.setState({
+					// 	displayFile: userRes
+					// });
 				}
 			})
 			//var res = ["add_addxx_add1_time.liv", "add_addzz_add2_time.liv", "lgd_lgd_lgd1_time.liv", "guest_lgdd_lgd2_time.liv", "guest_www_www1_time.liv", "guest_wwwzz_www2_time.liv", "allread.liv", "allread2.liv", "sijj_isdjai.liv"];
@@ -82,7 +83,7 @@ var Select = React.createClass({
 					value = {
 						name
 					} > {
-						name.split('_')[2]
+						name.split('_')[1]+'_'+name.split('_')[2]
 					} < /option>
 				})
 			} < /select > < button className='btn btn-default' id = 'toread' > <span className = "glyphicon glyphicon-log-in" > < /span > < /button > < /div > );
