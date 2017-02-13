@@ -16,6 +16,7 @@ var Select = React.createClass({
 	},
 	componentDidMount: function() {
 		if (this.isMounted()) {
+
 			var that = this;
 			var user = this.getUser();
 			if (user != null && user != undefined) {
@@ -84,7 +85,7 @@ var Select = React.createClass({
 					value = {
 						name
 					} > {
-						name.substring(user,name.length)
+						(name.substring(user+1,name.length)).replace(/_/g,'-')
 					} < /option>
 				})
 			} < /select > < button className='btn btn-default' id = 'toread' > <span className = "glyphicon glyphicon-log-in" > < /span > < /button > < /div > );

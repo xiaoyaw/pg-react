@@ -26557,6 +26557,7 @@ var Select = React.createClass({
 	},
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
+
 			var that = this;
 			var user = this.getUser();
 			if (user != null && user != undefined) {
@@ -26630,7 +26631,7 @@ var Select = React.createClass({
 						{ key: name,
 							value: name },
 						' ',
-						name.substring(user, name.length),
+						name.substring(user + 1, name.length).replace(/_/g, '-'),
 						' '
 					);
 				}),
