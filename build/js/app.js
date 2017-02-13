@@ -26600,21 +26600,23 @@ var Select = React.createClass({
 			type: 'GET',
 			timeout: 5000,
 			success: function success(res) {
-				console.log(res);
-				// var userRes = [];
-				// for (var i = 0; i < res.length; i++) {
-				// 	if (decodeURI(res[i].split('_')[0]) == user && res[i].split('_').length == 3) {
-				// 		userRes.push(decodeURI(res[i].split('.')[0]));
-				// 	}
-				// }
-				// that.setState({
-				// 	displayFile: userRes
-				// });
+				var userRes = [];
+				for (var p in res) {
+					for (var i = 0; i < res[p].length; i++) {
+						if (decodeURI(res[p][i].split('_')[0]) == user && res[p][i].split('_').length >= 2) {
+							userRes.push(decodeURI(res[p][i].split('.')[0]));
+						}
+					}
+				}
+
+				that.setState({
+					displayFile: userRes
+				});
 			}
 		});
-		//var res = ["add_addxx_add1_time.liv", "add_addzz_add2_time.liv", "lgd_lgd_lgd1_time.liv", "guest_lgdd_lgd2_time.liv", "guest_www_www1_time.liv", "guest_wwwzz_www2_time.liv", "allread.liv", "allread2.liv", "sijj_isdjai.liv"];
 	},
 	render: function render() {
+		var user = this.getUser().length;
 		return React.createElement(
 			'div',
 			null,
@@ -26628,7 +26630,7 @@ var Select = React.createClass({
 						{ key: name,
 							value: name },
 						' ',
-						name.split('_')[1] + '_' + name.split('_')[2],
+						name.substring(user, name.length),
 						' '
 					);
 				}),
@@ -26930,7 +26932,7 @@ var ReadApplication = _react2.default.createClass({
 
     return {
       //liv
-      url_getLiv: 'http://203.195.173.135:8080/download/repo/',
+      url_getLiv: 'http://182.254.223.23/download/records/',
       timeout: null,
       isStop: false,
       isfirst: true,
@@ -27128,7 +27130,12 @@ var ReadApplication = _react2.default.createClass({
     if (this.isMounted()) {
       //如果是分享出来的
       var fileName = thiz.props.file;
-      var url = thiz.state.url_getLiv + encodeURI(encodeURI(fileName)) + '.liv';
+      var url;
+      if (fileName.split('_').length == 2) {
+        url = thiz.state.url_getLiv + fileName.split('_')[1].split('.')[0] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
+      } else {
+        url = thiz.state.url_getLiv + fileName.split('_')[1] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
+      }
       $.get(url, function (res) {
         thiz.playLivFile(JSON.parse(res));
       });

@@ -17,12 +17,12 @@ var Select = React.createClass({
 	componentDidMount: function() {
 		if (this.isMounted()) {
 			var that = this;
-			var user=this.getUser();
+			var user = this.getUser();
 			if (user != null && user != undefined) {
 				this.queryAllLiv(user);
 			}
 			$('#toread').on('click', function() {
-				if($('#liv_select').val()!=''&&$('#liv_select').val()!=null){
+				if ($('#liv_select').val() != '' && $('#liv_select').val() != null) {
 					hashHistory.replace('/eread/' + $('#liv_select').val());
 				}
 			});
@@ -53,27 +53,28 @@ var Select = React.createClass({
 	queryAllLiv: function(user) {
 		var that = this;
 		$.ajax({
-				async: true,
-				url: that.state.url_litLiv,
-				type: 'GET',
-				timeout: 5000,
-				success: function(res) {
-					console.log(res);
-					// var userRes = [];
-					// for (var i = 0; i < res.length; i++) {
-					// 	if (decodeURI(res[i].split('_')[0]) == user && res[i].split('_').length == 3) {
-					// 		userRes.push(decodeURI(res[i].split('.')[0]));
-					// 	}
-					// }
-					// that.setState({
-					// 	displayFile: userRes
-					// });
+			async: true,
+			url: that.state.url_litLiv,
+			type: 'GET',
+			timeout: 5000,
+			success: function(res) {
+				var userRes = [];
+				for (var p in res) {
+					for (var i = 0; i < res[p].length; i++) {
+						if (decodeURI(res[p][i].split('_')[0]) == user && res[p][i].split('_').length >=2) {
+							userRes.push(decodeURI(res[p][i].split('.')[0]));
+						}
+					}
 				}
-			})
-			//var res = ["add_addxx_add1_time.liv", "add_addzz_add2_time.liv", "lgd_lgd_lgd1_time.liv", "guest_lgdd_lgd2_time.liv", "guest_www_www1_time.liv", "guest_wwwzz_www2_time.liv", "allread.liv", "allread2.liv", "sijj_isdjai.liv"];
 
+				that.setState({
+					displayFile: userRes
+				});
+			}
+		})
 	},
 	render: function() {
+		var user=this.getUser().length;
 		return ( < div >
 			< select id = "liv_select" > {
 				this.state.displayFile.map(function(name) {
@@ -83,7 +84,7 @@ var Select = React.createClass({
 					value = {
 						name
 					} > {
-						name.split('_')[1]+'_'+name.split('_')[2]
+						name.substring(user,name.length)
 					} < /option>
 				})
 			} < /select > < button className='btn btn-default' id = 'toread' > <span className = "glyphicon glyphicon-log-in" > < /span > < /button > < /div > );

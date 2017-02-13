@@ -25,7 +25,7 @@ let ReadApplication = React.createClass({
 
     return {
       //liv
-      url_getLiv: 'http://203.195.173.135:8080/download/repo/',
+      url_getLiv: 'http://182.254.223.23/download/records/',
       timeout: null,
       isStop: false,
       isfirst: true,
@@ -90,7 +90,7 @@ let ReadApplication = React.createClass({
     var thiz = this;
     //向左
     $('#liv_left').on('click', function() {
-        if (thiz.state.pageIndex <= thiz.state.pageNum&&thiz.state.pageIndex>0) {
+        if (thiz.state.pageIndex <= thiz.state.pageNum && thiz.state.pageIndex > 0) {
           thiz.state.audio.pause();
           thiz.state.video.pause();
           clearTimeout(thiz.state.timeout);
@@ -128,12 +128,12 @@ let ReadApplication = React.createClass({
               thiz.diguiliv();
             });
           } else {
-              thiz.setState({
-                dataNow: 0,
-                isfirst: true
-              }, function() {
-                thiz.diguiliv();
-              });
+            thiz.setState({
+              dataNow: 0,
+              isfirst: true
+            }, function() {
+              thiz.diguiliv();
+            });
           }
         }
       })
@@ -219,7 +219,12 @@ let ReadApplication = React.createClass({
     if (this.isMounted()) {
       //如果是分享出来的
       var fileName = thiz.props.file;
-      var url = thiz.state.url_getLiv + encodeURI(encodeURI(fileName)) + '.liv';
+      var url;
+      if (fileName.split('_').length == 2) {
+        url=thiz.state.url_getLiv+fileName.split('_')[1].split('.')[0]+'/'+encodeURI(encodeURI(fileName)) + '.liv';
+      } else {
+        url = thiz.state.url_getLiv + fileName.split('_')[1]+'/'+encodeURI(encodeURI(fileName)) + '.liv';
+      }
       $.get(url, function(res) {
         thiz.playLivFile(JSON.parse(res));
       });
