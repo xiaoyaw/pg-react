@@ -10,7 +10,7 @@ var Select = React.createClass({
 
 		return {
 			// url_litLiv: 'http://203.195.173.135:9000/files/list?format=json',
-			url_litLiv: 'http://182.254.223.23:9000/files/list?format=json',
+			url_litLiv: 'http://182.254.223.23:9000/play/list?format=json',
 			displayFile: []
 		};
 	},
