@@ -94,30 +94,22 @@ let ReadApplication = React.createClass({
           thiz.state.audio.pause();
           thiz.state.video.pause();
           clearTimeout(thiz.state.timeout);
-          if (thiz.state.pageIndex <= 0) {
+          if (!thiz.state.pathover&&thiz.state.pageIndex>=1) {
             thiz.setState({
-              pageIndex: 0
-            }, function(){
+              pageIndex: thiz.state.pageIndex - 1,
+              dataNow: 0,
+              isfirst: true
+            }, function() {
               thiz.diguiliv();
             });
-          } else {
-            if (!thiz.state.pathover) {
-              thiz.setState({
-                pageIndex: thiz.state.pageIndex - 1,
-                dataNow: 0,
-                isfirst: true
-              }, function() {
-                thiz.diguiliv();
-              });
-            } else {
-              thiz.setState({
-                pageIndex: thiz.state.pageIndex - 2,
-                dataNow: 0,
-                isfirst: true
-              }, function() {
-                thiz.diguiliv();
-              });
-            }
+          } else if(thiz.state.pathover&&thiz.state.pageIndex>=2){
+            thiz.setState({
+              pageIndex: thiz.state.pageIndex - 2,
+              dataNow: 0,
+              isfirst: true
+            }, function() {
+              thiz.diguiliv();
+            });
           }
         }
       })
