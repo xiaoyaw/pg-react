@@ -94,22 +94,30 @@ let ReadApplication = React.createClass({
           thiz.state.audio.pause();
           thiz.state.video.pause();
           clearTimeout(thiz.state.timeout);
-          if (!thiz.state.pathover) {
+          if (thiz.state.pageIndex <= 0) {
             thiz.setState({
-              pageIndex: thiz.state.pageIndex - 1,
-              dataNow: 0,
-              isfirst: true
-            }, function() {
+              pageIndex: 0
+            }, function(){
               thiz.diguiliv();
             });
           } else {
-            thiz.setState({
-              pageIndex: thiz.state.pageIndex - 2,
-              dataNow: 0,
-              isfirst: true
-            }, function() {
-              thiz.diguiliv();
-            });
+            if (!thiz.state.pathover) {
+              thiz.setState({
+                pageIndex: thiz.state.pageIndex - 1,
+                dataNow: 0,
+                isfirst: true
+              }, function() {
+                thiz.diguiliv();
+              });
+            } else {
+              thiz.setState({
+                pageIndex: thiz.state.pageIndex - 2,
+                dataNow: 0,
+                isfirst: true
+              }, function() {
+                thiz.diguiliv();
+              });
+            }
           }
         }
       })
@@ -150,7 +158,9 @@ let ReadApplication = React.createClass({
         thiz.setState({
           isStop: false
         }, function() {
-          thiz.state.audio.play();
+          if (thiz.state.audio.paused) {
+            thiz.state.audio.play();
+          }
           thiz.diguiliv();
         });
       }
@@ -221,9 +231,9 @@ let ReadApplication = React.createClass({
       var fileName = thiz.props.file;
       var url;
       if (fileName.split('_').length == 2) {
-        url=thiz.state.url_getLiv+fileName.split('_')[1].split('.')[0]+'/'+encodeURI(encodeURI(fileName)) + '.liv';
+        url = thiz.state.url_getLiv + fileName.split('_')[1].split('.')[0] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
       } else {
-        url = thiz.state.url_getLiv + fileName.split('_')[1]+'/'+encodeURI(encodeURI(fileName)) + '.liv';
+        url = thiz.state.url_getLiv + fileName.split('_')[1] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
       }
       $.get(url, function(res) {
         thiz.playLivFile(JSON.parse(res));

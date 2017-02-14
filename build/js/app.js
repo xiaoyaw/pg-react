@@ -27011,22 +27011,30 @@ var ReadApplication = _react2.default.createClass({
         thiz.state.audio.pause();
         thiz.state.video.pause();
         clearTimeout(thiz.state.timeout);
-        if (!thiz.state.pathover) {
+        if (thiz.state.pageIndex <= 0) {
           thiz.setState({
-            pageIndex: thiz.state.pageIndex - 1,
-            dataNow: 0,
-            isfirst: true
+            pageIndex: 0
           }, function () {
             thiz.diguiliv();
           });
         } else {
-          thiz.setState({
-            pageIndex: thiz.state.pageIndex - 2,
-            dataNow: 0,
-            isfirst: true
-          }, function () {
-            thiz.diguiliv();
-          });
+          if (!thiz.state.pathover) {
+            thiz.setState({
+              pageIndex: thiz.state.pageIndex - 1,
+              dataNow: 0,
+              isfirst: true
+            }, function () {
+              thiz.diguiliv();
+            });
+          } else {
+            thiz.setState({
+              pageIndex: thiz.state.pageIndex - 2,
+              dataNow: 0,
+              isfirst: true
+            }, function () {
+              thiz.diguiliv();
+            });
+          }
         }
       }
     });
@@ -27068,7 +27076,9 @@ var ReadApplication = _react2.default.createClass({
         thiz.setState({
           isStop: false
         }, function () {
-          thiz.state.audio.play();
+          if (thiz.state.audio.paused) {
+            thiz.state.audio.play();
+          }
           thiz.diguiliv();
         });
       }
