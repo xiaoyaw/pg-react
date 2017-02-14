@@ -16,7 +16,6 @@ var Select = React.createClass({
 	},
 	componentDidMount: function() {
 		if (this.isMounted()) {
-
 			var that = this;
 			var user = this.getUser();
 			if (user != null && user != undefined) {
@@ -38,7 +37,7 @@ var Select = React.createClass({
 		}
 	},
 	getUser: function() {
-		var user;
+		var user = '';
 		if (sessionStorage.getItem('username')) {
 			if (sessionStorage.getItem('username').substring(0, 5) == 'guest') {
 				user = 'guest';
@@ -62,7 +61,7 @@ var Select = React.createClass({
 				var userRes = [];
 				for (var p in res) {
 					for (var i = 0; i < res[p].length; i++) {
-						if (decodeURI(res[p][i].split('_')[0]) == user && res[p][i].split('_').length >=2) {
+						if (decodeURI(res[p][i].split('_')[0]) == user && res[p][i].split('_').length >= 2) {
 							userRes.push(decodeURI(res[p][i].split('.')[0]));
 						}
 					}
@@ -74,8 +73,17 @@ var Select = React.createClass({
 			}
 		})
 	},
+	formatLivName: function(name) {
+		var user = this.getUser().length;
+		var liv_name=(name.substring(user + 1, name.length)).replace(/_/g, '-');
+		if(liv_name.lastIndexOf('-')==liv_name.length-1){
+			return liv_name.substring(0,liv_name.length-1)
+		}else{
+			return liv_name
+		}
+	},
 	render: function() {
-		var user=this.getUser().length;
+		var that = this;
 		return ( < div >
 			< select id = "liv_select" > {
 				this.state.displayFile.map(function(name) {
@@ -85,7 +93,7 @@ var Select = React.createClass({
 					value = {
 						name
 					} > {
-						(name.substring(user+1,name.length)).replace(/_/g,'-')
+						that.formatLivName(name)
 					} < /option>
 				})
 			} < /select > < button className='btn btn-default' id = 'toread' > <span className = "glyphicon glyphicon-log-in" > < /span > < /button > < /div > );

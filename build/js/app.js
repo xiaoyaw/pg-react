@@ -26557,7 +26557,6 @@ var Select = React.createClass({
 	},
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
-
 			var that = this;
 			var user = this.getUser();
 			if (user != null && user != undefined) {
@@ -26580,7 +26579,7 @@ var Select = React.createClass({
 		}
 	},
 	getUser: function getUser() {
-		var user;
+		var user = '';
 		if (sessionStorage.getItem('username')) {
 			if (sessionStorage.getItem('username').substring(0, 5) == 'guest') {
 				user = 'guest';
@@ -26616,8 +26615,17 @@ var Select = React.createClass({
 			}
 		});
 	},
-	render: function render() {
+	formatLivName: function formatLivName(name) {
 		var user = this.getUser().length;
+		var liv_name = name.substring(user + 1, name.length).replace(/_/g, '-');
+		if (liv_name.lastIndexOf('-') == liv_name.length - 1) {
+			return liv_name.substring(0, liv_name.length - 1);
+		} else {
+			return liv_name;
+		}
+	},
+	render: function render() {
+		var that = this;
 		return React.createElement(
 			'div',
 			null,
@@ -26631,7 +26639,7 @@ var Select = React.createClass({
 						{ key: name,
 							value: name },
 						' ',
-						name.substring(user + 1, name.length).replace(/_/g, '-'),
+						that.formatLivName(name),
 						' '
 					);
 				}),
