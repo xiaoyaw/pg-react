@@ -9,32 +9,55 @@ import ControlNav from '../roomComponents/ControlNav/ControlNav.jsx'
 var React = require('react');
 
 var EreadRoom = React.createClass({
-
+	getInitialState: function() {
+		return {
+			needShare: false
+		};
+	},
+	componentWillMount: function() {
+		this.is_weixin();
+	},
+	is_weixin: function() {
+		var ua = navigator.userAgent.toLowerCase();
+		if (ua.match(/MicroMessenger/i) == "micromessenger") {
+			this.setState({
+				needShare: true
+			});
+		} else {
+			this.setState({
+				needShare: false
+			});
+		}
+	},
 	render: function() {
-		var file=this.props.params.id;
+		var file = this.props.params.id;
 		return ( < div >
-			< Slider _roomid = {file.split('_')[2].split('-')[0]}
-			/ > 
-			<ReadApplication file={file}/>
-			<ControlNav/>
-			< div id = 'nnn'
-			style = {
-				{
-					zIndex: 10,
-					opacity: 0.7,
-					position: 'absolute',
-					left: '0px',
-					top: '0px',
-					width: '100%'
-				}
-			} >
-
-			< ul className = 'nav nav-pills' >
+			< Slider _roomid = {
+				file.split('_')[2].split('-')[0]
+			}
+			/ >  < ReadApplication file = {
+			file
+		}
+		/> < ControlNav / >
+		< div id = 'nnn'
+		style = {
+			{
+				zIndex: 10,
+				opacity: 0.7,
+				position: 'absolute',
+				left: '0px',
+				top: '0px',
+				width: '100%'
+			}
+		} > {
+			this.state.needShare ? < ul className = 'nav nav-pills' >
 			< li > < img id = 'logo'
-			src = 'img/pageshare.png' / > < /li>  < li > < Home / > < /li > < li > < MyAudio / > < /li>  < li > < MyVideo / > < /li>  < li > < Share / > < /li > < /ul >  < /div>
-			< /div>
-		);
-	}
+			src = 'img/pageshare.png' / > < /li>  < li > < Home / > < /li > < li > < MyAudio / > < /li>  < li > < MyVideo / > < /li >  < li > < Share / > < /li>< /ul > : < ul className = 'nav nav-pills' >
+				< li > < img id = 'logo'
+			src = 'img/pageshare.png' / > < /li>  < li > < Home / > < /li > < li > < MyAudio / > < /li>  < li > < MyVideo / > < /li >  < /ul >
+		} < /div > < /div >
+	);
+}
 
 
 

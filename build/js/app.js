@@ -26824,7 +26824,26 @@ var React = require('react');
 var EreadRoom = React.createClass({
 	displayName: 'EreadRoom',
 
-
+	getInitialState: function getInitialState() {
+		return {
+			needShare: false
+		};
+	},
+	componentWillMount: function componentWillMount() {
+		this.is_weixin();
+	},
+	is_weixin: function is_weixin() {
+		var ua = navigator.userAgent.toLowerCase();
+		if (ua.match(/MicroMessenger/i) == "micromessenger") {
+			this.setState({
+				needShare: true
+			});
+		} else {
+			this.setState({
+				needShare: false
+			});
+		}
+	},
 	render: function render() {
 		var file = this.props.params.id;
 		return React.createElement(
@@ -26832,7 +26851,10 @@ var EreadRoom = React.createClass({
 			null,
 			React.createElement(_Slider2.default, { _roomid: file.split('_')[2].split('-')[0]
 			}),
-			React.createElement(_ReadApplication2.default, { file: file }),
+			'  ',
+			React.createElement(_ReadApplication2.default, { file: file
+			}),
+			' ',
 			React.createElement(_ControlNav2.default, null),
 			React.createElement(
 				'div',
@@ -26845,7 +26867,8 @@ var EreadRoom = React.createClass({
 						top: '0px',
 						width: '100%'
 					} },
-				React.createElement(
+				' ',
+				this.state.needShare ? React.createElement(
 					'ul',
 					{ className: 'nav nav-pills' },
 					React.createElement(
@@ -26887,11 +26910,47 @@ var EreadRoom = React.createClass({
 						' ',
 						React.createElement(_Share2.default, null),
 						' '
+					)
+				) : React.createElement(
+					'ul',
+					{ className: 'nav nav-pills' },
+					React.createElement(
+						'li',
+						null,
+						' ',
+						React.createElement('img', { id: 'logo',
+							src: 'img/pageshare.png' }),
+						' '
 					),
-					' '
+					'  ',
+					React.createElement(
+						'li',
+						null,
+						' ',
+						React.createElement(_Home2.default, null),
+						' '
+					),
+					' ',
+					React.createElement(
+						'li',
+						null,
+						' ',
+						React.createElement(_MyAudio2.default, null),
+						' '
+					),
+					'  ',
+					React.createElement(
+						'li',
+						null,
+						' ',
+						React.createElement(_MyVideo2.default, null),
+						' '
+					),
+					'  '
 				),
-				'  '
-			)
+				' '
+			),
+			' '
 		);
 	}
 
