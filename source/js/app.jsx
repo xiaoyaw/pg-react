@@ -1,6 +1,7 @@
-/* 判断是微信或是PC，走不同的路由
-可直接加room
+/*
+Copyrighted, 版权所有，奕甲智能技术（上海）有限公司 2015-2018
 */
+
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -19,7 +20,7 @@ import {
 } from 'react-router';
 
 if (is_weixin()) {
-	//微信端路由
+	//route of wechat
 	ReactDOM.render(
  <Router history={hashHistory}>
  	<Route path="/"  component={wxLogin}/>
@@ -28,7 +29,7 @@ if (is_weixin()) {
    	<Route path="/room/:id" component={AppRoom}/>
 </Router>,document.getElementById('app'));
 }else{
-	//PC端路由
+	//route of pc
 ReactDOM.render(
  <Router history={hashHistory}>
  	<Route path="/" component={PcLogin}/>

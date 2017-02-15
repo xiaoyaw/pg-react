@@ -41,12 +41,12 @@ var _reactRouter = require('react-router');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/* 判断是微信或是PC，走不同的路由
-可直接加room
+/*
+Copyrighted, 版权所有，奕甲智能技术（上海）有限公司 2015-2018
 */
 
 if (is_weixin()) {
-	//微信端路由
+	//route of wechat
 	_reactDom2.default.render(_react2.default.createElement(
 		_reactRouter.Router,
 		{ history: _reactRouter.hashHistory },
@@ -56,7 +56,7 @@ if (is_weixin()) {
 		_react2.default.createElement(_reactRouter.Route, { path: '/room/:id', component: _AppRoom2.default })
 	), document.getElementById('app'));
 } else {
-	//PC端路由
+	//route of pc
 	_reactDom2.default.render(_react2.default.createElement(
 		_reactRouter.Router,
 		{ history: _reactRouter.hashHistory },
@@ -29105,8 +29105,7 @@ module.exports = Share;
 var _reactRouter = require('react-router');
 
 var React = require('react'); /*
-                              微信授权，获取用户信息，并存入sessionStorage
-                              修改部分：58
+                              wechat login
                               */
 
 var wxLogin = React.createClass({
@@ -29123,7 +29122,6 @@ var wxLogin = React.createClass({
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
 			if (sessionStorage.nickname) {
-				//本地有则为返回，跳转回/join，否则第一次加入，需请求数据
 				_reactRouter.hashHistory.replace('/join');
 			} else {
 				var req = new Object();
@@ -29176,11 +29174,11 @@ var wxLogin = React.createClass({
 	},
 	toWhere: function toWhere() {
 		switch (this.state.appid) {
-			//奕甲
+			//oneplus
 			case 'wxe818778f16e4400d':
 				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2f' + this.state.release + '%2fbuild&response_type=code&scope=snsapi_userinfo&state=' + this.state.appid + '#wechat_redirect';
 				break;
-			//e课
+			//eClass
 			case 'wx6573103bb78bec40':
 				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2f' + this.state.release + '%2fbuild&response_type=code&scope=snsapi_userinfo&state=' + this.state.appid + '#wechat_redirect';
 				break;

@@ -1,6 +1,5 @@
 /*
-微信授权，获取用户信息，并存入sessionStorage
-修改部分：58
+wechat login
 */
 
 import {
@@ -21,7 +20,7 @@ var wxLogin = React.createClass({
 	},
 	componentDidMount: function() {
 		if (this.isMounted()) {
-			if (sessionStorage.nickname) { //本地有则为返回，跳转回/join，否则第一次加入，需请求数据
+			if (sessionStorage.nickname) { 
 				hashHistory.replace('/join');
 			} else {
 				var req = new Object();
@@ -75,11 +74,11 @@ var wxLogin = React.createClass({
 	},
 	toWhere: function() {
 		switch (this.state.appid) {
-			//奕甲
+			//oneplus
 			case 'wxe818778f16e4400d':
 				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2f' + this.state.release + '%2fbuild&response_type=code&scope=snsapi_userinfo&state=' + this.state.appid + '#wechat_redirect';
 				break;
-				//e课
+				//eClass
 			case 'wx6573103bb78bec40':
 				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2f' + this.state.release + '%2fbuild&response_type=code&scope=snsapi_userinfo&state=' + this.state.appid + '#wechat_redirect';
 				break;
