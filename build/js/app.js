@@ -26561,10 +26561,6 @@ var Select = React.createClass({
 	},
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
-			var timestamp1 = new Date('2017', '1', '27', '11', '04', '00'),
-			    timestamp2 = new Date();
-			var d = timestamp1.getTime() - timestamp2.getTime();
-			console.log(d);
 			var that = this;
 			var user = this.getUser();
 			if (user != null && user != undefined) {
@@ -26614,7 +26610,7 @@ var Select = React.createClass({
 					for (var i = 0; i < res[p].length; i++) {
 						if (decodeURI(res[p][i].split('_')[0]) == user && res[p][i].split('_').length >= 2) {
 							//exist timestamp
-							if (decodeURI(res[p][i].split('-')).length == 5 && decodeURI(res[p][i].split(':')).length == 3) {
+							if (decodeURI(res[p][i].split('-').length) == 5 && decodeURI(res[p][i].split(':').length) == 3) {
 								userRes.push(decodeURI(res[p][i].split('.')[0]));
 							} else {
 								//not exist timestap
@@ -26627,10 +26623,10 @@ var Select = React.createClass({
 				userRes.sort(function (a, b) {
 					var timestamp1 = new Date(a.split('-')[1], a.split('-')[2], a.split('-')[3], a.split('-')[4].split(':')[0], a.split('-')[4].split(':')[1], a.split('-')[4].split(':')[2].split('.')[0]).getTime();
 					var timestamp2 = new Date(b.split('-')[1], b.split('-')[2], b.split('-')[3], b.split('-')[4].split(':')[0], b.split('-')[4].split(':')[1], b.split('-')[4].split(':')[2].split('.')[0]).getTime();
-					return timestamp1 - timestamp2;
+					return timestamp2 - timestamp1;
 				});
 
-				var newArry = notimeliv.concat(userRes);
+				var newArry = userRes.concat(notimeliv);
 				that.setState({
 					displayFile: newArry
 				});
@@ -26638,13 +26634,43 @@ var Select = React.createClass({
 		});
 	},
 	formatLivName: function formatLivName(name) {
-		var user = this.getUser().length;
-		var liv_name = name.substring(user + 1, name.length).replace(/_/g, '-');
-		if (liv_name.lastIndexOf('-') == liv_name.length - 1) {
-			return liv_name.substring(0, liv_name.length - 1);
+		var formatname;
+		//timestamp
+		if (name.split('-').length == 5 && name.split(':').length == 3) {
+			switch (name.split('_').length) {
+				case 2:
+					formatname = name.split('-')[4].split(':')[0] + ':' + name.split('-')[4].split(':')[1] + '-' + name.split('_')[1];
+					break;
+				case 3:
+					if (name.split('_')[2].split('-') == '') {
+						formatname = name.split('-')[4].split(':')[0] + ':' + name.split('-')[4].split(':')[1] + '-' + name.split('_')[1];
+					} else {
+						formatname = name.split('-')[4].split(':')[0] + ':' + name.split('-')[4].split(':')[1] + '-' + name.split('_')[2];
+					}
+					break;
+				default:
+					formatname = name.split('-')[4].split(':')[0] + ':' + name.split('-')[4].split(':')[1] + '-' + name.split('_')[2];
+			}
 		} else {
-			return liv_name;
+			//no timestamp
+			switch (name.split('_').length) {
+				case 2:
+					formatname = name.split('_')[1];
+					break;
+				case 3:
+					if (name.split('_')[2] == '') {
+						formatname = name.split('_')[1];
+					} else {
+						formatname = name.split('_')[2];
+					}
+					break;
+				default:
+					formatname = name.split('_')[2];
+
+			}
 		}
+		console.log(name.split('_'));
+		return formatname;
 	},
 	render: function render() {
 		var that = this;
