@@ -9,6 +9,7 @@ import React from 'react';
 import Canvas from './blackBoard/Canvas.jsx';
 import BgImage from './blackBoard/BgImage.jsx';
 import OpenAudio from './alertComponent/OpenAudio.jsx';
+import ChatView from './chatclient/ChatView.jsx';
 import {
   hashHistory
 } from 'react-router';
@@ -29,7 +30,6 @@ let Application = React.createClass({
     }
     return {
       //liv
-      timeout: null,
       isStop: false,
       pageIndex: 0,
       pageNum: 0,
@@ -37,6 +37,7 @@ let Application = React.createClass({
       livsize: [],
       dataNow: 0,
       audio: audio,
+      audioCollect: [],
       video: video,
       interTime: '',
       userName: null,
@@ -205,7 +206,34 @@ let Application = React.createClass({
       });
     }
   },
-
+  playbothaudio: function() {
+    var that = this;
+    var audio = this.state.audio;
+    if (audio.ended) {
+      if (this.state.audioCollect.length > 0) {
+        audio.src = this.state.audioCollect.shift();
+        audio.play();
+      }
+    } else {
+      var is_playFinish = setInterval(
+        function() {
+          if (audio.ended) {
+            that.playbothaudio();
+            window
+              .clearInterval(is_playFinish);
+          }
+        }, 10);
+    }
+  },
+  saveaudio: function(src) {
+    var newArry = this.state.audioCollect;
+    newArry.push(src);
+    this.setState({
+      audioCollect: newArry
+    }, function() {
+      this.playbothaudio();
+    });
+  },
   handleMessage: function(msg) {
     var thiz = this;
     this.setState({
@@ -237,31 +265,24 @@ let Application = React.createClass({
       case "image":
         //注意：换background的时候，需要将data置空
         this.setState({
-          data: null
+          data: null,
+          audioCollect: []
+        }, function() {
+          this.state.audio.pause();
         });
         this.calculateImgProp('data:image/png;base64,' + value.image);
 
         break;
 
       case "urlvoice":
-        var audio = document.getElementById("myaudio");
-        audio.pause();
-        audio.src = value.url;
         if (sessionStorage.getItem('openaudio') == 'isOpen') {
-          audio.play();
-        } else {
-          $('#openaudio').fadeIn();
+          this.saveaudio(value.url);
         }
         break;
 
       case "voice":
-        var audio = document.getElementById("myaudio");
-        audio.pause();
-        audio.src = "data:audio/mpeg;base64," + value.voice;
         if (sessionStorage.getItem('openaudio') == 'isOpen') {
-          audio.play();
-        } else {
-          $('#openaudio').fadeIn();
+          this.saveaudio("data:audio/mpeg;base64," + value.voice);
         }
         break;
 
@@ -365,7 +386,7 @@ let Application = React.createClass({
       this.state.height
     }
     / >   < OpenAudio / >
-
+    < ChatView / >
       < /div >
   );
 }

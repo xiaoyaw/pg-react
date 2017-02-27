@@ -20,7 +20,11 @@ var PAppJoin = React.createClass({
 			if (this.props.params.id == 'guest') {
 				this.visitorLogin('guest', '111111');
 			} else {
-				if (sessionStorage.username) {
+				if (sessionStorage.username.substring(0, 5)=='guest') {
+					this.setState({
+						nickname: sessionStorage.getItem('username').substring(0, 5)
+					});
+				}else{
 					this.setState({
 						nickname: sessionStorage.getItem('username')
 					});

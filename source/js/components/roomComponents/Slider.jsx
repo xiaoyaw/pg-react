@@ -4,13 +4,14 @@ var Slider = React.createClass({
 
 	getInitialState: function() {
 		return {
-			left: 100,
-			top: 200,
+			left: 50,
+			top: 140,
 			isMouseDown: false,
 			downX: null, //按下的x坐标
 			downY: null, //按下的y坐标
 			dx: null, //对于父组件的x坐标
-			dy: null //相对于父组件的y坐标
+			dy: null, //相对于父组件的y坐标
+			isMove: false
 		};
 	},
 	componentDidMount: function() {
@@ -43,6 +44,7 @@ var Slider = React.createClass({
 					moveX = hastouch ? ev.targetTouches[0].pageX : ev.pageX;
 					moveY = hastouch ? ev.targetTouches[0].pageY : ev.pageY;
 					thiz.setState({
+						isMove: true,
 						left: thiz.state.dx + moveX - thiz.state.downX,
 						top: thiz.state.dy + moveY - thiz.state.downY
 					});
@@ -50,22 +52,30 @@ var Slider = React.createClass({
 				ev.preventDefault();
 			}, false);
 			slider.addEventListener(slideEnd, function(ev) {
+				if (thiz.state.isMove) {
+					thiz.setState({
+						isMove: false
+					});
+					ev.preventDefault();
+				}else{
+					$('#chat-room').fadeToggle();
+				}
 				thiz.setState({
-					isMouseDown: false
+					isMouseDown: false,
 				});
-
 			}, false);
 		}
 	},
 	render: function() {
-		var shadow = this.state.isMouseDown ? '0px 0px 10px #1E90FF' : '';
+		var shadow = this.state.isMouseDown ? '0px 0px 20px #0AFFB6' : '0px 0px 20px #73FAFF';
 		var roomid = this.props._roomid;
 		return ( < div ref = "slider"
+					id='slider'
 			style = {
 				{
 					boxShadow: shadow,
-					borderRadius: '7px',
-					border: '1.5px solid #00BFFF',
+					borderRadius: '30%',
+					backgroundColor: '#F0F8FF',
 					textAlign: 'center',
 					lineHeight: '60px',
 					width: '60px',
@@ -74,7 +84,7 @@ var Slider = React.createClass({
 					left: this.state.left,
 					top: this.state.top,
 					zIndex: 99,
-					opacity: 0.6,
+					opacity: 0.8,
 					cursor: 'pointer'
 				}
 			} >

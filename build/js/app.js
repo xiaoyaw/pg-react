@@ -76,7 +76,7 @@ function is_weixin() {
 	}
 }
 
-},{"./components/AppJoin.jsx":229,"./components/AppRoom.jsx":230,"./components/PAppJoin.jsx":231,"./components/PAppRoom.jsx":232,"./components/PcLogin.jsx":233,"./components/readComponents/EreadRoom.jsx":239,"./components/wxLogin.jsx":255,"react":228,"react-dom":3,"react-router":30}],2:[function(require,module,exports){
+},{"./components/AppJoin.jsx":229,"./components/AppRoom.jsx":230,"./components/PAppJoin.jsx":231,"./components/PAppRoom.jsx":232,"./components/PcLogin.jsx":233,"./components/readComponents/EreadRoom.jsx":239,"./components/wxLogin.jsx":256,"react":228,"react-dom":3,"react-router":30}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -25693,7 +25693,11 @@ var PAppJoin = React.createClass({
 			if (this.props.params.id == 'guest') {
 				this.visitorLogin('guest', '111111');
 			} else {
-				if (sessionStorage.username) {
+				if (sessionStorage.username.substring(0, 5) == 'guest') {
+					this.setState({
+						nickname: sessionStorage.getItem('username').substring(0, 5)
+					});
+				} else {
 					this.setState({
 						nickname: sessionStorage.getItem('username')
 					});
@@ -26557,6 +26561,10 @@ var Select = React.createClass({
 	},
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
+			var timestamp1 = new Date('2017', '1', '27', '11', '04', '00'),
+			    timestamp2 = new Date();
+			var d = timestamp1.getTime() - timestamp2.getTime();
+			console.log(d);
 			var that = this;
 			var user = this.getUser();
 			if (user != null && user != undefined) {
@@ -26600,17 +26608,31 @@ var Select = React.createClass({
 			type: 'GET',
 			timeout: 5000,
 			success: function success(res) {
-				var userRes = [];
+				var userRes = [],
+				    notimeliv = [];
 				for (var p in res) {
 					for (var i = 0; i < res[p].length; i++) {
 						if (decodeURI(res[p][i].split('_')[0]) == user && res[p][i].split('_').length >= 2) {
-							userRes.push(decodeURI(res[p][i].split('.')[0]));
+							//exist timestamp
+							if (decodeURI(res[p][i].split('-')).length == 5 && decodeURI(res[p][i].split(':')).length == 3) {
+								userRes.push(decodeURI(res[p][i].split('.')[0]));
+							} else {
+								//not exist timestap
+								notimeliv.push(decodeURI(res[p][i].split('.')[0]));
+							}
 						}
 					}
 				}
+				//sort the array  -2017-02-08-12:37:34.liv
+				userRes.sort(function (a, b) {
+					var timestamp1 = new Date(a.split('-')[1], a.split('-')[2], a.split('-')[3], a.split('-')[4].split(':')[0], a.split('-')[4].split(':')[1], a.split('-')[4].split(':')[2].split('.')[0]).getTime();
+					var timestamp2 = new Date(b.split('-')[1], b.split('-')[2], b.split('-')[3], b.split('-')[4].split(':')[0], b.split('-')[4].split(':')[1], b.split('-')[4].split(':')[2].split('.')[0]).getTime();
+					return timestamp1 - timestamp2;
+				});
 
+				var newArry = notimeliv.concat(userRes);
 				that.setState({
-					displayFile: userRes
+					displayFile: newArry
 				});
 			}
 		});
@@ -26675,8 +26697,8 @@ var Switch = React.createClass({
 
 	getInitialState: function getInitialState() {
 		return {
-			left: 30,
-			top: 90,
+			left: 50,
+			top: 140,
 			isMouseDown: false,
 			downX: null, //按下的x坐标
 			downY: null, //按下的y坐标
@@ -26745,7 +26767,6 @@ var Switch = React.createClass({
 	},
 	render: function render() {
 		var shadow = this.state.isMouseDown ? '0px 0px 20px #0AFFB6' : '0px 0px 20px #73FAFF';
-		var roomid = this.props._roomid;
 		var sClass = this.state.isRead ? 'glyphicon glyphicon-book' : 'glyphicon glyphicon-user';
 		var name = this.state.isRead ? '阅读' : '课堂';
 		var color = this.state.isRead ? '#F0F8FF' : '#F0FFFF';
@@ -26958,7 +26979,7 @@ var EreadRoom = React.createClass({
 
 module.exports = EreadRoom;
 
-},{"../roomComponents/ControlNav/ControlNav.jsx":242,"../roomComponents/Slider.jsx":246,"../roomComponents/navBar/Home.jsx":251,"../roomComponents/navBar/MyAudio.jsx":252,"../roomComponents/navBar/MyVideo.jsx":253,"../roomComponents/navBar/Share.jsx":254,"./ReadApplication.jsx":240,"react":228}],240:[function(require,module,exports){
+},{"../roomComponents/ControlNav/ControlNav.jsx":242,"../roomComponents/Slider.jsx":246,"../roomComponents/navBar/Home.jsx":252,"../roomComponents/navBar/MyAudio.jsx":253,"../roomComponents/navBar/MyVideo.jsx":254,"../roomComponents/navBar/Share.jsx":255,"./ReadApplication.jsx":240,"react":228}],240:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27466,10 +27487,21 @@ var _OpenAudio = require('./alertComponent/OpenAudio.jsx');
 
 var _OpenAudio2 = _interopRequireDefault(_OpenAudio);
 
+var _ChatView = require('./chatclient/ChatView.jsx');
+
+var _ChatView2 = _interopRequireDefault(_ChatView);
+
 var _reactRouter = require('react-router');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/*
+ * 包裹canvas,bgimg的组件
+ * 连接websocket，handleMessage
+ * 计算尺寸大小位置以及resize以后重新计算
+ * 在handleMessage中播放video，audio。1、没有加入video子组件的原因是 导航栏按钮无法获取此子组件的DOM节点
+ * 2、没有放在canvas中处理视频的原因是 此组件任何state变化都会导致render方法执行，从而导致视频或音频重复播放
+ */
 var Application = _react2.default.createClass({
   displayName: 'Application',
 
@@ -27489,7 +27521,6 @@ var Application = _react2.default.createClass({
     }
     return {
       //liv
-      timeout: null,
       isStop: false,
       pageIndex: 0,
       pageNum: 0,
@@ -27497,6 +27528,7 @@ var Application = _react2.default.createClass({
       livsize: [],
       dataNow: 0,
       audio: audio,
+      audioCollect: [],
       video: video,
       interTime: '',
       userName: null,
@@ -27667,7 +27699,32 @@ var Application = _react2.default.createClass({
       });
     };
   },
-
+  playbothaudio: function playbothaudio() {
+    var that = this;
+    var audio = this.state.audio;
+    if (audio.ended) {
+      if (this.state.audioCollect.length > 0) {
+        audio.src = this.state.audioCollect.shift();
+        audio.play();
+      }
+    } else {
+      var is_playFinish = setInterval(function () {
+        if (audio.ended) {
+          that.playbothaudio();
+          window.clearInterval(is_playFinish);
+        }
+      }, 10);
+    }
+  },
+  saveaudio: function saveaudio(src) {
+    var newArry = this.state.audioCollect;
+    newArry.push(src);
+    this.setState({
+      audioCollect: newArry
+    }, function () {
+      this.playbothaudio();
+    });
+  },
   handleMessage: function handleMessage(msg) {
     var thiz = this;
     this.setState({
@@ -27700,31 +27757,24 @@ var Application = _react2.default.createClass({
       case "image":
         //注意：换background的时候，需要将data置空
         this.setState({
-          data: null
+          data: null,
+          audioCollect: []
+        }, function () {
+          this.state.audio.pause();
         });
         this.calculateImgProp('data:image/png;base64,' + value.image);
 
         break;
 
       case "urlvoice":
-        var audio = document.getElementById("myaudio");
-        audio.pause();
-        audio.src = value.url;
         if (sessionStorage.getItem('openaudio') == 'isOpen') {
-          audio.play();
-        } else {
-          $('#openaudio').fadeIn();
+          this.saveaudio(value.url);
         }
         break;
 
       case "voice":
-        var audio = document.getElementById("myaudio");
-        audio.pause();
-        audio.src = "data:audio/mpeg;base64," + value.voice;
         if (sessionStorage.getItem('openaudio') == 'isOpen') {
-          audio.play();
-        } else {
-          $('#openaudio').fadeIn();
+          this.saveaudio("data:audio/mpeg;base64," + value.voice);
         }
         break;
 
@@ -27805,20 +27855,16 @@ var Application = _react2.default.createClass({
         _height: this.state.height
       }),
       '   ',
-      _react2.default.createElement(_OpenAudio2.default, null)
+      _react2.default.createElement(_OpenAudio2.default, null),
+      _react2.default.createElement(_ChatView2.default, null)
     );
   }
 
-}); /*
-     * 包裹canvas,bgimg的组件
-     * 连接websocket，handleMessage
-     * 计算尺寸大小位置以及resize以后重新计算
-     * 在handleMessage中播放video，audio。1、没有加入video子组件的原因是 导航栏按钮无法获取此子组件的DOM节点
-     * 2、没有放在canvas中处理视频的原因是 此组件任何state变化都会导致render方法执行，从而导致视频或音频重复播放
-     */
+});
+
 exports.default = Application;
 
-},{"./alertComponent/OpenAudio.jsx":247,"./blackBoard/BgImage.jsx":248,"./blackBoard/Canvas.jsx":249,"react":228,"react-router":30}],242:[function(require,module,exports){
+},{"./alertComponent/OpenAudio.jsx":247,"./blackBoard/BgImage.jsx":248,"./blackBoard/Canvas.jsx":249,"./chatclient/ChatView.jsx":250,"react":228,"react-router":30}],242:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -27988,7 +28034,7 @@ var NavagationBar = React.createClass({
 
 module.exports = NavagationBar;
 
-},{"./navBar/Home.jsx":251,"./navBar/MyAudio.jsx":252,"./navBar/MyVideo.jsx":253,"./navBar/Share.jsx":254,"react":228}],244:[function(require,module,exports){
+},{"./navBar/Home.jsx":252,"./navBar/MyAudio.jsx":253,"./navBar/MyVideo.jsx":254,"./navBar/Share.jsx":255,"react":228}],244:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -28115,7 +28161,7 @@ var PNavagationBar = React.createClass({
 
 module.exports = PNavagationBar;
 
-},{"./navBar/Edit.jsx":250,"./navBar/Home.jsx":251,"./navBar/MyAudio.jsx":252,"./navBar/MyVideo.jsx":253,"./navBar/Share.jsx":254,"react":228}],246:[function(require,module,exports){
+},{"./navBar/Edit.jsx":251,"./navBar/Home.jsx":252,"./navBar/MyAudio.jsx":253,"./navBar/MyVideo.jsx":254,"./navBar/Share.jsx":255,"react":228}],246:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -28126,13 +28172,14 @@ var Slider = React.createClass({
 
 	getInitialState: function getInitialState() {
 		return {
-			left: 100,
-			top: 200,
+			left: 50,
+			top: 140,
 			isMouseDown: false,
 			downX: null, //按下的x坐标
 			downY: null, //按下的y坐标
 			dx: null, //对于父组件的x坐标
-			dy: null //相对于父组件的y坐标
+			dy: null, //相对于父组件的y坐标
+			isMove: false
 		};
 	},
 	componentDidMount: function componentDidMount() {
@@ -28166,6 +28213,7 @@ var Slider = React.createClass({
 					moveX = hastouch ? ev.targetTouches[0].pageX : ev.pageX;
 					moveY = hastouch ? ev.targetTouches[0].pageY : ev.pageY;
 					thiz.setState({
+						isMove: true,
 						left: thiz.state.dx + moveX - thiz.state.downX,
 						top: thiz.state.dy + moveY - thiz.state.downY
 					});
@@ -28173,6 +28221,14 @@ var Slider = React.createClass({
 				ev.preventDefault();
 			}, false);
 			slider.addEventListener(slideEnd, function (ev) {
+				if (thiz.state.isMove) {
+					thiz.setState({
+						isMove: false
+					});
+					ev.preventDefault();
+				} else {
+					$('#chat-room').fadeToggle();
+				}
 				thiz.setState({
 					isMouseDown: false
 				});
@@ -28180,15 +28236,16 @@ var Slider = React.createClass({
 		}
 	},
 	render: function render() {
-		var shadow = this.state.isMouseDown ? '0px 0px 10px #1E90FF' : '';
+		var shadow = this.state.isMouseDown ? '0px 0px 20px #0AFFB6' : '0px 0px 20px #73FAFF';
 		var roomid = this.props._roomid;
 		return React.createElement(
 			"div",
 			{ ref: "slider",
+				id: "slider",
 				style: {
 					boxShadow: shadow,
-					borderRadius: '7px',
-					border: '1.5px solid #00BFFF',
+					borderRadius: '30%',
+					backgroundColor: '#F0F8FF',
 					textAlign: 'center',
 					lineHeight: '60px',
 					width: '60px',
@@ -28197,7 +28254,7 @@ var Slider = React.createClass({
 					left: this.state.left,
 					top: this.state.top,
 					zIndex: 99,
-					opacity: 0.6,
+					opacity: 0.8,
 					cursor: 'pointer'
 				} },
 			React.createElement(
@@ -28236,19 +28293,27 @@ var OpenAudio = React.createClass({
 		    left = obj.left,
 		    top = obj.top;
 		return {
+			display: 'block',
 			height: width + 'px',
 			width: height + 'px',
 			left: left + 'px',
 			top: top + 'px'
 		};
 	},
-
+	componentWillMount: function componentWillMount() {
+		if (sessionStorage.getItem('openaudio') == 'isOpen') {
+			this.setState({
+				display: 'none'
+			});
+		}
+	},
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
 			$('#openaudio').on('click', function () {
 				if (typeof Storage !== "undefined") {
 					sessionStorage.setItem("openaudio", "isOpen");
 					var audio = document.getElementById("myaudio");
+					audio.src = './img/welcome.mp3';
 					audio.play();
 					$('#openaudio').fadeOut(500);
 				}
@@ -28292,7 +28357,7 @@ var OpenAudio = React.createClass({
 			null,
 			React.createElement('img', { src: 'img/play2.png',
 				id: 'openaudio',
-				style: {
+				style: { display: this.state.display,
 					width: this.state.width,
 					height: this.state.height,
 					left: this.state.left,
@@ -28624,6 +28689,137 @@ exports.default = Canvas;
 
 var React = require('react');
 
+var ChatView = React.createClass({
+	displayName: 'ChatView',
+
+	getInitialState: function getInitialState() {
+		var width, height;
+		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+		if (w > h) {
+			height = h + 'px';
+			width = h * 0.618 + 'px';
+		} else {
+			height = h;
+			width = w;
+		}
+		return {
+			width: width,
+			height: height
+		};
+	},
+	handleResize: function handleResize() {
+		var width, height;
+		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+		if (w > h) {
+			height = h + 'px';
+			width = h * 0.618 + 'px';
+		} else {
+			height = h;
+			width = w;
+		}
+		this.setState({
+			height: height,
+			width: width
+		});
+	},
+	componentWillMount: function componentWillMount() {},
+	componentDidMount: function componentDidMount() {
+		if (this.isMounted()) {
+			$('#chat-cancel').on('click', function () {
+				$('#chat-room').fadeOut();
+			});
+			$('#chat-close').on('click', function () {
+				$('#chat-room').fadeOut();
+			});
+			$('#chat-send').on('click', function () {
+				console.log('send');
+			});
+
+			window.addEventListener('resize', this.handleResize);
+		}
+	},
+	render: function render() {
+		return React.createElement(
+			'div',
+			{ id: 'chat-room',
+				className: 'pull-right',
+				style: {
+					width: this.state.width,
+					height: this.state.height
+				} },
+			React.createElement(
+				'div',
+				{ id: 'chat-title' },
+				React.createElement(
+					'a',
+					{ className: 'pull-right', id: 'chat-close' },
+					' ',
+					React.createElement(
+						'span',
+						{ className: 'glyphicon glyphicon-remove',
+							style: {
+								color: '#FFFFFF',
+								fontSize: '25px'
+							} },
+						' '
+					)
+				)
+			),
+			' ',
+			React.createElement('div', { id: 'chat-message' }),
+			' ',
+			React.createElement('div', { id: 'chat-setting' }),
+			' ',
+			React.createElement(
+				'div',
+				{ id: 'chat-input' },
+				' ',
+				React.createElement(
+					'textarea',
+					{ style: {
+							width: '100%',
+							height: '100%'
+						} },
+					' '
+				),
+				' '
+			),
+			' ',
+			React.createElement(
+				'div',
+				{ id: 'chat-submit' },
+				React.createElement(
+					'div',
+					{ className: 'pull-right' },
+					React.createElement(
+						'button',
+						{ className: 'btn btn-default',
+							id: 'chat-cancel' },
+						' 关闭 '
+					),
+					React.createElement(
+						'button',
+						{ className: 'btn btn-default', id: 'chat-send' },
+						' 发送 '
+					),
+					' '
+				)
+			),
+			' '
+		);
+	}
+
+});
+
+module.exports = ChatView;
+
+},{"react":228}],251:[function(require,module,exports){
+'use strict';
+
+var React = require('react');
+
 var Edit = React.createClass({
 	displayName: 'Edit',
 
@@ -28694,7 +28890,7 @@ var Edit = React.createClass({
 
 module.exports = Edit;
 
-},{"react":228}],251:[function(require,module,exports){
+},{"react":228}],252:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -28731,7 +28927,7 @@ var Home = React.createClass({
 
 module.exports = Home;
 
-},{"react":228,"react-router":30}],252:[function(require,module,exports){
+},{"react":228,"react-router":30}],253:[function(require,module,exports){
 'use strict';
 
 /*
@@ -28809,7 +29005,7 @@ var MyAudio = React.createClass({
 
 module.exports = MyAudio;
 
-},{"react":228}],253:[function(require,module,exports){
+},{"react":228}],254:[function(require,module,exports){
 'use strict';
 
 /*
@@ -28879,7 +29075,7 @@ var MyVideo = React.createClass({
 
 module.exports = MyVideo;
 
-},{"react":228}],254:[function(require,module,exports){
+},{"react":228}],255:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -29099,7 +29295,7 @@ var Share = React.createClass({
 
 module.exports = Share;
 
-},{"react":228}],255:[function(require,module,exports){
+},{"react":228}],256:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -29116,7 +29312,7 @@ var wxLogin = React.createClass({
 			code: '',
 			isLogin: false,
 			appid: '',
-			release: 'PageShare'
+			release: 'dev'
 		};
 	},
 	componentDidMount: function componentDidMount() {

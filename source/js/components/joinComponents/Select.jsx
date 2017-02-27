@@ -16,6 +16,10 @@ var Select = React.createClass({
 	},
 	componentDidMount: function() {
 		if (this.isMounted()) {
+			var timestamp1 = new Date('2017', '1', '27', '11', '04', '00'),
+				timestamp2 = new Date();
+			var d = timestamp1.getTime() - timestamp2.getTime();
+			console.log(d);
 			var that = this;
 			var user = this.getUser();
 			if (user != null && user != undefined) {
@@ -58,27 +62,41 @@ var Select = React.createClass({
 			type: 'GET',
 			timeout: 5000,
 			success: function(res) {
-				var userRes = [];
+				var userRes = [],
+					notimeliv = [];
 				for (var p in res) {
 					for (var i = 0; i < res[p].length; i++) {
 						if (decodeURI(res[p][i].split('_')[0]) == user && res[p][i].split('_').length >= 2) {
-							userRes.push(decodeURI(res[p][i].split('.')[0]));
+							//exist timestamp
+							if (decodeURI(res[p][i].split('-')).length == 5 && decodeURI(res[p][i].split(':')).length == 3) {
+								userRes.push(decodeURI(res[p][i].split('.')[0]));
+							} else {
+								//not exist timestap
+								notimeliv.push(decodeURI(res[p][i].split('.')[0]));
+							}
 						}
 					}
 				}
+				//sort the array  -2017-02-08-12:37:34.liv
+				userRes.sort(function(a, b) {
+					var timestamp1 = new Date(a.split('-')[1], a.split('-')[2], a.split('-')[3], a.split('-')[4].split(':')[0], a.split('-')[4].split(':')[1], a.split('-')[4].split(':')[2].split('.')[0]).getTime();
+					var timestamp2 = new Date(b.split('-')[1], b.split('-')[2], b.split('-')[3], b.split('-')[4].split(':')[0], b.split('-')[4].split(':')[1], b.split('-')[4].split(':')[2].split('.')[0]).getTime();
+					return timestamp1 - timestamp2
+				});
 
+				var newArry = notimeliv.concat(userRes);
 				that.setState({
-					displayFile: userRes
+					displayFile: newArry
 				});
 			}
 		})
 	},
 	formatLivName: function(name) {
 		var user = this.getUser().length;
-		var liv_name=(name.substring(user + 1, name.length)).replace(/_/g, '-');
-		if(liv_name.lastIndexOf('-')==liv_name.length-1){
-			return liv_name.substring(0,liv_name.length-1)
-		}else{
+		var liv_name = (name.substring(user + 1, name.length)).replace(/_/g, '-');
+		if (liv_name.lastIndexOf('-') == liv_name.length - 1) {
+			return liv_name.substring(0, liv_name.length - 1)
+		} else {
 			return liv_name
 		}
 	},

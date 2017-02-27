@@ -4,8 +4,8 @@ var Switch = React.createClass({
 
 	getInitialState: function() {
 		return {
-			left: 30,
-			top: 90,
+			left: 50,
+			top: 140,
 			isMouseDown: false,
 			downX: null, //按下的x坐标
 			downY: null, //按下的y坐标
@@ -73,7 +73,6 @@ var Switch = React.createClass({
 	},
 	render: function() {
 		var shadow = this.state.isMouseDown ? '0px 0px 20px #0AFFB6' : '0px 0px 20px #73FAFF';
-		var roomid = this.props._roomid;
 		var sClass = this.state.isRead ? 'glyphicon glyphicon-book' : 'glyphicon glyphicon-user';
 		var name = this.state.isRead ? '阅读' : '课堂';
 		var color = this.state.isRead ? '#F0F8FF' : '#F0FFFF';
