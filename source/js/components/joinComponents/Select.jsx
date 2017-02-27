@@ -94,17 +94,17 @@ var Select = React.createClass({
 		if (name.split('-').length == 5 && name.split(':').length == 3) {
 			switch (name.split('_').length) {
 				case 2:
-					formatname = name.split('-')[4].split(':')[0] + ':' + name.split('-')[4].split(':')[1] + '-' + name.split('_')[1];
+					formatname = name.split('-')[4].split(':')[0] + ':' + name.split('-')[4].split(':')[1] + '-' + name.split('_')[1].split('-')[0];
 					break;
 				case 3:
-					if (name.split('_')[2].split('-') == '') {
-						formatname = name.split('-')[4].split(':')[0] + ':' + name.split('-')[4].split(':')[1] + '-' + name.split('_')[1];
+					if (name.split('_')[2].split('-')[0] == '') {
+						formatname = name.split('-')[4].split(':')[0] + ':' + name.split('-')[4].split(':')[1] + '-' + name.split('_')[1].split('-')[0];
 					} else {
-						formatname = name.split('-')[4].split(':')[0] + ':' + name.split('-')[4].split(':')[1] + '-' + name.split('_')[2];
+						formatname = name.split('-')[4].split(':')[0] + ':' + name.split('-')[4].split(':')[1] + '-' + name.split('_')[2].split('-')[0];
 					}
 					break;
 				default:
-					formatname = name.split('-')[4].split(':')[0] + ':' + name.split('-')[4].split(':')[1] + '-' + name.split('_')[2];
+					formatname = name.split('-')[4].split(':')[0] + ':' + name.split('-')[4].split(':')[1] + '-' + name.split('_')[2].split('-')[0];
 			}
 		} else {
 			//no timestamp
