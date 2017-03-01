@@ -26669,7 +26669,6 @@ var Select = React.createClass({
 
 			}
 		}
-		console.log(name.split('_'));
 		return formatname;
 	},
 	render: function render() {
@@ -27058,6 +27057,7 @@ var ReadApplication = _react2.default.createClass({
       dataNow: 0,
       pathover: false,
       audio: audio,
+      audioCollect: [],
       video: video,
       scaleX: null, //给canvas  X轴图片或笔迹伸缩量
       scaleY: null, //给canvas  Y轴图片或笔迹伸缩量
@@ -27344,7 +27344,32 @@ var ReadApplication = _react2.default.createClass({
       });
     };
   },
-
+  playbothaudio: function playbothaudio() {
+    var that = this;
+    var audio = this.state.audio;
+    if (audio.ended) {
+      if (this.state.audioCollect.length > 0) {
+        audio.src = this.state.audioCollect.shift();
+        audio.play();
+      }
+    } else {
+      var is_playFinish = setInterval(function () {
+        if (audio.ended) {
+          that.playbothaudio();
+          window.clearInterval(is_playFinish);
+        }
+      }, 10);
+    }
+  },
+  saveaudio: function saveaudio(src) {
+    var newArry = this.state.audioCollect;
+    newArry.push(src);
+    this.setState({
+      audioCollect: newArry
+    }, function () {
+      this.playbothaudio();
+    });
+  },
   handleMessage: function handleMessage(msg) {
     var thiz = this;
     this.setState({
@@ -27370,31 +27395,24 @@ var ReadApplication = _react2.default.createClass({
         case "image":
           //注意：换background的时候，需要将data置空
           this.setState({
-            data: null
+            data: null,
+            audioCollect: []
+          }, function () {
+            this.state.audio.pause();
           });
           this.calculateImgProp('data:image/png;base64,' + value.image);
 
           break;
 
         case "urlvoice":
-          var audio = document.getElementById("myaudio");
-          audio.pause();
-          audio.src = value.url;
           if (sessionStorage.getItem('openaudio') == 'isOpen') {
-            audio.play();
-          } else {
-            $('#openaudio').fadeIn();
+            this.saveaudio(value.url);
           }
           break;
 
         case "voice":
-          var audio = document.getElementById("myaudio");
-          audio.pause();
-          audio.src = "data:audio/mpeg;base64," + value.voice;
           if (sessionStorage.getItem('openaudio') == 'isOpen') {
-            audio.play();
-          } else {
-            $('#openaudio').fadeIn();
+            this.saveaudio("data:audio/mpeg;base64," + value.voice);
           }
           break;
 
@@ -28802,14 +28820,10 @@ var ChatView = React.createClass({
 				'div',
 				{ id: 'chat-input' },
 				' ',
-				React.createElement(
-					'textarea',
-					{ style: {
-							width: '100%',
-							height: '100%'
-						} },
-					' '
-				),
+				React.createElement('textarea', { defaultValue: '', style: {
+						width: '100%',
+						height: '100%'
+					} }),
 				' '
 			),
 			' ',
@@ -29338,7 +29352,7 @@ var wxLogin = React.createClass({
 			code: '',
 			isLogin: false,
 			appid: '',
-			release: 'dev'
+			release: 'PageShare'
 		};
 	},
 	componentDidMount: function componentDidMount() {

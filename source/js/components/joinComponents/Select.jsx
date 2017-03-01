@@ -124,7 +124,6 @@ var Select = React.createClass({
 
 			}
 		}
-		console.log(name.split('_'));
 		return formatname
 	},
 	render: function() {
