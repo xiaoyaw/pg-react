@@ -1,4 +1,3 @@
-import MyAudio from './navBar/MyAudio.jsx';
 import MyVideo from './navBar/MyVideo.jsx';
 import Home from './navBar/Home.jsx';
 import Edit from './navBar/Edit.jsx';
@@ -23,7 +22,7 @@ var PNavagationBar = React.createClass({
 
 			< ul className = 'nav nav-pills' >
 			< li > < img id = 'logo'
-			src = 'img/pageshare.png' / > < /li>  < li > < Home / > < /li > < li > < MyAudio / > < /li>  < li > < MyVideo / > < /li>  < li > < Edit / > < /li > < /ul >
+			src = 'img/pageshare.png' / > < /li>  < li > < Home / > < /li > < li > < MyAudio / > < /li>  < li > < Edit / > < /li > < /ul >
 			< /div>
 		);
 	}

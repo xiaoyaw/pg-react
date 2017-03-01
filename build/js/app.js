@@ -27985,10 +27985,6 @@ module.exports = ControlNav;
 },{"react":228}],243:[function(require,module,exports){
 'use strict';
 
-var _MyAudio = require('./navBar/MyAudio.jsx');
-
-var _MyAudio2 = _interopRequireDefault(_MyAudio);
-
 var _MyVideo = require('./navBar/MyVideo.jsx');
 
 var _MyVideo2 = _interopRequireDefault(_MyVideo);
@@ -28049,18 +28045,10 @@ var NavagationBar = React.createClass({
 					'li',
 					null,
 					' ',
-					React.createElement(_MyAudio2.default, null),
+					React.createElement(MyAudio, null),
 					' '
 				),
-				'  ',
-				React.createElement(
-					'li',
-					null,
-					' ',
-					React.createElement(_MyVideo2.default, null),
-					' '
-				),
-				'  ',
+				' ',
 				React.createElement(
 					'li',
 					null,
@@ -28078,7 +28066,7 @@ var NavagationBar = React.createClass({
 
 module.exports = NavagationBar;
 
-},{"./navBar/Home.jsx":252,"./navBar/MyAudio.jsx":253,"./navBar/MyVideo.jsx":254,"./navBar/Share.jsx":255,"react":228}],244:[function(require,module,exports){
+},{"./navBar/Home.jsx":252,"./navBar/MyVideo.jsx":254,"./navBar/Share.jsx":255,"react":228}],244:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -28112,10 +28100,6 @@ module.exports = NetTip;
 
 },{"react":228}],245:[function(require,module,exports){
 'use strict';
-
-var _MyAudio = require('./navBar/MyAudio.jsx');
-
-var _MyAudio2 = _interopRequireDefault(_MyAudio);
 
 var _MyVideo = require('./navBar/MyVideo.jsx');
 
@@ -28177,15 +28161,7 @@ var PNavagationBar = React.createClass({
 					'li',
 					null,
 					' ',
-					React.createElement(_MyAudio2.default, null),
-					' '
-				),
-				'  ',
-				React.createElement(
-					'li',
-					null,
-					' ',
-					React.createElement(_MyVideo2.default, null),
+					React.createElement(MyAudio, null),
 					' '
 				),
 				'  ',
@@ -28205,7 +28181,7 @@ var PNavagationBar = React.createClass({
 
 module.exports = PNavagationBar;
 
-},{"./navBar/Edit.jsx":251,"./navBar/Home.jsx":252,"./navBar/MyAudio.jsx":253,"./navBar/MyVideo.jsx":254,"./navBar/Share.jsx":255,"react":228}],246:[function(require,module,exports){
+},{"./navBar/Edit.jsx":251,"./navBar/Home.jsx":252,"./navBar/MyVideo.jsx":254,"./navBar/Share.jsx":255,"react":228}],246:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
