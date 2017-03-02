@@ -100,7 +100,7 @@ let Application = React.createClass({
   },
   connectXMPP: function() {
     //XMPP地址
-    var BOSH_SERVICE = 'server.pictolive.net:7222';
+    var BOSH_SERVICE = 'http://182.254.223.23:7222';
     //房间号
     var ROOM_JID = this.props._roomid;
     //user
