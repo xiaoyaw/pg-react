@@ -98,7 +98,93 @@ let Application = React.createClass({
     window.clearInterval(this.state.interTime);
     ws.close(1000, username);
   },
+  connectXMPP: function() {
+    //XMPP地址
+    var BOSH_SERVICE = 'server.pictolive.net:7222';
+    //房间号
+    var ROOM_JID = this.props._roomid;
+    //user
+    var usn=sessionStorage.getItem("username");
+    //pwd
+    var pwd = sessionStorage.getItem("password");
+    //xmpp连接
+    var connection = null;
+    //当前是否连接
+    var connected = false;
+    //当前登录的JID
+    var jid = "";
 
+    function onConnect(status) {
+      if (status == Strophe.Status.CONNFAIL) {
+        alert("连接失败！");
+      } else if (status == Strophe.Status.AUTHFAIL) {
+        alert("登录失败！");
+      } else if (status == Strophe.Status.DISCONNECTED) {
+        alert("连接断开！");
+        connected = false;
+      } else if (status == Strophe.Status.CONNECTED) {
+        alert("连接成功，可以开始聊天了！");
+        connected = true;
+
+        // 当接收到<message>节，调用onMessage回调函数
+        connection.addHandler(onMessage, null, 'message', null, null, null);
+
+        // 首先要发送一个<presence>给服务器（initial presence）
+        connection.send($pres().tree());
+
+        // 发送<presence>元素，加入房间
+        connection.send($pres({
+          from: jid,
+          to: ROOM_JID + "/" + jid.substring(0, jid.indexOf("@"))
+        }).c('x', {
+          xmlns: 'http://jabber.org/protocol/muc'
+        }).tree());
+      }
+    }
+
+
+    // 接收到<message>
+    function onMessage(msg) {
+
+      console.log(msg);
+      // 解析出<message>的from、type属性，以及body子元素
+      var from = msg.getAttribute('from');
+      var type = msg.getAttribute('type');
+      var elems = msg.getElementsByTagName('body');
+
+      if (type == "groupchat" && elems.length > 0) {
+        var body = elems[0];
+        $("#msg").append(from.substring(from.indexOf('/') + 1) + ":<br>" + Strophe.getText(body) + "<br>")
+      }
+      return true;
+    }
+
+    // 通过BOSH连接XMPP服务器
+    if (!connected) {
+      connection = new Strophe.Connection(BOSH_SERVICE);
+      connection.connect(usn, pwd, onConnect);
+      jid = $("#input-jid").val();
+    }
+
+
+    $("#btn-send").click(function() {
+      if (connected) {
+
+        // 创建一个<message>元素并发送
+        var msg = $msg({
+          to: ROOM_JID,
+          from: jid,
+          type: 'groupchat'
+        }).c("body", null, $("#input-msg").val());
+        connection.send(msg.tree());
+
+        $("#input-msg").val('');
+      } else {
+        alert("请先登录！");
+      }
+    });
+
+  },
   //渲染以后？ 设置为以前收不到Message
   componentDidMount: function() {
     var thiz = this;
@@ -114,7 +200,7 @@ let Application = React.createClass({
 
       var ws = this.state.webSocket;
       this.connectWebSocket(ws, un, pd, roomid);
-
+      this.connectXMPP();
       window.addEventListener('resize', this.handleResize);
       ws.onmessage = function(msg) {
         thiz.handleMessage(JSON.parse(msg.data));

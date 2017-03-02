@@ -23,8 +23,14 @@ var PcLogin = React.createClass({
 			}
 		}
 	},
+	learnTest:function(){
+		var x="𠮷",y="集",z="人";
+		console.log(x.length+"  "+y.length+" "+z.length)
+	},
 	componentDidMount: function() {
 		if (this.isMounted()) {
+			//
+			this.learnTest();
 			var thiz = this;
 			$('#guestlogin').on('click',function(){
 				hashHistory.replace('/join/guest');
