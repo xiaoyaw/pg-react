@@ -27653,7 +27653,7 @@ var Application = _react2.default.createClass({
       var roomid = this.props._roomid;
 
       var ws = this.state.webSocket;
-      this.connectWebSocket(ws, un, pd, roomid);
+      //this.connectWebSocket(ws, un, pd, roomid);
       //xmpp
       if (!this.state.connected) {
         this.state.connection = new Strophe.Connection(this.state.bosh_service);
