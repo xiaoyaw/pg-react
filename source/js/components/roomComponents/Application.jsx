@@ -121,7 +121,7 @@ let Application = React.createClass({
       //xmpp
       if (!this.state.connected) {
        this.state.connection = new Strophe.Connection(this.state.bosh_service);
-        this.connection.connect(roomid,pd, thiz.onConnect);
+        this.state.connection.connect(roomid,pd, thiz.onConnect);
       }
       //xmpp
       window.addEventListener('resize', this.handleResize);
