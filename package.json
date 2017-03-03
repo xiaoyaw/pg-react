@@ -30,7 +30,6 @@
   "dependencies": {
     "history": "^4.4.0",
     "react": "^15",
-    "react-dom": "^15",
-    "react-router": "^3.0.2"
+    "react-dom": "^15"
   }
 }
