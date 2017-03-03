@@ -30,7 +30,7 @@ let Application = React.createClass({
     }
     return {
       //xmpp
-      bosh_service: 'http://182.254.223.23:7222',
+      bosh_service: 'http://182.254.223.23:7222/http-bind',
       connection: null,
       connected: false,
       //liv
