@@ -27564,6 +27564,10 @@ var Application = _react2.default.createClass({
       ws = new WebSocket('ws://203.195.173.135:9999/ws');
     }
     return {
+      //xmpp
+      bosh_service: 'http://server.pictolive.net:7222',
+      connection: null,
+      connected: false,
       //liv
       isStop: false,
       pageIndex: 0,
@@ -27650,11 +27654,41 @@ var Application = _react2.default.createClass({
 
       var ws = this.state.webSocket;
       this.connectWebSocket(ws, un, pd, roomid);
-
+      //xmpp
+      if (!this.state.connected) {
+        this.state.connection = new Strophe.Connection(this.state.bosh_service);
+        connection.connect(roomid, pd, thiz.onConnect);
+      }
+      //xmpp
       window.addEventListener('resize', this.handleResize);
       ws.onmessage = function (msg) {
         thiz.handleMessage(JSON.parse(msg.data));
       };
+    }
+  },
+  onConnect: function onConnect(status) {
+    var that = this;
+    console.log(status);
+    if (status == Strophe.Status.CONNFAIL) {
+      console.log("连接失败！");
+    } else if (status == Strophe.Status.AUTHFAIL) {
+      console.log("登录失败！");
+    } else if (status == Strophe.Status.DISCONNECTED) {
+      console.log("连接断开！");
+      this.setState({
+        connected: false
+      });
+    } else if (status == Strophe.Status.CONNECTED) {
+      console.log("连接成功，可以开始聊天了！");
+      this.setState({
+        connected: true
+      });
+
+      // 当接收到<message>节，调用onMessage回调函数
+      //this.state.connection.addHandler(that.onMessage, null, 'message', null, null, null);
+
+      // 首先要发送一个<presence>给服务器（initial presence）
+      //connection.send($pres().tree());
     }
   },
   wsKeepConnect: function wsKeepConnect() {
