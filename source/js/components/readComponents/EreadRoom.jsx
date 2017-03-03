@@ -1,5 +1,6 @@
 import Slider from '../roomComponents/Slider.jsx';
 import ReadApplication from './ReadApplication.jsx';
+import MyAudio from '../roomComponents/navBar/MyAudio.jsx';
 import MyVideo from '../roomComponents/navBar/MyVideo.jsx';
 import Home from '../roomComponents/navBar/Home.jsx';
 import Share from '../roomComponents/navBar/Share.jsx';
@@ -51,9 +52,9 @@ var EreadRoom = React.createClass({
 		} > {
 			this.state.needShare ? < ul className = 'nav nav-pills' >
 			< li > < img id = 'logo'
-			src = 'img/pageshare.png' / > < /li>  < li > < Home / > < /li >< li > < MyVideo / > < /li >  < li > < Share / > < /li>< /ul > : < ul className = 'nav nav-pills' >
+			src = 'img/pageshare.png' / > < /li>  < li > < Home / > < /li > < li > < MyAudio / > < /li>  < li > < MyVideo / > < /li >  < li > < Share / > < /li>< /ul > : < ul className = 'nav nav-pills' >
 				< li > < img id = 'logo'
-			src = 'img/pageshare.png' / > < /li>  < li > < Home / > < /li >< li > < MyVideo / > < /li >  < /ul >
+			src = 'img/pageshare.png' / > < /li>  < li > < Home / > < /li > < li > < MyAudio / > < /li>  < li > < MyVideo / > < /li >  < /ul >
 		} < /div > < /div >
 	);
 }
