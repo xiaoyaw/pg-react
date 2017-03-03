@@ -229,14 +229,11 @@ let ReadApplication = React.createClass({
         url = thiz.state.url_getLiv + fileName.split('_')[1] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
       }
       $.get(url, function(res) {
-        if (thiz.isMounted()) {
-          thiz.playLivFile(JSON.parse(res));
-        }
+        thiz.playLivFile(JSON.parse(res));
       });
 
       //点击按钮时下载数据并播放
       $('#exit').on('click', function() {
-
         clearTimeout(thiz.state.timeout);
         thiz.setState({
           isStop: true
