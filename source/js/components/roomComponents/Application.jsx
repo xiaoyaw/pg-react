@@ -120,7 +120,7 @@ let Application = React.createClass({
       //this.connectWebSocket(ws, un, pd, roomid);
       //xmpp
       if (!this.state.connected) {
-        var jid=un+"@oneplus.com";
+        var jid=un+"@182.254.223.23";
        this.state.connection = new Strophe.Connection(this.state.bosh_service);
         this.state.connection.connect(jid,pd,thiz.onConnect);
       }
