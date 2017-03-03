@@ -28040,7 +28040,7 @@ var NavagationBar = React.createClass({
 					React.createElement(_Home2.default, null),
 					' '
 				),
-				' ',
+				'  ',
 				React.createElement(
 					'li',
 					null,
@@ -28048,7 +28048,7 @@ var NavagationBar = React.createClass({
 					React.createElement(MyAudio, null),
 					' '
 				),
-				' ',
+				'  ',
 				React.createElement(
 					'li',
 					null,
@@ -28156,7 +28156,7 @@ var PNavagationBar = React.createClass({
 					React.createElement(_Home2.default, null),
 					' '
 				),
-				' ',
+				'  ',
 				React.createElement(
 					'li',
 					null,
