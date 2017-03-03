@@ -120,8 +120,9 @@ let Application = React.createClass({
       //this.connectWebSocket(ws, un, pd, roomid);
       //xmpp
       if (!this.state.connected) {
+        var jid=un+"@oneplus.com";
        this.state.connection = new Strophe.Connection(this.state.bosh_service);
-        this.state.connection.connect(un+"@oneplus.com",pd, thiz.onConnect);
+        this.state.connection.connect(jid,pd,thiz.onConnect);
       }
       //xmpp
       window.addEventListener('resize', this.handleResize);
