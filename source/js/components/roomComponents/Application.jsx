@@ -30,7 +30,7 @@ let Application = React.createClass({
     }
     return {
       //xmpp
-      bosh_service: 'http://server.pictolive.net:7222',
+      bosh_service: '/http-bind/',
       connection: null,
       connected: false,
       //liv
@@ -120,9 +120,10 @@ let Application = React.createClass({
       //this.connectWebSocket(ws, un, pd, roomid);
       //xmpp
       if (!this.state.connected) {
-        var jid=un+"@server.pictolive.net";
+        var user1="u1/example.com";
+        //var jid=un+"@server.pictolive.net";
        this.state.connection = new Strophe.Connection(this.state.bosh_service);
-        this.state.connection.connect(jid,pd,thiz.onConnect);
+        this.state.connection.connect(user1,"u1",thiz.onConnect);
       }
       //xmpp
       window.addEventListener('resize', this.handleResize);
