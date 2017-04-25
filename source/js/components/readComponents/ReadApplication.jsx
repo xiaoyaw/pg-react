@@ -25,16 +25,7 @@ let ReadApplication = React.createClass({
 
     return {
       //liv
-      url_getLiv: 'http://182.254.223.23/download/records/',
-      timeout: null,
-      isStop: false,
-      isfirst: true,
-      pageIndex: 0,
-      pageNum: 0,
-      res: null,
-      livsize: [],
-      dataNow: 0,
-      pathover: false,
+      url_getLiv: 'http://182.254.223.23/download/records/zzz/LivDemo.liv',
       audio: audio,
       audioCollect: [],
       video: video,
@@ -68,154 +59,6 @@ let ReadApplication = React.createClass({
     video.src = '';
   },
 
-  callivMsgSize: function(res) {
-    var livsize = []
-    for (var p in res) {
-      livsize.push(p);
-    }
-    return livsize;
-  },
-  playLivFile: function(res) {
-    var livsize = this.callivMsgSize(res);
-    this.setState({
-      livsize: livsize,
-      res: res,
-      pageNum: livsize.length
-    }, function() {
-      this.diguiliv();
-      $('#liv_Nav').fadeIn();
-      this.addControl();
-    });
-  },
-  addControl: function() {
-    var thiz = this;
-    //向左
-    $('#liv_left').on('click', function() {
-        if (thiz.state.pageIndex <= thiz.state.pageNum && thiz.state.pageIndex > 0) {
-          thiz.state.audio.pause();
-          thiz.state.video.pause();
-          clearTimeout(thiz.state.timeout);
-          if (!thiz.state.pathover && thiz.state.pageIndex >= 1) {
-            thiz.setState({
-              pageIndex: thiz.state.pageIndex - 1,
-              dataNow: 0,
-              isfirst: true
-            }, function() {
-              thiz.diguiliv();
-            });
-          } else if (thiz.state.pathover && thiz.state.pageIndex >= 2) {
-            thiz.setState({
-              pageIndex: thiz.state.pageIndex - 2,
-              dataNow: 0,
-              isfirst: true
-            }, function() {
-              thiz.diguiliv();
-            });
-          }
-        }
-      })
-      //向右
-    $('#liv_right').on('click', function() {
-        if (thiz.state.pageIndex < thiz.state.pageNum) {
-          thiz.state.audio.pause();
-          thiz.state.video.pause();
-          clearTimeout(thiz.state.timeout);
-          if (!thiz.state.pathover) {
-            thiz.setState({
-              dataNow: 0,
-              pageIndex: thiz.state.pageIndex + 1,
-              isfirst: true
-            }, function() {
-              thiz.diguiliv();
-            });
-          } else {
-            thiz.setState({
-              dataNow: 0,
-              isfirst: true
-            }, function() {
-              thiz.diguiliv();
-            });
-          }
-        }
-      })
-      //停止
-    $('#liv_stop').on('click', function() {
-      if (!thiz.state.isStop) {
-        thiz.state.audio.pause();
-        thiz.state.video.pause();
-        clearTimeout(thiz.state.timeout);
-        thiz.setState({
-          isStop: true
-        });
-      } else { //正在播放的话
-        thiz.setState({
-          isStop: false
-        }, function() {
-          if (thiz.state.audio.paused) {
-            thiz.state.audio.play();
-          }
-          thiz.diguiliv();
-        });
-      }
-    })
-  },
-  //递归liv播放
-  diguiliv: function() {
-    var thiz = this;
-    if (!thiz.state.isStop) {
-      if (thiz.state.isfirst) { //第一笔不停留时间
-        if (thiz.state.pageIndex < thiz.state.pageNum) {
-          //页数未到末尾
-          if (thiz.state.dataNow < thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]].length) {
-            //本页未到最后一笔
-            thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
-            thiz.setState({
-              dataNow: thiz.state.dataNow + 1,
-              pathover: false,
-              isfirst: false
-            }, function() {
-              thiz.diguiliv();
-            });
-          } else { //本页最后一笔画完，翻页并递归
-            thiz.setState({
-              pageIndex: thiz.state.pageIndex + 1,
-              pathover: true,
-              dataNow: 0
-            }, function() {
-              thiz.diguiliv();
-            });
-          }
-        }
-      } else {
-        //停留时间
-        if (thiz.state.pageIndex < thiz.state.pageNum) {
-          //页数未到末尾
-          if (thiz.state.dataNow < thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]].length) {
-            //本页未到最后一笔
-            thiz.state.timeout = setTimeout(function() {
-              thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
-              thiz.setState({
-                dataNow: thiz.state.dataNow + 1,
-                pathover: false
-              }, function() {
-                thiz.diguiliv();
-              });
-            }, thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].time);
-          } else { //本页最后一笔画完，翻页并递归
-            thiz.setState({
-              pageIndex: thiz.state.pageIndex + 1,
-              pathover: true,
-              dataNow: 0
-            }, function() {
-              thiz.diguiliv();
-            });
-          }
-        }
-      }
-
-    }
-  },
-
   //渲染以后？ 设置为以前收不到Message
   componentDidMount: function() {
     var thiz = this;
@@ -223,12 +66,12 @@ let ReadApplication = React.createClass({
       //如果是分享出来的
       var fileName = thiz.props.file;
       var url;
-      if (fileName.split('_').length == 2) {
-        url = thiz.state.url_getLiv + fileName.split('_')[1].split('.')[0] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
-      } else {
-        url = thiz.state.url_getLiv + fileName.split('_')[1] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
-      }
-      $.get(url, function(res) {
+      // if (fileName.split('_').length == 2) {
+      //   url = thiz.state.url_getLiv + fileName.split('_')[1].split('.')[0] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
+      // } else {
+      //   url = thiz.state.url_getLiv + fileName.split('_')[1] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
+      // }
+      $.get(thiz.state.url_getLiv, function(res) {
         thiz.playLivFile(JSON.parse(res));
       });
 

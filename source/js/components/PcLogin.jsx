@@ -25,8 +25,16 @@ var PcLogin = React.createClass({
 	},
 	componentDidMount: function() {
 		if (this.isMounted()) {
+			//get test
+			$.get("http://182.254.223.23/download/records/zzz/LivDemo.liv", function(res) {
+				console.log(res);
+				console.log("--------------------------------------");
+				console.log(res.split("\r\n"));
+			});
+
+			//get test
 			var thiz = this;
-			$('#guestlogin').on('click',function(){
+			$('#guestlogin').on('click', function() {
 				hashHistory.replace('/join/guest');
 			});
 			$('#login').on('click', function() {
@@ -144,7 +152,7 @@ var PcLogin = React.createClass({
 			type = "password" / >
 			< div className = "checkbox pull-right" >
 			< label >
-			<a id='guestlogin'>guest</a> < /label> < /div > < button className = "btn btn-lg btn-primary btn-block"
+			< a id = 'guestlogin' > guest < /a> < /label > < /div > < button className = "btn btn-lg btn-primary btn-block"
 			type = "submit"
 			id = 'login' > Sign in < /button>  < div style = { {
 			textAlign: 'center',

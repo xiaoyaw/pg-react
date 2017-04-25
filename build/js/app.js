@@ -25868,6 +25868,14 @@ var PcLogin = React.createClass({
 	},
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
+			//get test
+			$.get("http://182.254.223.23/download/records/zzz/LivDemo.liv", function (res) {
+				console.log(res);
+				console.log("--------------------------------------");
+				console.log(res.split("\r\n"));
+			});
+
+			//get test
 			var thiz = this;
 			$('#guestlogin').on('click', function () {
 				_reactRouter.hashHistory.replace('/join/guest');
@@ -26012,7 +26020,7 @@ var PcLogin = React.createClass({
 						React.createElement(
 							'a',
 							{ id: 'guestlogin' },
-							'guest'
+							' guest '
 						),
 						' '
 					),
@@ -27046,16 +27054,7 @@ var ReadApplication = _react2.default.createClass({
 
     return {
       //liv
-      url_getLiv: 'http://182.254.223.23/download/records/',
-      timeout: null,
-      isStop: false,
-      isfirst: true,
-      pageIndex: 0,
-      pageNum: 0,
-      res: null,
-      livsize: [],
-      dataNow: 0,
-      pathover: false,
+      url_getLiv: 'http://182.254.223.23/download/records/zzz/LivDemo.liv',
       audio: audio,
       audioCollect: [],
       video: video,
@@ -27090,157 +27089,6 @@ var ReadApplication = _react2.default.createClass({
   },
 
 
-  callivMsgSize: function callivMsgSize(res) {
-    var livsize = [];
-    for (var p in res) {
-      livsize.push(p);
-    }
-    return livsize;
-  },
-  playLivFile: function playLivFile(res) {
-    var livsize = this.callivMsgSize(res);
-    this.setState({
-      livsize: livsize,
-      res: res,
-      pageNum: livsize.length
-    }, function () {
-      this.diguiliv();
-      $('#liv_Nav').fadeIn();
-      this.addControl();
-    });
-  },
-  addControl: function addControl() {
-    var thiz = this;
-    //向左
-    $('#liv_left').on('click', function () {
-      if (thiz.state.pageIndex <= thiz.state.pageNum && thiz.state.pageIndex > 0) {
-        thiz.state.audio.pause();
-        thiz.state.video.pause();
-        clearTimeout(thiz.state.timeout);
-        if (!thiz.state.pathover && thiz.state.pageIndex >= 1) {
-          thiz.setState({
-            pageIndex: thiz.state.pageIndex - 1,
-            dataNow: 0,
-            isfirst: true
-          }, function () {
-            thiz.diguiliv();
-          });
-        } else if (thiz.state.pathover && thiz.state.pageIndex >= 2) {
-          thiz.setState({
-            pageIndex: thiz.state.pageIndex - 2,
-            dataNow: 0,
-            isfirst: true
-          }, function () {
-            thiz.diguiliv();
-          });
-        }
-      }
-    });
-    //向右
-    $('#liv_right').on('click', function () {
-      if (thiz.state.pageIndex < thiz.state.pageNum) {
-        thiz.state.audio.pause();
-        thiz.state.video.pause();
-        clearTimeout(thiz.state.timeout);
-        if (!thiz.state.pathover) {
-          thiz.setState({
-            dataNow: 0,
-            pageIndex: thiz.state.pageIndex + 1,
-            isfirst: true
-          }, function () {
-            thiz.diguiliv();
-          });
-        } else {
-          thiz.setState({
-            dataNow: 0,
-            isfirst: true
-          }, function () {
-            thiz.diguiliv();
-          });
-        }
-      }
-    });
-    //停止
-    $('#liv_stop').on('click', function () {
-      if (!thiz.state.isStop) {
-        thiz.state.audio.pause();
-        thiz.state.video.pause();
-        clearTimeout(thiz.state.timeout);
-        thiz.setState({
-          isStop: true
-        });
-      } else {
-        //正在播放的话
-        thiz.setState({
-          isStop: false
-        }, function () {
-          if (thiz.state.audio.paused) {
-            thiz.state.audio.play();
-          }
-          thiz.diguiliv();
-        });
-      }
-    });
-  },
-  //递归liv播放
-  diguiliv: function diguiliv() {
-    var thiz = this;
-    if (!thiz.state.isStop) {
-      if (thiz.state.isfirst) {
-        //第一笔不停留时间
-        if (thiz.state.pageIndex < thiz.state.pageNum) {
-          //页数未到末尾
-          if (thiz.state.dataNow < thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]].length) {
-            //本页未到最后一笔
-            thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
-            thiz.setState({
-              dataNow: thiz.state.dataNow + 1,
-              pathover: false,
-              isfirst: false
-            }, function () {
-              thiz.diguiliv();
-            });
-          } else {
-            //本页最后一笔画完，翻页并递归
-            thiz.setState({
-              pageIndex: thiz.state.pageIndex + 1,
-              pathover: true,
-              dataNow: 0
-            }, function () {
-              thiz.diguiliv();
-            });
-          }
-        }
-      } else {
-        //停留时间
-        if (thiz.state.pageIndex < thiz.state.pageNum) {
-          //页数未到末尾
-          if (thiz.state.dataNow < thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]].length) {
-            //本页未到最后一笔
-            thiz.state.timeout = setTimeout(function () {
-              thiz.handleMessage(thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].data); //画
-              thiz.setState({
-                dataNow: thiz.state.dataNow + 1,
-                pathover: false
-              }, function () {
-                thiz.diguiliv();
-              });
-            }, thiz.state.res[thiz.state.livsize[thiz.state.pageIndex]][thiz.state.dataNow].time);
-          } else {
-            //本页最后一笔画完，翻页并递归
-            thiz.setState({
-              pageIndex: thiz.state.pageIndex + 1,
-              pathover: true,
-              dataNow: 0
-            }, function () {
-              thiz.diguiliv();
-            });
-          }
-        }
-      }
-    }
-  },
-
   //渲染以后？ 设置为以前收不到Message
   componentDidMount: function componentDidMount() {
     var thiz = this;
@@ -27248,12 +27096,12 @@ var ReadApplication = _react2.default.createClass({
       //如果是分享出来的
       var fileName = thiz.props.file;
       var url;
-      if (fileName.split('_').length == 2) {
-        url = thiz.state.url_getLiv + fileName.split('_')[1].split('.')[0] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
-      } else {
-        url = thiz.state.url_getLiv + fileName.split('_')[1] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
-      }
-      $.get(url, function (res) {
+      // if (fileName.split('_').length == 2) {
+      //   url = thiz.state.url_getLiv + fileName.split('_')[1].split('.')[0] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
+      // } else {
+      //   url = thiz.state.url_getLiv + fileName.split('_')[1] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
+      // }
+      $.get(thiz.state.url_getLiv, function (res) {
         thiz.playLivFile(JSON.parse(res));
       });
 
@@ -27653,14 +27501,14 @@ var Application = _react2.default.createClass({
       var roomid = this.props._roomid;
 
       var ws = this.state.webSocket;
-      //this.connectWebSocket(ws, un, pd, roomid);
+      this.connectWebSocket(ws, un, pd, roomid);
       //xmpp
-      if (!this.state.connected) {
-        var user1 = "u1/example.com";
-        //var jid=un+"@server.pictolive.net";
-        this.state.connection = new Strophe.Connection(this.state.bosh_service);
-        this.state.connection.connect(user1, "u1", thiz.onConnect);
-      }
+      // if (!this.state.connected) {
+      //   var user1="u1@example.com";
+      //   //var jid=un+"@server.pictolive.net";
+      //  this.state.connection = new Strophe.Connection(this.state.bosh_service);
+      //   this.state.connection.connect(user1,"u1",thiz.onConnect);
+      // }
       //xmpp
       window.addEventListener('resize', this.handleResize);
       ws.onmessage = function (msg) {
@@ -27668,31 +27516,31 @@ var Application = _react2.default.createClass({
       };
     }
   },
-  onConnect: function onConnect(status) {
-    var that = this;
-    console.log(status);
-    if (status == Strophe.Status.CONNFAIL) {
-      console.log("连接失败！");
-    } else if (status == Strophe.Status.AUTHFAIL) {
-      console.log("登录失败！");
-    } else if (status == Strophe.Status.DISCONNECTED) {
-      console.log("连接断开！");
-      this.setState({
-        connected: false
-      });
-    } else if (status == Strophe.Status.CONNECTED) {
-      console.log("连接成功，可以开始聊天了！");
-      this.setState({
-        connected: true
-      });
+  // onConnect: function(status) {
+  //   var that = this;
+  //   console.log(status);
+  //   if (status == Strophe.Status.CONNFAIL) {
+  //     console.log("连接失败！");
+  //   } else if (status == Strophe.Status.AUTHFAIL) {
+  //     console.log("登录失败！");
+  //   } else if (status == Strophe.Status.DISCONNECTED) {
+  //     console.log("连接断开！");
+  //     this.setState({
+  //       connected: false
+  //     });
+  //   } else if (status == Strophe.Status.CONNECTED) {
+  //     console.log("连接成功，可以开始聊天了！");
+  //     this.setState({
+  //       connected: true
+  //     });
 
-      // 当接收到<message>节，调用onMessage回调函数
-      //this.state.connection.addHandler(that.onMessage, null, 'message', null, null, null);
+  //     // 当接收到<message>节，调用onMessage回调函数
+  //     //this.state.connection.addHandler(that.onMessage, null, 'message', null, null, null);
 
-      // 首先要发送一个<presence>给服务器（initial presence）
-      //connection.send($pres().tree());
-    }
-  },
+  //     // 首先要发送一个<presence>给服务器（initial presence）
+  //     //connection.send($pres().tree());
+  //   }
+  // },
   wsKeepConnect: function wsKeepConnect() {
     var ws = this.state.webSocket;
     var heart = '';
@@ -29364,7 +29212,7 @@ var wxLogin = React.createClass({
 			code: '',
 			isLogin: false,
 			appid: '',
-			release: 'PageShare'
+			release: 'dev'
 		};
 	},
 	componentDidMount: function componentDidMount() {
