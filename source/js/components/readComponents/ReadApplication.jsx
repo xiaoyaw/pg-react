@@ -25,7 +25,8 @@ let ReadApplication = React.createClass({
 
     return {
       //liv
-      url_getLiv: 'http://182.254.223.23/download/records/zzz/LivDemo.liv',
+      url_getLiv: 'http://182.254.223.23/download/records/',
+      livArry: [],
       audio: audio,
       audioCollect: [],
       video: video,
@@ -66,14 +67,17 @@ let ReadApplication = React.createClass({
       //如果是分享出来的
       var fileName = thiz.props.file;
       var url;
-      // if (fileName.split('_').length == 2) {
-      //   url = thiz.state.url_getLiv + fileName.split('_')[1].split('.')[0] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
-      // } else {
-      //   url = thiz.state.url_getLiv + fileName.split('_')[1] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
-      // }
-      $.get(thiz.state.url_getLiv, function(res) {
-        thiz.playLivFile(JSON.parse(res));
+      //get test
+      $.get("http://182.254.223.23/download/records/zzz/LivDemo.liv", function(res) {
+        var livArry = res.split("\n");
+        thiz.setState({
+          livArry: livArry
+        }, function() {
+          thiz.readLineLiv(0);
+        });
       });
+
+      //get test
 
       //点击按钮时下载数据并播放
       $('#exit').on('click', function() {
@@ -85,7 +89,124 @@ let ReadApplication = React.createClass({
       window.addEventListener('resize', this.handleResize);
     }
   },
+  readLineLiv: function(num) {
+    if (num <= this.state.livArry.length - 1) {
+      if (this.state.livArry[num] != "" && this.state.livArry[num] != undefined) {
+        this.resolveLine(this.state.livArry[num]);
+        this.readLineLiv(num + 1);
+      }
+    }
+  },
+  resolveLine: function(strLine) {
+    var thiz = this;
+    var timeGap = strLine.split(":")[2]; //时间
+    var msg = null;
+    var cmd = strLine.split("##")[1].substring(0, 4);
+    switch (cmd) {
+      case "imag":
+        msg = {
+          cmd: "image",
+          image: strLine.split("!!##image##!!")[1]
+        }
+        break;
+      case "path":
+        var properties = strLine.split("!!##path[")[1].split("]##!!")[0].split(",");
+        msg = {
+          cmd: "path",
+          paths: window.atob(strLine.split("]##!!")[1]),
+          properties: {
+            color: properties[0],
+            weight: properties[1],
+            width: properties[2],
+            height: properties[3]
+          }
+        }
+        break;
+      case "text":
+        var stext = strLine.split("!!##text[")[1].split("]")[0].split(",");
+        msg = {
+          cmd: "text",
+          stext: {
+            width: stext[2],
+            height: stext[3],
+            color: stext[4],
+            line: stext[5],
+            text: stext[6],
+            x: stext[0],
+            y: stext[1]
+          }
+        }
+        break;
+      case "icon":
+        var sicon = strLine.split("!!##icon[")[1].split("]")[0].split(",");
+        msg = {
+          cmd: "icon",
+          sicon: {
+            rid: sicon[6],
+            width: sicon[4],
+            height: sicon[5],
+            x: sicon[0],
+            y: sicon[1],
+            x2: sicon[2],
+            y2: sicon[3]
+          }
 
+        }
+        break;
+      case "eras":
+        var properties = strLine.split("!!##erase[")[1].split("]##!!")[0].split(",");
+        msg = {
+          cmd: "erase",
+          paths: window.atob(strLine.split("]##!!")[1]),
+          properties: {
+            width: properties[2],
+            height: properties[3]
+          }
+        }
+        break;
+      case "sour":
+        var source = strLine.split("!!##source[")[1].split("]##!!")[0].split(",");
+        switch (source[0]) {
+          case "voice":
+            msg = {
+              cmd: "voice",
+              voice:source[1]
+            }
+            break;
+
+          case "urlvoice":
+            msg = {
+              cmd: "urlvoice",
+              url:source[1]
+            }
+            break;
+
+          case "urlvideo":
+            msg = {
+              cmd: "urlvideo",
+              url:source[1]
+            }
+            break;
+          case "openvideo":
+            msg = {
+              cmd: "openvideo",
+              video:source[1]
+            }
+            break;
+          case "video":
+            msg = {
+              cmd: "video",
+              video:source[1]
+            }
+            break;
+        }
+        break;
+
+    }
+    setTimeout(function() {
+      thiz.handleMessage(msg);
+    }, timeGap);
+  },
   getWindowSize: function() {
     var ww = window.innerWidth;
     var wh = window.innerHeight;

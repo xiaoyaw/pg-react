@@ -25868,17 +25868,6 @@ var PcLogin = React.createClass({
 	},
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
-			//get test
-			$.get("http://182.254.223.23/download/records/zzz/LivDemo.liv", function (res) {
-				console.log("--------------------------------------");
-				console.log(res.split("\n"));
-				console.log("--------------------------------------");
-				console.log(res.split("</br>"));
-				console.log("--------------------------------------");
-				console.log(res.split("/\r/\n"));
-			});
-
-			//get test
 			var thiz = this;
 			$('#guestlogin').on('click', function () {
 				_reactRouter.hashHistory.replace('/join/guest');
@@ -27057,7 +27046,8 @@ var ReadApplication = _react2.default.createClass({
 
     return {
       //liv
-      url_getLiv: 'http://182.254.223.23/download/records/zzz/LivDemo.liv',
+      url_getLiv: 'http://182.254.223.23/download/records/',
+      livArry: [],
       audio: audio,
       audioCollect: [],
       video: video,
@@ -27099,14 +27089,17 @@ var ReadApplication = _react2.default.createClass({
       //如果是分享出来的
       var fileName = thiz.props.file;
       var url;
-      // if (fileName.split('_').length == 2) {
-      //   url = thiz.state.url_getLiv + fileName.split('_')[1].split('.')[0] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
-      // } else {
-      //   url = thiz.state.url_getLiv + fileName.split('_')[1] + '/' + encodeURI(encodeURI(fileName)) + '.liv';
-      // }
-      $.get(thiz.state.url_getLiv, function (res) {
-        thiz.playLivFile(JSON.parse(res));
+      //get test
+      $.get("http://182.254.223.23/download/records/zzz/LivDemo.liv", function (res) {
+        var livArry = res.split("\n");
+        thiz.setState({
+          livArry: livArry
+        }, function () {
+          thiz.readLineLiv(0);
+        });
       });
+
+      //get test
 
       //点击按钮时下载数据并播放
       $('#exit').on('click', function () {
@@ -27118,7 +27111,124 @@ var ReadApplication = _react2.default.createClass({
       window.addEventListener('resize', this.handleResize);
     }
   },
+  readLineLiv: function readLineLiv(num) {
+    if (num <= this.state.livArry.length - 1) {
+      if (this.state.livArry[num] != "" && this.state.livArry[num] != undefined) {
+        this.resolveLine(this.state.livArry[num]);
+        this.readLineLiv(num + 1);
+      }
+    }
+  },
+  resolveLine: function resolveLine(strLine) {
+    var thiz = this;
+    var timeGap = strLine.split(":")[2]; //时间
+    var msg = null;
+    var cmd = strLine.split("##")[1].substring(0, 4);
+    switch (cmd) {
+      case "imag":
+        msg = {
+          cmd: "image",
+          image: strLine.split("!!##image##!!")[1]
+        };
+        break;
+      case "path":
+        var properties = strLine.split("!!##path[")[1].split("]##!!")[0].split(",");
+        msg = {
+          cmd: "path",
+          paths: window.atob(strLine.split("]##!!")[1]),
+          properties: {
+            color: properties[0],
+            weight: properties[1],
+            width: properties[2],
+            height: properties[3]
+          }
+        };
+        break;
+      case "text":
+        var stext = strLine.split("!!##text[")[1].split("]")[0].split(",");
+        msg = {
+          cmd: "text",
+          stext: {
+            width: stext[2],
+            height: stext[3],
+            color: stext[4],
+            line: stext[5],
+            text: stext[6],
+            x: stext[0],
+            y: stext[1]
+          }
+        };
+        break;
+      case "icon":
+        var sicon = strLine.split("!!##icon[")[1].split("]")[0].split(",");
+        msg = {
+          cmd: "icon",
+          sicon: {
+            rid: sicon[6],
+            width: sicon[4],
+            height: sicon[5],
+            x: sicon[0],
+            y: sicon[1],
+            x2: sicon[2],
+            y2: sicon[3]
+          }
 
+        };
+        break;
+      case "eras":
+        var properties = strLine.split("!!##erase[")[1].split("]##!!")[0].split(",");
+        msg = {
+          cmd: "erase",
+          paths: window.atob(strLine.split("]##!!")[1]),
+          properties: {
+            width: properties[2],
+            height: properties[3]
+          }
+        };
+        break;
+      case "sour":
+        var source = strLine.split("!!##source[")[1].split("]##!!")[0].split(",");
+        switch (source[0]) {
+          case "voice":
+            msg = {
+              cmd: "voice",
+              voice: source[1]
+            };
+            break;
+
+          case "urlvoice":
+            msg = {
+              cmd: "urlvoice",
+              url: source[1]
+            };
+            break;
+
+          case "urlvideo":
+            msg = {
+              cmd: "urlvideo",
+              url: source[1]
+            };
+            break;
+          case "openvideo":
+            msg = {
+              cmd: "openvideo",
+              video: source[1]
+            };
+            break;
+          case "video":
+            msg = {
+              cmd: "video",
+              video: source[1]
+            };
+            break;
+        }
+        break;
+
+    }
+    setTimeout(function () {
+      thiz.handleMessage(msg);
+    }, timeGap);
+  },
   getWindowSize: function getWindowSize() {
     var ww = window.innerWidth;
     var wh = window.innerHeight;
@@ -28324,23 +28434,24 @@ var BgImage = _react2.default.createClass({
 exports.default = BgImage;
 
 },{"react":228}],249:[function(require,module,exports){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _react = require('react');
+var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Canvas = _react2.default.createClass({
-    displayName: 'Canvas',
+    displayName: "Canvas",
 
     getInitialState: function getInitialState() {
         return {
+            iconArr: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "a_e.png", "a_f.png", "a_g.png", "a_k.png", "", "a_i.png", "", "smiley_63.png", "smiley_64.png", "smiley_65.png", "smiley_66.png", "smiley_68.png", "smiley_77.png", "smiley_79.png", "smiley_80.png", "smiley_81.png", "smiley_82.png", "", "", "", "", "smiley_87.png", "smiley_88.png", "smiley_89.png", "", "", "", "", "", "", "", "", "", "", "", "", "emoji_64.png", "", "emoji_67.png", "emoji_68.png", "emoji_69.png", "emoji_70.png", "emoji_71.png", "emoji_72.png", "emoji_73.png", "emoji_74.png", "emoji_75.png", "", "", "", "", "", "", "", "", "", "emoji_85.png", "emoji_86.png", "emoji_87.png", "emoji_88.png", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "star.png", "crown.png", "usa.png", "china.png", "sign.png"],
             canvas: null,
             clicked: false //监听状态隐藏显示导航栏
         };
@@ -28436,7 +28547,7 @@ var Canvas = _react2.default.createClass({
                         // console.log(oX + " " + oY);
                         canvas.beginPath();
                         // （Android系统色） 设置颜色先取补数 再转换为16进制
-                        canvas.strokeStyle = this.getcolor(data.properties.color);
+                        //canvas.strokeStyle = this.getcolor(data.properties.color);
                         canvas.lineWidth = 15;
                         canvas.lineCap = 'round';
                         canvas.lineJoin = 'round';
@@ -28475,8 +28586,7 @@ var Canvas = _react2.default.createClass({
                             img.onload = function draw() {
                                 canvas.drawImage(img, xpos - img.width * sX * oX / 2, ypos - img.height * sY * oY, img.width * sX * oX, img.height * sY * oY);
                             };
-                            var imgsrc = data.sicon.icon;
-                            img.src = 'data:image/png;base64,' + imgsrc;
+                            img.src = "./" + this.state.iconArr[rid];
                         }
                         break;
 
@@ -28569,8 +28679,8 @@ var Canvas = _react2.default.createClass({
             this.handleData('clearAll');
         }
         return _react2.default.createElement(
-            'canvas',
-            { ref: 'myCanvas',
+            "canvas",
+            { ref: "myCanvas",
                 width: this.props._width,
                 height: this.props._height,
                 style: {
@@ -28581,7 +28691,7 @@ var Canvas = _react2.default.createClass({
                     left: this.props._left,
                     top: this.props._top
                 } },
-            ' 您的浏览器不支持Canvas, 请尽快升级 '
+            " 您的浏览器不支持Canvas, 请尽快升级 "
         );
     }
 }); /**

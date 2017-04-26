@@ -25,19 +25,6 @@ var PcLogin = React.createClass({
 	},
 	componentDidMount: function() {
 		if (this.isMounted()) {
-			//get test
-			$.get("http://182.254.223.23/download/records/zzz/LivDemo.liv", function(res) {
-				console.log("--------------------------------------");
-				console.log(res.split("\n"));
-				console.log("--------------------------------------");
-				console.log(res.split("</br>"));
-				console.log("--------------------------------------");
-				console.log(res.split("/\r/\n"));
-
-
-			});
-
-			//get test
 			var thiz = this;
 			$('#guestlogin').on('click', function() {
 				hashHistory.replace('/join/guest');
