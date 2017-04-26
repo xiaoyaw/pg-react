@@ -145,7 +145,7 @@ let Canvas = React.createClass({
                                 canvas.drawImage(img, xpos - img.width * sX * oX / 2, ypos - img.height * sY * oY, img.width * sX * oX,
                                     img.height * sY * oY);
                             }
-                            img.src = "./"+this.state.iconArr[rid];
+                            img.src = "./img/"+this.state.iconArr[rid];
                         }
                         break;
 

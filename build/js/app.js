@@ -27133,16 +27133,15 @@ var ReadApplication = _react2.default.createClass({
         break;
       case "path":
         var properties = strLine.split("!!##path[")[1].split("]##!!")[0].split(",");
-        msg = {
-          cmd: "path",
-          paths: window.atob(strLine.split("]##!!")[1]),
-          properties: {
-            color: properties[0],
-            weight: properties[1],
-            width: properties[2],
-            height: properties[3]
-          }
+        var oo = JSON.parse(window.atob(strLine.split("]##!!")[1]));
+        oo.properties = {
+          color: properties[0],
+          weight: properties[1],
+          width: properties[2],
+          height: properties[3]
         };
+        oo.cmd = "path";
+        msg = oo;
         break;
       case "text":
         var stext = strLine.split("!!##text[")[1].split("]")[0].split(",");
@@ -27177,14 +27176,13 @@ var ReadApplication = _react2.default.createClass({
         break;
       case "eras":
         var properties = strLine.split("!!##erase[")[1].split("]##!!")[0].split(",");
-        msg = {
-          cmd: "erase",
-          paths: window.atob(strLine.split("]##!!")[1]),
-          properties: {
-            width: properties[2],
-            height: properties[3]
-          }
+        var oo = JSON.parse(window.atob(strLine.split("]##!!")[1]));
+        oo.properties = {
+          width: properties[2],
+          height: properties[3]
         };
+        oo.cmd = "erase";
+        msg = oo;
         break;
       case "sour":
         var source = strLine.split("!!##source[")[1].split("]##!!")[0].split(",");
@@ -28586,7 +28584,7 @@ var Canvas = _react2.default.createClass({
                             img.onload = function draw() {
                                 canvas.drawImage(img, xpos - img.width * sX * oX / 2, ypos - img.height * sY * oY, img.width * sX * oX, img.height * sY * oY);
                             };
-                            img.src = "./" + this.state.iconArr[rid];
+                            img.src = "./img/" + this.state.iconArr[rid];
                         }
                         break;
 
