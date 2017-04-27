@@ -27035,7 +27035,6 @@ var ReadApplication = _react2.default.createClass({
   displayName: 'ReadApplication',
 
   getInitialState: function getInitialState() {
-    this.calculateImgProp('img/welcome.png');
     var audio = document.getElementById('myaudio');
     var video = document.getElementById('myvideo');
     //禁止选中

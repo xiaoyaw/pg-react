@@ -14,7 +14,6 @@ import {
 } from 'react-router';
 let ReadApplication = React.createClass({
   getInitialState: function() {
-    this.calculateImgProp('img/welcome.png');
     var audio = document.getElementById('myaudio');
     var video = document.getElementById('myvideo');
     //禁止选中
