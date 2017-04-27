@@ -27090,7 +27090,7 @@ var ReadApplication = _react2.default.createClass({
       //如果是分享出来的
       var fileName = thiz.props.file;
       var url;
-      var pageArry;
+      var pageArry = [];
       //get test
       $.get("http://182.254.223.23/download/records/zzz/LivDemo.liv", function (res) {
         var livArry = res.split("\n");
