@@ -27096,8 +27096,10 @@ var ReadApplication = _react2.default.createClass({
         var livArry = res.split("\n");
 
         for (var i = 0; i <= livArry.length; i++) {
-          if (livArry[i].indexOf("!!##image##!!")) {
-            pageArry.push(i);
+          if (livArry[i] != "" && livArry[i] != undefined) {
+            if (livArry[i].indexOf("!!##image##!!") > 0) {
+              pageArry.push(i);
+            }
           }
         }
         thiz.setState({

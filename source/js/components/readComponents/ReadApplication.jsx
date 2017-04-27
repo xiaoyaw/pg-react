@@ -68,14 +68,16 @@ let ReadApplication = React.createClass({
       //如果是分享出来的
       var fileName = thiz.props.file;
       var url;
-      var pageArry=[];
+      var pageArry = [];
       //get test
       $.get("http://182.254.223.23/download/records/zzz/LivDemo.liv", function(res) {
         var livArry = res.split("\n");
 
         for (var i = 0; i <= livArry.length; i++) {
-          if (livArry[i].indexOf("!!##image##!!")) {
-            pageArry.push(i);
+          if (livArry[i] != "" && livArry[i] != undefined) {
+            if (livArry[i].indexOf("!!##image##!!") > 0) {
+              pageArry.push(i);
+            }
           }
         }
         thiz.setState({
