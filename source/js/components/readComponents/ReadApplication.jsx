@@ -32,7 +32,7 @@ let ReadApplication = React.createClass({
       video: video,
       scaleX: null, //给canvas  X轴图片或笔迹伸缩量
       scaleY: null, //给canvas  Y轴图片或笔迹伸缩量
-      src: 'img/welcome.png', //给imgae的
+      src: '', //给imgae的
       width: null, //给image  canvse的
       height: null, //给image  canvse的
       left: null, //给image  canvse的
@@ -167,7 +167,7 @@ let ReadApplication = React.createClass({
           case "voice":
             msg = {
               cmd: "urlvoice",
-              voice:source[1]
+              url:source[1]
             }
             break;
 
