@@ -27114,12 +27114,11 @@ var ReadApplication = _react2.default.createClass({
   readLineLiv: function readLineLiv(num) {
     if (num <= this.state.livArry.length - 1) {
       if (this.state.livArry[num] != "" && this.state.livArry[num] != undefined) {
-        this.resolveLine(this.state.livArry[num]);
-        this.readLineLiv(num + 1);
+        this.resolveLine(this.state.livArry[num], num);
       }
     }
   },
-  resolveLine: function resolveLine(strLine) {
+  resolveLine: function resolveLine(strLine, num) {
     var thiz = this;
     var timeGap = strLine.split(":")[2]; //时间
     var msg = null;
@@ -27189,15 +27188,8 @@ var ReadApplication = _react2.default.createClass({
         switch (source[0]) {
           case "voice":
             msg = {
-              cmd: "voice",
-              voice: source[1]
-            };
-            break;
-
-          case "urlvoice":
-            msg = {
               cmd: "urlvoice",
-              url: source[1]
+              voice: source[1]
             };
             break;
 
@@ -27225,6 +27217,7 @@ var ReadApplication = _react2.default.createClass({
     }
     setTimeout(function () {
       thiz.handleMessage(msg);
+      thiz.readLineLiv(num + 1);
     }, timeGap);
   },
   getWindowSize: function getWindowSize() {
