@@ -26,6 +26,8 @@ let ReadApplication = React.createClass({
       //liv
       url_getLiv: 'http://182.254.223.23/download/records/',
       livArry: [],
+      livStop: false,
+      lineIndex: 0,
       audio: audio,
       audioCollect: [],
       video: video,
@@ -66,18 +68,68 @@ let ReadApplication = React.createClass({
       //如果是分享出来的
       var fileName = thiz.props.file;
       var url;
+      var pageArry;
       //get test
       $.get("http://182.254.223.23/download/records/zzz/LivDemo.liv", function(res) {
         var livArry = res.split("\n");
+
+        for (var i = 0; i <= livArry.length; i++) {
+          if (livArry[i].indexOf("!!##image##!!")) {
+            pageArry.push(i);
+          }
+        }
         thiz.setState({
           livArry: livArry
         }, function() {
-          thiz.readLineLiv(0);
+          $("#liv_Nav").fadeIn();
+          thiz.readLineLiv(thiz.state.lineIndex);
         });
       });
-
       //get test
 
+      //liv stop
+      $('liv_stop').on('click', function() {
+        thiz.setState({
+          liv_stop: !thiz.state.livStop
+        }, function() {
+          thiz.readLineLiv(thiz.state.lineIndex)
+        });
+      });
+      //liv stop
+
+      //liv left
+      $('liv_left').on('click', function() {
+        for (var i = 0; i <= pageArry.length; i++) {
+          if (pageArry[i] == thiz.state.lineIndex && i > 0) {
+            thiz.setState({
+              lineIndex: pageArry[i - 1]
+            }, function() {
+              window.clearTimeout();
+              this.state.audio.pause();
+              thiz.readLineLiv(thiz.state.lineIndex);
+            });
+            return;
+          }
+        }
+      });
+      //liv left
+
+      //liv right
+      $('liv_right').on('click', function() {
+        for (var i = 0; i <= pageArry.length; i++) {
+          if (pageArry[i] == thiz.state.lineIndex && i < pageArry.length) {
+            thiz.setState({
+              lineIndex: pageArry[i + 1]
+            }, function() {
+              window.clearTimeout();
+              this.state.audio.pause();
+              thiz.readLineLiv(thiz.state.lineIndex);
+            });
+            return;
+          }
+        }
+      });
+      //liv right
       //点击按钮时下载数据并播放
       $('#exit').on('click', function() {
         clearTimeout(thiz.state.timeout);
@@ -88,14 +140,20 @@ let ReadApplication = React.createClass({
       window.addEventListener('resize', this.handleResize);
     }
   },
+
   readLineLiv: function(num) {
-    if (num <= this.state.livArry.length - 1) {
-      if (this.state.livArry[num] != "" && this.state.livArry[num] != undefined) {
-        this.resolveLine(this.state.livArry[num],num);
+    if (!this.state.livStop) {
+      if (num <= this.state.livArry.length - 1) {
+        if (this.state.livArry[num] != "" && this.state.livArry[num] != undefined) {
+          this.resolveLine(this.state.livArry[num], num);
+        }
       }
+    } else {
+      window.clearTimeout();
+      this.state.audio.pause();
     }
   },
-  resolveLine: function(strLine,num) {
+  resolveLine: function(strLine, num) {
     var thiz = this;
     var timeGap = strLine.split(":")[2]; //时间
     var msg = null;
@@ -109,14 +167,14 @@ let ReadApplication = React.createClass({
         break;
       case "path":
         var properties = strLine.split("!!##path[")[1].split("]##!!")[0].split(",");
-        var oo=JSON.parse(window.atob(strLine.split("]##!!")[1]));
-        oo.properties={
-            color: properties[0],
-            weight: properties[1],
-            width: properties[2],
-            height: properties[3]
+        var oo = JSON.parse(window.atob(strLine.split("]##!!")[1]));
+        oo.properties = {
+          color: properties[0],
+          weight: properties[1],
+          width: properties[2],
+          height: properties[3]
         }
-        oo.cmd="path";
+        oo.cmd = "path";
         msg = oo;
         break;
       case "text":
@@ -152,13 +210,13 @@ let ReadApplication = React.createClass({
         break;
       case "eras":
         var properties = strLine.split("!!##erase[")[1].split("]##!!")[0].split(",");
-        var oo=JSON.parse(window.atob(strLine.split("]##!!")[1]));
-        oo.properties={
-            width: properties[2],
-            height: properties[3]
-          };
-          oo.cmd="erase";
-          msg=oo;
+        var oo = JSON.parse(window.atob(strLine.split("]##!!")[1]));
+        oo.properties = {
+          width: properties[2],
+          height: properties[3]
+        };
+        oo.cmd = "erase";
+        msg = oo;
         break;
       case "sour":
         var source = strLine.split("!!##source[")[1].split("]##!!")[0].split(",");
@@ -166,26 +224,14 @@ let ReadApplication = React.createClass({
           case "voice":
             msg = {
               cmd: "urlvoice",
-              url:source[1]
+              url: source[1]
             }
             break;
 
           case "urlvideo":
             msg = {
               cmd: "urlvideo",
-              url:source[1]
-            }
-            break;
-          case "openvideo":
-            msg = {
-              cmd: "openvideo",
-              video:source[1]
-            }
-            break;
-          case "video":
-            msg = {
-              cmd: "video",
-              video:source[1]
+              url: source[1]
             }
             break;
         }
@@ -193,8 +239,12 @@ let ReadApplication = React.createClass({
 
     }
     setTimeout(function() {
-      thiz.handleMessage(msg);
-      thiz.readLineLiv(num + 1);
+      thiz.setState({
+        lineIndex: num + 1
+      }, function() {
+        thiz.handleMessage(msg);
+        thiz.readLineLiv(thiz.state.lineIndex);
+      });
     }, timeGap);
   },
   getWindowSize: function() {

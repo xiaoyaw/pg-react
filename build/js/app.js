@@ -27047,6 +27047,8 @@ var ReadApplication = _react2.default.createClass({
       //liv
       url_getLiv: 'http://182.254.223.23/download/records/',
       livArry: [],
+      livStop: false,
+      lineIndex: 0,
       audio: audio,
       audioCollect: [],
       video: video,
@@ -27088,18 +27090,68 @@ var ReadApplication = _react2.default.createClass({
       //如果是分享出来的
       var fileName = thiz.props.file;
       var url;
+      var pageArry;
       //get test
       $.get("http://182.254.223.23/download/records/zzz/LivDemo.liv", function (res) {
         var livArry = res.split("\n");
+
+        for (var i = 0; i <= livArry.length; i++) {
+          if (livArry[i].indexOf("!!##image##!!")) {
+            pageArry.push(i);
+          }
+        }
         thiz.setState({
           livArry: livArry
         }, function () {
-          thiz.readLineLiv(0);
+          $("#liv_Nav").fadeIn();
+          thiz.readLineLiv(thiz.state.lineIndex);
         });
       });
-
       //get test
 
+      //liv stop
+      $('liv_stop').on('click', function () {
+        thiz.setState({
+          liv_stop: !thiz.state.livStop
+        }, function () {
+          thiz.readLineLiv(thiz.state.lineIndex);
+        });
+      });
+      //liv stop
+
+      //liv left
+      $('liv_left').on('click', function () {
+        for (var i = 0; i <= pageArry.length; i++) {
+          if (pageArry[i] == thiz.state.lineIndex && i > 0) {
+            thiz.setState({
+              lineIndex: pageArry[i - 1]
+            }, function () {
+              window.clearTimeout();
+              this.state.audio.pause();
+              thiz.readLineLiv(thiz.state.lineIndex);
+            });
+            return;
+          }
+        }
+      });
+      //liv left
+
+      //liv right
+      $('liv_right').on('click', function () {
+        for (var i = 0; i <= pageArry.length; i++) {
+          if (pageArry[i] == thiz.state.lineIndex && i < pageArry.length) {
+            thiz.setState({
+              lineIndex: pageArry[i + 1]
+            }, function () {
+              window.clearTimeout();
+              this.state.audio.pause();
+              thiz.readLineLiv(thiz.state.lineIndex);
+            });
+            return;
+          }
+        }
+      });
+      //liv right
       //点击按钮时下载数据并播放
       $('#exit').on('click', function () {
         clearTimeout(thiz.state.timeout);
@@ -27110,11 +27162,17 @@ var ReadApplication = _react2.default.createClass({
       window.addEventListener('resize', this.handleResize);
     }
   },
+
   readLineLiv: function readLineLiv(num) {
-    if (num <= this.state.livArry.length - 1) {
-      if (this.state.livArry[num] != "" && this.state.livArry[num] != undefined) {
-        this.resolveLine(this.state.livArry[num], num);
+    if (!this.state.livStop) {
+      if (num <= this.state.livArry.length - 1) {
+        if (this.state.livArry[num] != "" && this.state.livArry[num] != undefined) {
+          this.resolveLine(this.state.livArry[num], num);
+        }
       }
+    } else {
+      window.clearTimeout();
+      this.state.audio.pause();
     }
   },
   resolveLine: function resolveLine(strLine, num) {
@@ -27198,25 +27256,17 @@ var ReadApplication = _react2.default.createClass({
               url: source[1]
             };
             break;
-          case "openvideo":
-            msg = {
-              cmd: "openvideo",
-              video: source[1]
-            };
-            break;
-          case "video":
-            msg = {
-              cmd: "video",
-              video: source[1]
-            };
-            break;
         }
         break;
 
     }
     setTimeout(function () {
-      thiz.handleMessage(msg);
-      thiz.readLineLiv(num + 1);
+      thiz.setState({
+        lineIndex: num + 1
+      }, function () {
+        thiz.handleMessage(msg);
+        thiz.readLineLiv(thiz.state.lineIndex);
+      });
     }, timeGap);
   },
   getWindowSize: function getWindowSize() {
