@@ -28,6 +28,7 @@ let ReadApplication = React.createClass({
       livArry: [],
       livStop: false,
       lineIndex: 0,
+      pageIndex:0,
       timeout: null,
       audio: audio,
       audioCollect: [],
@@ -104,15 +105,12 @@ let ReadApplication = React.createClass({
       $('#liv_left').on('click', function() {
         clearTimeout(thiz.state.timeout);
         thiz.state.audio.pause();
-        for (let i = 0; i <= pageArry.length; i++) {
-          if (pageArry[i] == thiz.state.lineIndex && i > 0) {
+        if(thiz.state.pageIndex>0){
             thiz.setState({
-              lineIndex: pageArry[i - 1]
+              lineIndex: pageArry[thiz.state.pageIndex-1]
             }, function() {
               thiz.readLineLiv(thiz.state.lineIndex);
             });
-            return;
-          }
         }
       });
       //liv left
@@ -121,15 +119,12 @@ let ReadApplication = React.createClass({
       $('#liv_right').on('click', function() {
         clearTimeout(thiz.state.timeout);
         thiz.state.audio.pause();
-        for (let i = 0; i <= pageArry.length; i++) {
-          if (pageArry[i] == thiz.state.lineIndex && i < pageArry.length) {
-            thiz.setState({
-              lineIndex: pageArry[i + 1]
+        if(thiz.state.pageIndex<pageArry.length-1){
+           thiz.setState({
+              lineIndex: pageArry[thiz.state.pageIndex+1]
             }, function() {
               thiz.readLineLiv(thiz.state.lineIndex);
             });
-            return;
-          }
         }
       });
       //liv right
@@ -152,7 +147,7 @@ let ReadApplication = React.createClass({
         }
       }
     } else {
-      clearTimeout(thiz.state.timeout);
+      clearTimeout(this.state.timeout);
       this.state.audio.pause();
     }
   },
@@ -163,6 +158,9 @@ let ReadApplication = React.createClass({
     var cmd = strLine.split("##")[1].substring(0, 4);
     switch (cmd) {
       case "imag":
+      this.setState({
+        pageIndex:strLine.split(":")[0]-1 
+      });
         msg = {
           cmd: "image",
           image: strLine.split("!!##image##!!")[1]
