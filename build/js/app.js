@@ -27049,7 +27049,7 @@ var ReadApplication = _react2.default.createClass({
       livArry: [],
       livStop: false,
       lineIndex: 0,
-      timeout: undefined,
+      timeout: null,
       audio: audio,
       audioCollect: [],
       video: video,
@@ -27125,7 +27125,7 @@ var ReadApplication = _react2.default.createClass({
       //liv left
       $('#liv_left').on('click', function () {
         window.clearTimeout(thiz.state.timeout);
-        this.state.audio.pause();
+        thiz.state.audio.pause();
         for (var i = 0; i <= pageArry.length; i++) {
           if (pageArry[i] == thiz.state.lineIndex && i > 0) {
             thiz.setState({
@@ -27142,7 +27142,7 @@ var ReadApplication = _react2.default.createClass({
       //liv right
       $('#liv_right').on('click', function () {
         window.clearTimeout(thiz.state.timeout);
-        this.state.audio.pause();
+        thiz.state.audio.pause();
         for (var i = 0; i <= pageArry.length; i++) {
           if (pageArry[i] == thiz.state.lineIndex && i < pageArry.length) {
             thiz.setState({
