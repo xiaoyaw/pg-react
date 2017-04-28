@@ -27124,7 +27124,7 @@ var ReadApplication = _react2.default.createClass({
 
       //liv left
       $('#liv_left').on('click', function () {
-        window.clearTimeout(thiz.state.timeout);
+        clearTimeout(thiz.state.timeout);
         thiz.state.audio.pause();
         for (var i = 0; i <= pageArry.length; i++) {
           if (pageArry[i] == thiz.state.lineIndex && i > 0) {
@@ -27141,7 +27141,7 @@ var ReadApplication = _react2.default.createClass({
 
       //liv right
       $('#liv_right').on('click', function () {
-        window.clearTimeout(thiz.state.timeout);
+        clearTimeout(thiz.state.timeout);
         thiz.state.audio.pause();
         for (var i = 0; i <= pageArry.length; i++) {
           if (pageArry[i] == thiz.state.lineIndex && i < pageArry.length) {
@@ -27174,7 +27174,7 @@ var ReadApplication = _react2.default.createClass({
         }
       }
     } else {
-      window.clearTimeout(thiz.state.timeout);
+      clearTimeout(thiz.state.timeout);
       this.state.audio.pause();
     }
   },

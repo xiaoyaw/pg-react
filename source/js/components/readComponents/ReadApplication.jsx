@@ -28,7 +28,7 @@ let ReadApplication = React.createClass({
       livArry: [],
       livStop: false,
       lineIndex: 0,
-      timeout:null,
+      timeout: null,
       audio: audio,
       audioCollect: [],
       video: video,
@@ -102,9 +102,9 @@ let ReadApplication = React.createClass({
 
       //liv left
       $('#liv_left').on('click', function() {
-        window.clearTimeout(thiz.state.timeout);
+        clearTimeout(thiz.state.timeout);
         thiz.state.audio.pause();
-        for (var i = 0; i <= pageArry.length; i++) {
+        for (let i = 0; i <= pageArry.length; i++) {
           if (pageArry[i] == thiz.state.lineIndex && i > 0) {
             thiz.setState({
               lineIndex: pageArry[i - 1]
@@ -119,9 +119,9 @@ let ReadApplication = React.createClass({
 
       //liv right
       $('#liv_right').on('click', function() {
-        window.clearTimeout(thiz.state.timeout);
+        clearTimeout(thiz.state.timeout);
         thiz.state.audio.pause();
-        for (var i = 0; i <= pageArry.length; i++) {
+        for (let i = 0; i <= pageArry.length; i++) {
           if (pageArry[i] == thiz.state.lineIndex && i < pageArry.length) {
             thiz.setState({
               lineIndex: pageArry[i + 1]
@@ -152,7 +152,7 @@ let ReadApplication = React.createClass({
         }
       }
     } else {
-      window.clearTimeout(thiz.state.timeout);
+      clearTimeout(thiz.state.timeout);
       this.state.audio.pause();
     }
   },
@@ -241,7 +241,7 @@ let ReadApplication = React.createClass({
         break;
 
     }
-    thiz.state.timeout=setTimeout(function() {
+    thiz.state.timeout = setTimeout(function() {
       thiz.setState({
         lineIndex: num + 1
       }, function() {
