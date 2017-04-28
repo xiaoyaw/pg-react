@@ -27112,7 +27112,7 @@ var ReadApplication = _react2.default.createClass({
       //get test
 
       //liv stop
-      $('liv_stop').on('click', function () {
+      $('#liv_stop').on('click', function () {
         thiz.setState({
           liv_stop: !thiz.state.livStop
         }, function () {
@@ -27122,7 +27122,7 @@ var ReadApplication = _react2.default.createClass({
       //liv stop
 
       //liv left
-      $('liv_left').on('click', function () {
+      $('#liv_left').on('click', function () {
         for (var i = 0; i <= pageArry.length; i++) {
           if (pageArry[i] == thiz.state.lineIndex && i > 0) {
             thiz.setState({
@@ -27139,7 +27139,7 @@ var ReadApplication = _react2.default.createClass({
       //liv left
 
       //liv right
-      $('liv_right').on('click', function () {
+      $('#liv_right').on('click', function () {
         for (var i = 0; i <= pageArry.length; i++) {
           if (pageArry[i] == thiz.state.lineIndex && i < pageArry.length) {
             thiz.setState({
