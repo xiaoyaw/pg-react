@@ -27048,6 +27048,7 @@ var ReadApplication = _react2.default.createClass({
       url_getLiv: 'http://182.254.223.23/download/records/',
       livArry: [],
       livStop: false,
+      pageTurn: false,
       lineIndex: 0,
       pageIndex: 0,
       timeout: null,
@@ -27129,6 +27130,7 @@ var ReadApplication = _react2.default.createClass({
         thiz.state.audio.pause();
         if (thiz.state.pageIndex > 0) {
           thiz.setState({
+            pageTurn: true,
             lineIndex: pageArry[thiz.state.pageIndex - 1]
           }, function () {
             thiz.readLineLiv(thiz.state.lineIndex);
@@ -27143,6 +27145,7 @@ var ReadApplication = _react2.default.createClass({
         thiz.state.audio.pause();
         if (thiz.state.pageIndex < pageArry.length - 1) {
           thiz.setState({
+            pageTurn: true,
             lineIndex: pageArry[thiz.state.pageIndex + 1]
           }, function () {
             thiz.readLineLiv(thiz.state.lineIndex);
@@ -27175,12 +27178,18 @@ var ReadApplication = _react2.default.createClass({
   },
   resolveLine: function resolveLine(strLine, num) {
     var thiz = this;
-    var timeGap = strLine.split(":")[2]; //时间
+    var timeGap;
+    if (!this.state.pageTurn) {
+      timeGap = strLine.split(":")[2]; //时间
+    } else {
+      timeGap = 0;
+    }
     var msg = null;
     var cmd = strLine.split("##")[1].substring(0, 4);
     switch (cmd) {
       case "imag":
         this.setState({
+          pageTurn: false,
           pageIndex: strLine.split(":")[0] - 1
         });
         msg = {
