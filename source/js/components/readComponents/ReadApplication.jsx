@@ -92,21 +92,11 @@ let ReadApplication = React.createClass({
 
       //liv stop
       $('#liv_stop').on('click', function() {
-        if (!thiz.state.livStop) {
-          thiz.setState({
-            liv_stop: true
-          }, function() {
-            clearTimeout(thiz.state.timeout);
-            thiz.state.audio.pause();
-          });
-        } else {
-           thiz.setState({
-            liv_stop: false
-          }, function() {
-              thiz.readLineLiv(thiz.state.lineIndex);
-          });
-        }
-
+        thiz.setState({
+          livStop: !thiz.state.livStop
+        }, function() {
+          thiz.readLineLiv(thiz.state.lineIndex)
+        });
       });
       //liv stop
 
@@ -161,7 +151,10 @@ let ReadApplication = React.createClass({
           this.resolveLine(this.state.livArry[num], num);
         }
       }
-    } 
+    } else {
+      clearTimeout(thiz.state.timeout);
+      this.state.audio.pause();
+    }
   },
   resolveLine: function(strLine, num) {
     var thiz = this;
