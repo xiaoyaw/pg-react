@@ -11,7 +11,7 @@ var Select = React.createClass({
 		return {
 			// url_litLiv: 'http://203.195.173.135:9000/files/list?format=json',
 			url_litLiv: 'http://182.254.223.23:9000/play/list?format=json',
-			displayFile: []
+			displayFile: ["add_addss_Lesson-2017-06-01-14-52-30"]
 		};
 	},
 	componentDidMount: function() {
@@ -19,7 +19,7 @@ var Select = React.createClass({
 			var that = this;
 			var user = this.getUser();
 			if (user != null && user != undefined) {
-				this.queryAllLiv(user);
+				//this.queryAllLiv(user);
 			}
 			$('#toread').on('click', function() {
 				if ($('#liv_select').val() != '' && $('#liv_select').val() != null) {
@@ -90,7 +90,7 @@ var Select = React.createClass({
 	},
 	formatLivName: function(name) {
 		var formatname;
-		//timestamp
+		//timestamp add_addss_Lesson-2017-05-08-14-52-30
 		if (name.split('-').length == 5 && name.split(':').length == 3) {
 			switch (name.split('_').length) {
 				case 2:
@@ -107,7 +107,7 @@ var Select = React.createClass({
 					formatname = name.split('-')[4].split(':')[0] + ':' + name.split('-')[4].split(':')[1] + '-' + name.split('_')[2].split('-')[0];
 			}
 		} else {
-			//no timestamp
+			//no timestamp add_addss_Lesson-2017-05-08-14-52-30
 			switch (name.split('_').length) {
 				case 2:
 					formatname = name.split('_')[1];
@@ -129,18 +129,15 @@ var Select = React.createClass({
 	render: function() {
 		var that = this;
 		return ( < div >
-			< select id = "liv_select" > {
-				this.state.displayFile.map(function(name) {
-					return <option key = {
-						name
-					}
-					value = {
-						name
-					} > {
-						that.formatLivName(name)
-					} < /option>
-				})
-			} < /select > < button className='btn btn-default' id = 'toread' > <span className = "glyphicon glyphicon-log-in" > < /span > < /button > < /div > );
+			< select id = "liv_select" >
+				<option value="add_addss_Lesson-2017-06-01-14-52-30">
+					青少年心理学
+				</option>
+				<option value="publesson">
+					2010年一级建工实务
+				</option>
+
+			 < /select > < button className='btn btn-default' id = 'toread' > <span className = "glyphicon glyphicon-log-in" > < /span > < /button > < /div > );
 	}
 });
 

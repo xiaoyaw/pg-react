@@ -8,7 +8,6 @@ import React from 'react';
 let Canvas = React.createClass({
     getInitialState: function() {
         return {
-             iconArr: ["","","","","","","","","","","","","","","","","","","","a_e.png","a_f.png","a_g.png","a_k.png","","a_i.png","","smiley_63.png","smiley_64.png","smiley_65.png","smiley_66.png","smiley_68.png","smiley_77.png","smiley_79.png","smiley_80.png","smiley_81.png","smiley_82.png","","","","","smiley_87.png","smiley_88.png","smiley_89.png","","","","","","","","","","","","","emoji_64.png","","emoji_67.png","emoji_68.png","emoji_69.png","emoji_70.png","emoji_71.png","emoji_72.png","emoji_73.png","emoji_74.png","emoji_75.png","","","","","","","","","","emoji_85.png","emoji_86.png","emoji_87.png","emoji_88.png","","","","","","","","","","","","","","","","","","","","","","","","","","","star.png","crown.png","usa.png","china.png","sign.png"],
             canvas: null,
             clicked: false //监听状态隐藏显示导航栏
         };
@@ -104,7 +103,7 @@ let Canvas = React.createClass({
                         // console.log(oX + " " + oY);
                         canvas.beginPath();
                         // （Android系统色） 设置颜色先取补数 再转换为16进制
-                        //canvas.strokeStyle = this.getcolor(data.properties.color);
+                        canvas.strokeStyle = this.getcolor(data.properties.color);
                         canvas.lineWidth = 15;
                         canvas.lineCap = 'round';
                         canvas.lineJoin = 'round';
@@ -145,7 +144,8 @@ let Canvas = React.createClass({
                                 canvas.drawImage(img, xpos - img.width * sX * oX / 2, ypos - img.height * sY * oY, img.width * sX * oX,
                                     img.height * sY * oY);
                             }
-                            img.src = "./img/"+this.state.iconArr[rid];
+                            var imgsrc = data.sicon.icon;
+                            img.src = 'data:image/png;base64,' + imgsrc;
                         }
                         break;
 

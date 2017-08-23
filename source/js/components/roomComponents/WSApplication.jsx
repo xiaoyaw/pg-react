@@ -9,12 +9,11 @@ import React from 'react';
 import Canvas from './blackBoard/Canvas.jsx';
 import BgImage from './blackBoard/BgImage.jsx';
 import OpenAudio from './alertComponent/OpenAudio.jsx';
-import OpenShare from './alertComponent/OpenShare.jsx';
-import Loading from './alertComponent/Loading.jsx';
+// import ChatView from './chatclient/ChatView.jsx';
 import {
   hashHistory
 } from 'react-router';
-let Application = React.createClass({
+let WSApplication = React.createClass({
   getInitialState: function() {
 
     var audio = document.getElementById('myaudio');
@@ -24,16 +23,16 @@ let Application = React.createClass({
       // IE下禁止元素被选取        
       document.onselectstart = new Function("return false");
     }
+
+    var ws;
+    if (ws == null || ws.readyState != 1) {
+      ws = new WebSocket('ws://203.195.173.135:9999/ws');
+    }
     return {
-      connection: null,
+      //xmpp
       connected: false,
       //liv
-      user: '',
-      pwd: '',
       isStop: false,
-      pageIndex: 0,
-      pageNum: 0,
-      res: null,
       livsize: [],
       dataNow: 0,
       audio: audio,
@@ -41,9 +40,10 @@ let Application = React.createClass({
       video: video,
       interTime: '',
       userName: null,
+      webSocket: ws,
       scaleX: null, //给canvas  X轴图片或笔迹伸缩量
       scaleY: null, //给canvas  Y轴图片或笔迹伸缩量
-      src: "./img/welcome.png", //给imgae的
+      src: null, //给imgae的
       width: null, //给image  canvse的
       height: null, //给image  canvse的
       left: null, //给image  canvse的
@@ -56,6 +56,29 @@ let Application = React.createClass({
     };
   },
 
+  //发送data打开连接
+  connectWebSocket: function(ws, user, pw, id) {
+    var thiz = this;
+    ws.onerror = function(e) {
+      // console.log("error");
+      alert('websocket连接有异常...');
+      hashHistory.replace('/');
+    }
+    ws.onopen = function(e) {
+      thiz.wsKeepConnect();
+      var UserMsg = {
+        'cmd': 'login',
+        'userName': user,
+        'passWord': pw,
+        'sessionID': id
+      };
+      ws.send(JSON.stringify(UserMsg));
+    }
+    ws.onclose = function(e) {
+      // console.log("closed");
+      $('#nettip').fadeIn();
+    }
+  },
   //搁置
   handleResize: function(e) {
     if (this.isMounted()) {
@@ -63,8 +86,8 @@ let Application = React.createClass({
     }
   },
   componentWillUnmount() {
-    var that = this;
     var username = this.state.username;
+    var ws = this.state.webSocket;
     var audio = document.getElementById('myaudio');
     var video = document.getElementById('myvideo');
     audio.pause();
@@ -72,187 +95,42 @@ let Application = React.createClass({
     video.pause();
     video.src = '';
     window.clearInterval(this.state.interTime);
-    var roomid = this.props._roomid;
-    this.state.connection.send($pres({
-      from: that.state.user + "@" + Config.XMPP_DOMAIN,
-      to: roomid + "@conference." + Config.XMPP_DOMAIN + "/" + that.state.user,
-      type: "unavailable"
-    }).tree());
+    ws.close(1000, username);
   },
 
   //渲染以后？ 设置为以前收不到Message
   componentDidMount: function() {
     var thiz = this;
     if (this.isMounted()) {
-      //
-      this.calculateImgProp(this.state.src);
-      //
+      //ws连接
       if (typeof(Storage) !== "undefined") {
         if (sessionStorage.username) {
-          this.setState({
-            //user: sessionStorage.getItem("username"),
-            //pwd: sessionStorage.getItem("password")
-            user: "demo",
-            pwd: "111111"
-          }, function() {
-            var jid = this.state.user + "@" + Config.XMPP_DOMAIN;
-            this.state.connection = new Strophe.Connection(Config.XMPP_BOSH_SERVICE);
-            this.state.connection.connect(jid, thiz.state.pwd, thiz.onConnect);
-          });
+          var un = sessionStorage.getItem("username");
+          var pd = sessionStorage.getItem("password");
         }
       }
+      var roomid = this.props._roomid;
+
+      var ws = this.state.webSocket;
+      this.connectWebSocket(ws, un, pd, roomid);
+   
       window.addEventListener('resize', this.handleResize);
-    }
-  },
-  onConnect: function(status) {
-    var roomid = this.props._roomid;
-    var that = this;
-    console.log(status);
-    if (status == Strophe.Status.CONNFAIL) {
-      console.log("连接失败！");
-    } else if (status == Strophe.Status.AUTHFAIL) {
-      console.log("登录失败！");
-    } else if (status == Strophe.Status.DISCONNECTED) {
-      console.log("连接断开！");
-      this.setState({
-        connected: false
-      });
-    } else if (status == Strophe.Status.CONNECTED) {
-      console.log("连接成功！");
-      $('#loading').fadeOut(1000,function(){
-          if (sessionStorage.getItem('openaudio') != 'isOpen') {
-              $('#openaudio').fadeIn();
-            }
-      });
-      this.setState({
-        connected: true
-      });
-
-      // 当接收到<message>节，调用onMessage回调函数
-      this.state.connection.addHandler(that.onMessage, null, 'message', null, null, null);
-
-      // 首先要发送一个<presence>给服务器（initial presence）
-      this.state.connection.send($pres().tree());
-      // 发送<presence>元素，加入房间
-      this.state.connection.send($pres({
-        from: that.state.user + "@" + Config.XMPP_DOMAIN,
-        to: roomid + "@conference." + Config.XMPP_DOMAIN + "/" + that.state.user
-      }).c('x', {
-        xmlns: 'http://jabber.org/protocol/muc'
-      }).tree());
-
-      this.state.connection.send($iq({
-        from: that.state.user + "@" + Config.XMPP_DOMAIN + "/Smack",
-        to: roomid + "@conference." + Config.XMPP_DOMAIN + "/" + that.state.user,
-        id: "pageshare_unlockroom",
-        type: "set"
-      }).c('query', {
-        xmlns: 'http://jabber.org/protocol/muc#owner'
-      }).c('x', {
-        xmlns: "jabber:x:data",
-        type: "submit"
-      }).tree());
-    }
-  },
-  onMessage: function(msg) {
-    // 解析出<message>的from、type属性，以及body子元素
-    var from = msg.getAttribute('from');
-    var type = msg.getAttribute('type');
-    var elems = msg.getElementsByTagName('body');
-    if (type == "groupchat" && elems.length > 0) {
-      var body = elems[0];
-      var obj = this.xmppToWs(Strophe.getText(body));
-      if (obj != undefined) {
-        this.handleMessage(obj);
+      ws.onmessage = function(msg) {
+        thiz.handleMessage(JSON.parse(msg.data));
       }
     }
-    return true;
   },
-  xmppToWs: function(msg) {
-    var cmd = msg.split("##")[1].substring(0, 4);
-    var obj;
-    switch (cmd) {
-      case "imag":
-        obj = {
-          cmd: "image",
-          image: msg.split("!!##image##!!")[1]
-        }
-        break;
-      case "path":
-        var properties = msg.split("!!##path[")[1].split("]##!!")[0].split(",");
-        var oo = JSON.parse(window.atob(msg.split("]##!!")[1]));
-        oo.properties = {
-          color: properties[0],
-          weight: properties[1],
-          width: properties[2],
-          height: properties[3]
-        }
-        oo.cmd = "path";
-        obj = oo;
-        break;
-      case "text":
-        var stext = msg.split("!!##text[")[1].split("]")[0].split(",");
-        obj = {
-          cmd: "text",
-          stext: {
-            width: stext[2],
-            height: stext[3],
-            color: stext[4],
-            line: stext[5],
-            text: stext[6],
-            x: stext[0],
-            y: stext[1]
-          }
-        }
-        break;
-      case "icon":
-        var sicon = msg.split("!!##icon[")[1].split("]")[0].split(",");
-        obj = {
-          cmd: "icon",
-          sicon: {
-            rid: sicon[6],
-            width: sicon[4],
-            height: sicon[5],
-            x: sicon[0],
-            y: sicon[1],
-            x2: sicon[2],
-            y2: sicon[3]
-          }
-
-        }
-        break;
-      case "eras":
-        var properties = msg.split("!!##erase[")[1].split("]##!!")[0].split(",");
-        var oo = JSON.parse(window.atob(msg.split("]##!!")[1]));
-        oo.properties = {
-          width: properties[2],
-          height: properties[3]
-        };
-        oo.cmd = "erase";
-        obj = oo;
-        break;
-      case "sour":
-        var source = msg.split("!!##source[")[1].split("]##!!")[0].split(",");
-        switch (source[0]) {
-          case "voice":
-            obj = {
-              cmd: "urlvoice",
-              url: source[1]
-            }
-            break;
-
-          case "video":
-            obj = {
-              cmd: "urlvideo",
-              url: source[1]
-            }
-            break;
-        }
-        break;
-    }
-    return obj;
+  wsKeepConnect: function() {
+    var ws = this.state.webSocket;
+    var heart = '';
+    var preventTimeOut = setInterval(
+      function() {
+        ws.send(JSON.stringify(heart));
+      }, 300000);
+    this.setState({
+      interTime: preventTimeOut
+    });
   },
-
   getWindowSize: function() {
     var ww = window.innerWidth;
     var wh = window.innerHeight;
@@ -330,7 +208,7 @@ let Application = React.createClass({
   playbothaudio: function() {
     var that = this;
     var audio = this.state.audio;
-    if (audio.ended || audio.paused) {
+    if (audio.ended||audio.paused) {
       if (this.state.audioCollect.length > 0) {
         audio.src = this.state.audioCollect.shift();
         audio.play();
@@ -507,8 +385,6 @@ let Application = React.createClass({
       this.state.height
     }
     / >   < OpenAudio / >
-    < Loading / >
-      < OpenShare / >
       < /div >
   );
 }
@@ -516,4 +392,4 @@ let Application = React.createClass({
 
 });
 
-export default Application;
+export default WSApplication;

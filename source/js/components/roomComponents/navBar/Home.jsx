@@ -9,7 +9,7 @@ var Home = React.createClass({
 	componentDidMount:function(){
 		if(this.isMounted()){
 			$('#exit').on('click',function(){
-				hashHistory.replace('/');
+				hashHistory.replace('/join');
 			})
 		}
 	},

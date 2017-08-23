@@ -16,9 +16,6 @@ var AppRoom = React.createClass({
       }
     }
   },
-  componentDidMount: function() {
-
-  },
   render: function() {
     var text = this.props.params.id;
     return ( < div >

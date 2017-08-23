@@ -9,6 +9,7 @@ import React from 'react';
 import Canvas from '../roomComponents/blackBoard/Canvas.jsx';
 import BgImage from '../roomComponents/blackBoard/BgImage.jsx';
 import OpenAudio from '../roomComponents/alertComponent/OpenAudio.jsx';
+import Loading from '../roomComponents/alertComponent/Loading.jsx';
 import {
   hashHistory
 } from 'react-router';
@@ -24,12 +25,12 @@ let ReadApplication = React.createClass({
 
     return {
       //liv
-      url_getLiv: 'http://182.254.223.23/download/records/',
       livArry: [],
+      isLivLeft: false,
       livStop: false,
-      pageTurn:false,
+      pageTurn: false,
       lineIndex: 0,
-      pageIndex:0,
+      pageIndex: -1,
       timeout: null,
       audio: audio,
       audioCollect: [],
@@ -69,25 +70,36 @@ let ReadApplication = React.createClass({
     var thiz = this;
     if (this.isMounted()) {
       //如果是分享出来的
-      var fileName = thiz.props.file;
+      var fileName = this.props.file;
       var url;
       var pageArry = [];
       //get test
-      $.get("http://182.254.223.23/download/records/zzz/LivDemo.liv", function(res) {
-        var livArry = res.split("\n");
+      $.get(Config.LIV_URL + fileName+".liv", function(res) {
+        var livArry = res.split("\n"); //行数 Message
 
         for (var i = 0; i <= livArry.length; i++) {
           if (livArry[i] != "" && livArry[i] != undefined) {
             if (livArry[i].indexOf("!!##image##!!") > 0) {
-              pageArry.push(i);
+              pageArry.push(i); //页数获取
             }
           }
         }
         thiz.setState({
           livArry: livArry
         }, function() {
-          $("#liv_Nav").fadeIn();
-          thiz.readLineLiv(thiz.state.lineIndex);
+          $('#loading').fadeOut(1000, function() {
+            if (sessionStorage.getItem('openaudio') != 'isOpen') {
+              $('#openaudio').fadeIn(function(){
+                $('#openaudio').on('click',function(){
+                   $("#liv_Nav").fadeIn();
+                   thiz.readLineLiv(thiz.state.lineIndex);
+                });
+              });
+            }else{
+              $("#liv_Nav").fadeIn();
+              thiz.readLineLiv(thiz.state.lineIndex);
+            }
+          });
         });
       });
       //get test
@@ -106,13 +118,14 @@ let ReadApplication = React.createClass({
       $('#liv_left').on('click', function() {
         clearTimeout(thiz.state.timeout);
         thiz.state.audio.pause();
-        if(thiz.state.pageIndex>0){
-            thiz.setState({
-              pageTurn:true,
-              lineIndex: pageArry[thiz.state.pageIndex-1]
-            }, function() {
-              thiz.readLineLiv(thiz.state.lineIndex);
-            });
+        if (thiz.state.pageIndex > 0) {
+          thiz.setState({
+            pageTurn: true,
+            isLivLeft: true,
+            lineIndex: pageArry[thiz.state.pageIndex - 1]
+          }, function() {
+            thiz.readLineLiv(thiz.state.lineIndex);
+          });
         }
       });
       //liv left
@@ -121,13 +134,13 @@ let ReadApplication = React.createClass({
       $('#liv_right').on('click', function() {
         clearTimeout(thiz.state.timeout);
         thiz.state.audio.pause();
-        if(thiz.state.pageIndex<pageArry.length-1){
-           thiz.setState({
-              pageTurn:true,
-              lineIndex: pageArry[thiz.state.pageIndex+1]
-            }, function() {
-              thiz.readLineLiv(thiz.state.lineIndex);
-            });
+        if (thiz.state.pageIndex < pageArry.length - 1) {
+          thiz.setState({
+            pageTurn: true,
+            lineIndex: pageArry[thiz.state.pageIndex + 1]
+          }, function() {
+            thiz.readLineLiv(thiz.state.lineIndex);
+          });
         }
       });
       //liv right
@@ -157,19 +170,18 @@ let ReadApplication = React.createClass({
   resolveLine: function(strLine, num) {
     var thiz = this;
     var timeGap;
-    if(!this.state.pageTurn){
-        timeGap = strLine.split(":")[2]; //时间
-    }else{
-        timeGap=0;
+    if (!this.state.pageTurn) {
+      timeGap = strLine.split(":")[2]; //时间
+    } else {
+      timeGap = 0;
     }
     var msg = null;
     var cmd = strLine.split("##")[1].substring(0, 4);
     switch (cmd) {
       case "imag":
-      this.setState({
-        pageTurn:false,
-        pageIndex:strLine.split(":")[0]-1 
-      });
+        this.setState({
+          pageTurn: false
+        });
         msg = {
           cmd: "image",
           image: strLine.split("!!##image##!!")[1]
@@ -237,8 +249,7 @@ let ReadApplication = React.createClass({
               url: source[1]
             }
             break;
-
-          case "urlvideo":
+          case "video":
             msg = {
               cmd: "urlvideo",
               url: source[1]
@@ -334,7 +345,7 @@ let ReadApplication = React.createClass({
   playbothaudio: function() {
     var that = this;
     var audio = this.state.audio;
-    if (audio.ended) {
+    if (audio.ended || audio.paused) {
       if (this.state.audioCollect.length > 0) {
         audio.src = this.state.audioCollect.shift();
         audio.play();
@@ -382,12 +393,24 @@ let ReadApplication = React.createClass({
 
         case "image":
           //注意：换background的时候，需要将data置空
-          this.setState({
-            data: null,
-            audioCollect: []
-          }, function() {
-            this.state.audio.pause();
-          });
+          if (this.state.isLivLeft) {
+            this.setState({
+              data: null,
+              isLivLeft: false,
+              audioCollect: [],
+              pageIndex: this.state.pageIndex - 1
+            }, function() {
+              this.state.audio.pause();
+            });
+          } else {
+            this.setState({
+              data: null,
+              audioCollect: [],
+              pageIndex: this.state.pageIndex + 1
+            }, function() {
+              this.state.audio.pause();
+            });
+          }
           this.calculateImgProp('data:image/png;base64,' + value.image);
 
           break;
@@ -505,7 +528,7 @@ let ReadApplication = React.createClass({
     _height = {
       this.state.height
     }
-    / >   < OpenAudio / > < /div >
+    / >   < OpenAudio / > < Loading / > < /div >
   );
 }
 

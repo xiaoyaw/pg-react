@@ -15,26 +15,28 @@ var Edit = React.createClass({
 	componentDidMount: function() {
 		var thiz = this;
 		if (this.isMounted()) {
+
 			$('#edit').click(function() {
+				if (thiz.state.isIOS || thiz.state.isAndroid) {
+					$('#myopen').modal('toggle');
+				}
+			});
+
+			$('#app_download').on('click', function() {
 				if (thiz.state.isIOS) {
-					var clickedAt = +new Date;
-					var the_href = 'itms-apps://itunes.apple.com/us/app/pageshare/id1135319277?mt=8'; // 获得下载链接
-					document.location = "pageshare://www.pictoshare.net/app?roomID=public3001"; // 打开某手机上的某个app应用
-					setTimeout(function() {
-						if (+new Date - clickedAt < 2000) {
-							document.location = the_href;
-						}
-					}, 1000);
+					var the_href = 'itms-apps://itunes.apple.com/us/app/pageshare/id1135319277?mt=8';
+					document.location = the_href;
 				}
 				if (thiz.state.isAndroid) {
 					var the_href = 'http://pictoshare.net/download/'; // 获得下载链接
-					var clickedAt = +new Date;
-					document.location = "pageshare://pictoshare.net/app?roomID=public3001"; // 打开某手机上的某个app应用
-					setTimeout(function() {
-						if (+new Date - clickedAt < 2000) {
-							document.location = the_href;
-						}
-					}, 1000);
+					document.location = the_href;
+				}
+			});
+			$('#app_open').on('click', function() {
+				if ($('#app_roomid').val() != "" && $('#app_filepath').val() != "") {
+					document.location = "pageshare://pictoshare.net/course?roomID=" + $('#app_roomid').val() + "&filePath=" + $('#app_filepath').val();
+				} else {
+					document.location = "pageshare://pictoshare.net/app";
 				}
 			});
 		}
@@ -50,7 +52,7 @@ var Edit = React.createClass({
 		});
 	},
 	render: function() {
-		return ( < a id = 'edit'> < span className = 'glyphicon glyphicon-pencil' > < /span > < /a > );
+		return ( < a id = 'edit' > < span className = 'glyphicon glyphicon-pencil' > < /span > < /a > );
 	}
 
 });

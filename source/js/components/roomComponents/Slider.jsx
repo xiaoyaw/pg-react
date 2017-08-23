@@ -67,12 +67,15 @@ var Slider = React.createClass({
 		}
 	},
 	render: function() {
+		var name;
 		var shadow = this.state.isMouseDown ? '0px 0px 20px #0AFFB6' : '0px 0px 20px #73FAFF';
 		var roomid = this.props._roomid;
 		return ( < div ref = "slider"
 					id='slider'
 			style = {
-				{
+				{	overflow: "hidden",
+					textOverflow:"ellipsis",
+					whiteSpace: "nowrap",
 					boxShadow: shadow,
 					borderRadius: '30%',
 					backgroundColor: '#F0F8FF',
@@ -89,7 +92,7 @@ var Slider = React.createClass({
 				}
 			} >
 			< h5 > < font color = "#A020F0" >
-			课号： {
+			{
 				roomid
 			} < /font>  < /h5> < /div > );
 	}

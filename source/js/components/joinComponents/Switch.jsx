@@ -3,7 +3,9 @@ var React = require('react');
 var Switch = React.createClass({
 
 	getInitialState: function() {
+		var isChinese=(navigator.language||navigator.browserLanguage).substring(0,2)=="zh";
 		return {
+			isChinese:isChinese,
 			left: 50,
 			top: 140,
 			isMouseDown: false,
@@ -74,7 +76,11 @@ var Switch = React.createClass({
 	render: function() {
 		var shadow = this.state.isMouseDown ? '0px 0px 20px #0AFFB6' : '0px 0px 20px #73FAFF';
 		var sClass = this.state.isRead ? 'glyphicon glyphicon-book' : 'glyphicon glyphicon-user';
-		var name = this.state.isRead ? '阅读' : '课堂';
+		if(this.state.isChinese){
+		var	name = this.state.isRead ? '阅读' : '课堂';
+		}else{
+		var	name=this.state.isRead ? 'Reader' : 'Online';
+		}
 		var color = this.state.isRead ? '#F0F8FF' : '#F0FFFF';
 		return ( < div ref = "slider"
 			id = 'switch'
@@ -85,8 +91,8 @@ var Switch = React.createClass({
 					backgroundColor: color,
 					textAlign: 'center',
 					lineHeight: '60px',
-					width: '60px',
-					height: '60px',
+					width: '65px',
+					height: '65px',
 					position: 'absolute',
 					left: this.state.left,
 					top: this.state.top,

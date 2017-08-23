@@ -8,19 +8,12 @@ var OpenAudio = React.createClass({
 			left = obj.left,
 			top = obj.top;
 		return {
-			display:'block',
+			display:'none',
 			height: width + 'px',
 			width: height + 'px',
 			left: left + 'px',
 			top: top + 'px'
 		};
-	},
-	componentWillMount: function() {
-		if (sessionStorage.getItem('openaudio') == 'isOpen') {
-			this.setState({
-				display:'none' 
-			});
-		}
 	},
 	componentDidMount: function() {
 		if (this.isMounted()) {
@@ -30,7 +23,7 @@ var OpenAudio = React.createClass({
 					var audio = document.getElementById("myaudio");
 					audio.src='./img/welcome.mp3';
 					audio.play();
-					$('#openaudio').fadeOut(500);
+					$('#openaudio').fadeOut();
 				}
 			});
 
