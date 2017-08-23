@@ -13,25 +13,17 @@ var _AppRoom = require('./components/AppRoom.jsx');
 
 var _AppRoom2 = _interopRequireDefault(_AppRoom);
 
-var _PAppRoom = require('./components/PAppRoom.jsx');
-
-var _PAppRoom2 = _interopRequireDefault(_PAppRoom);
-
 var _AppJoin = require('./components/AppJoin.jsx');
 
 var _AppJoin2 = _interopRequireDefault(_AppJoin);
-
-var _PAppJoin = require('./components/PAppJoin.jsx');
-
-var _PAppJoin2 = _interopRequireDefault(_PAppJoin);
 
 var _wxLogin = require('./components/wxLogin.jsx');
 
 var _wxLogin2 = _interopRequireDefault(_wxLogin);
 
-var _PcLogin = require('./components/PcLogin.jsx');
+var _Login = require('./components/Login.jsx');
 
-var _PcLogin2 = _interopRequireDefault(_PcLogin);
+var _Login2 = _interopRequireDefault(_Login);
 
 var _EreadRoom = require('./components/readComponents/EreadRoom.jsx');
 
@@ -41,31 +33,33 @@ var _reactRouter = require('react-router');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import { browserHistory } from 'react-router';
+// if (is_weixin()) {
+//route of wechat
 /*
 Copyrighted, 版权所有，奕甲智能技术（上海）有限公司 2015-2018
 */
 
-if (is_weixin()) {
-	//route of wechat
-	_reactDom2.default.render(_react2.default.createElement(
-		_reactRouter.Router,
-		{ history: _reactRouter.hashHistory },
-		_react2.default.createElement(_reactRouter.Route, { path: '/', component: _wxLogin2.default }),
-		_react2.default.createElement(_reactRouter.Route, { path: '/join', component: _AppJoin2.default }),
-		_react2.default.createElement(_reactRouter.Route, { path: '/eread/:id', component: _EreadRoom2.default }),
-		_react2.default.createElement(_reactRouter.Route, { path: '/room/:id', component: _AppRoom2.default })
-	), document.getElementById('app'));
-} else {
-	//route of pc
-	_reactDom2.default.render(_react2.default.createElement(
-		_reactRouter.Router,
-		{ history: _reactRouter.hashHistory },
-		_react2.default.createElement(_reactRouter.Route, { path: '/', component: _PcLogin2.default }),
-		_react2.default.createElement(_reactRouter.Route, { path: '/join(/:id)', component: _PAppJoin2.default }),
-		_react2.default.createElement(_reactRouter.Route, { path: '/eread/:id', component: _EreadRoom2.default }),
-		_react2.default.createElement(_reactRouter.Route, { path: '/room/:id', component: _PAppRoom2.default })
-	), document.getElementById('app'));
-}
+_reactDom2.default.render(_react2.default.createElement(
+	_reactRouter.Router,
+	{ history: _reactRouter.hashHistory },
+	_react2.default.createElement(_reactRouter.Route, { path: '/', component: _Login2.default }),
+	_react2.default.createElement(_reactRouter.Route, { path: '/wxlogin', component: _wxLogin2.default }),
+	_react2.default.createElement(_reactRouter.Route, { path: '/join', component: _AppJoin2.default }),
+	_react2.default.createElement(_reactRouter.Route, { path: '/eread/:id', component: _EreadRoom2.default }),
+	_react2.default.createElement(_reactRouter.Route, { path: '/room/:id', component: _AppRoom2.default })
+), document.getElementById('app'));
+// }else{
+//route of pc
+// ReactDOM.render(
+//  <Router history={browserHistory}>
+//  	<Route path="/dev/build/" component={Login}/>
+//   	<Route path="/dev/build/join" component={AppJoin}/>
+//   	<Route path="/dev/build/eread/:id" component={EreadRoom}/>
+//    	<Route path="/dev/build/room/:id" component={PAppRoom}/>
+// </Router>,document.getElementById('app'));	
+
+// }
 
 function is_weixin() {
 	var ua = navigator.userAgent.toLowerCase();
@@ -76,7 +70,7 @@ function is_weixin() {
 	}
 }
 
-},{"./components/AppJoin.jsx":229,"./components/AppRoom.jsx":230,"./components/PAppJoin.jsx":231,"./components/PAppRoom.jsx":232,"./components/PcLogin.jsx":233,"./components/readComponents/EreadRoom.jsx":239,"./components/wxLogin.jsx":256,"react":228,"react-dom":3,"react-router":30}],2:[function(require,module,exports){
+},{"./components/AppJoin.jsx":229,"./components/AppRoom.jsx":230,"./components/Login.jsx":231,"./components/readComponents/EreadRoom.jsx":238,"./components/wxLogin.jsx":255,"react":228,"react-dom":3,"react-router":30}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -25435,11 +25429,13 @@ var _Switch = require('./joinComponents/Switch.jsx');
 
 var _Switch2 = _interopRequireDefault(_Switch);
 
+var _ShareJoin = require('./ShareJoin.jsx');
+
+var _ShareJoin2 = _interopRequireDefault(_ShareJoin);
+
 var _reactRouter = require('react-router');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-//修改部分：137
 
 var React = require('react');
 
@@ -25448,138 +25444,32 @@ var AppJoin = React.createClass({
 
 	getInitialState: function getInitialState() {
 		return {
-			nickname: '飞播e课'
+			nickname: ''
 		};
 	},
 	componentWillMount: function componentWillMount() {
-		if (sessionStorage.nickname) {
-			//分享设置
+		if (sessionStorage.username && sessionStorage.nickname) {
 			this.setState({
-				nickname: sessionStorage.getItem("nickname")
+				nickname: sessionStorage.getItem('nickname')
+			});
+		} else if (sessionStorage.username) {
+			this.setState({
+				nickname: sessionStorage.getItem('username')
 			});
 		} else {
 			_reactRouter.hashHistory.replace('/');
 		}
 	},
-
 	componentDidMount: function componentDidMount() {
-		var appid = sessionStorage.getItem('appid');
-		$.ajax({
-			async: true,
-			url: "php/wx_share.php",
-			type: "GET",
-			data: {
-				urll: document.location.href.split('#')[0],
-				appid: appid
-			},
-			timeout: 5000,
-			success: function success(result) {
-				var url_now = document.location.href.split('#')[0];
-				var arry = result.split(":");
-				var appid = arry[0],
-				    timestamp = arry[1],
-				    noncestr = arry[2],
-				    signature = arry[3];
-				//验证签名，监听分享
-				var title = '飞播云板',
-				    desc = '我有东西show你!',
-				    imgurl = 'http://pictoshare.net/dev/build/img/pageshare.png';
-				var is_hasData = setInterval(function () {
-					if (signature != undefined && signature != "" && signature != 'undefined') {
-						//微信分享接口
-						wx.config({
-							debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-							appId: appid, // 必填，公众号的唯一标识
-							timestamp: timestamp, // 必填，生成签名的时间戳
-							nonceStr: noncestr, // 必填，生成签名的随机串
-							signature: signature, // 必填，签名，见附录1
-							jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone', 'onMenuShareWeibo'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-						});
-
-						wx.ready(function () {
-							// config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
-							wx.onMenuShareAppMessage({
-								title: title, // 分享标题
-								desc: desc, // 分享描述
-								link: url_now, // 分享链接
-								imgUrl: imgurl, // 分享图标
-								type: '', // 分享类型,music、video或link，不填默认为link
-								dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-								success: function success() {
-									// 用户确认分享后执行的回调函数
-
-								},
-								cancel: function cancel() {
-									// 用户取消分享后执行的回调函数
-
-								}
-							});
-
-							wx.onMenuShareTimeline({
-								title: title, // 分享标题
-								link: url_now, // 分享链接
-								imgUrl: imgurl, // 分享图标
-								success: function success() {
-									// 用户确认分享后执行的回调函数
-								},
-								cancel: function cancel() {
-									// 用户取消分享后执行的回调函数
-								}
-							});
-
-							wx.onMenuShareQQ({
-								title: title, // 分享标题
-								desc: desc, // 分享描述
-								link: url_now, // 分享链接
-								imgUrl: imgurl, // 分享图标
-								success: function success() {
-									// 用户确认分享后执行的回调函数
-								},
-								cancel: function cancel() {
-									// 用户取消分享后执行的回调函数
-								}
-							});
-
-							wx.onMenuShareWeibo({
-								title: title, // 分享标题
-								desc: desc, // 分享描述
-								link: url_now, // 分享链接
-								imgUrl: imgurl, // 分享图标
-								success: function success() {
-									// 用户确认分享后执行的回调函数
-								},
-								cancel: function cancel() {
-									// 用户取消分享后执行的回调函数
-								}
-							});
-
-							wx.onMenuShareQZone({
-								title: title, // 分享标题
-								desc: desc, // 分享描述
-								link: url_now, // 分享链接
-								imgUrl: imgurl, // 分享图标
-								success: function success() {
-									// 用户确认分享后执行的回调函数
-								},
-								cancel: function cancel() {
-									// 用户取消分享后执行的回调函数
-								}
-							});
-						});
-						wx.error(function (res) {
-
-							console.log('签名失败');
-							console.log(res);
-							// config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-						});
-
-						window.clearInterval(is_hasData);
-					}
-				}, 50);
-			}
-		});
+		if (this.isMounted()) {
+			$('#headimage').on('click', function () {
+				sessionStorage.clear();
+				_reactRouter.hashHistory.replace('/');
+			});
+		}
 	},
 	render: function render() {
+
 		return React.createElement(
 			'div',
 			null,
@@ -25587,6 +25477,7 @@ var AppJoin = React.createClass({
 			}),
 			' ',
 			React.createElement(_JoinInput2.default, null),
+			React.createElement(_ShareJoin2.default, null),
 			React.createElement(_Switch2.default, null)
 		);
 	}
@@ -25595,7 +25486,7 @@ var AppJoin = React.createClass({
 
 module.exports = AppJoin;
 
-},{"./joinComponents/JoinInput.jsx":234,"./joinComponents/JoinNav.jsx":235,"./joinComponents/Switch.jsx":238,"react":228,"react-router":30}],230:[function(require,module,exports){
+},{"./ShareJoin.jsx":232,"./joinComponents/JoinInput.jsx":234,"./joinComponents/JoinNav.jsx":235,"./joinComponents/Switch.jsx":237,"react":228,"react-router":30}],230:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -25637,7 +25528,6 @@ var AppRoom = _react2.default.createClass({
       }
     }
   },
-  componentDidMount: function componentDidMount() {},
   render: function render() {
     var text = this.props.params.id;
     return _react2.default.createElement(
@@ -25659,218 +25549,61 @@ var AppRoom = _react2.default.createClass({
 
 module.exports = AppRoom;
 
-},{"./roomComponents/Application.jsx":241,"./roomComponents/NavagationBar.jsx":243,"./roomComponents/NetTip.jsx":244,"./roomComponents/Slider.jsx":246,"react":228,"react-dom":3}],231:[function(require,module,exports){
+},{"./roomComponents/Application.jsx":240,"./roomComponents/NavagationBar.jsx":242,"./roomComponents/NetTip.jsx":243,"./roomComponents/Slider.jsx":244,"react":228,"react-dom":3}],231:[function(require,module,exports){
 'use strict';
 
-var _PJoinInput = require('./joinComponents/PJoinInput.jsx');
-
-var _PJoinInput2 = _interopRequireDefault(_PJoinInput);
-
-var _JoinNav = require('./joinComponents/JoinNav.jsx');
-
-var _JoinNav2 = _interopRequireDefault(_JoinNav);
-
-var _Switch = require('./joinComponents/Switch.jsx');
-
-var _Switch2 = _interopRequireDefault(_Switch);
-
 var _reactRouter = require('react-router');
+
+var _WXIcon = require('./WXIcon.jsx');
+
+var _WXIcon2 = _interopRequireDefault(_WXIcon);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var React = require('react');
 
-var PAppJoin = React.createClass({
-	displayName: 'PAppJoin',
+var Login = React.createClass({
+	displayName: 'Login',
 
 	getInitialState: function getInitialState() {
+		var isEnglish = this.getLanguage();
+		var language = this.setLanguage(isEnglish);
+		var is_weixin = this.is_weixin();
 		return {
-			nickname: '飞播e课'
-		};
-	},
-	componentWillMount: function componentWillMount() {
-		if (sessionStorage.username || this.props.params.id == 'guest') {
-			if (this.props.params.id == 'guest') {
-				this.visitorLogin('guest', '111111');
-			} else {
-				if (sessionStorage.username.substring(0, 5) == 'guest') {
-					this.setState({
-						nickname: sessionStorage.getItem('username').substring(0, 5)
-					});
-				} else {
-					this.setState({
-						nickname: sessionStorage.getItem('username')
-					});
-				}
-			}
-		} else {
-			_reactRouter.hashHistory.replace('/');
-		}
-	},
-	componentDidMount: function componentDidMount() {
-		if (this.isMounted()) {
-			$('#headimage').on('click', function () {
-				sessionStorage.clear();
-				_reactRouter.hashHistory.replace('/');
-			});
-		}
-	},
-	visitorLogin: function visitorLogin(user, pass) {
-		var thiz = this;
-		$.post("http://www.pictoshare.net/index.php?controller=apis&action=login", {
-			login_info: user,
-			password: pass
-		}, function (data, status) {
-			if (data != '') {
-				var value = JSON.parse(data);
-				if (value.status == "success") {
-					thiz.getUserInfo(value.tokenkey);
-				} else {
-					_reactRouter.hashHistory.replace('/');
-				}
-			}
-		});
-	},
-	getUserInfo: function getUserInfo(token) {
-		var thiz = this;
-		$.post("http://www.pictoshare.net/index.php?controller=apis&action=getmemberinfo", {
-			tokenkey: token
-		}, function (data, status) {
-			var value = JSON.parse(data);
-			if (value.status == "success") {
-				var un = value.info.username;
-				var pw = value.info.password;
-				thiz.setState({
-					nickname: un.substring(0, 5)
-				});
-				thiz.localSave(un, pw);
-			} else {
-				_reactRouter.hashHistory.replace('/');
-			}
-		});
-	},
-	localSave: function localSave(u, p) {
-		if (typeof Storage !== "undefined") {
-			sessionStorage.setItem("username", "guest" + Math.random());
-			sessionStorage.setItem("password", p);
-		}
-	},
-	render: function render() {
-
-		return React.createElement(
-			'div',
-			null,
-			React.createElement(_JoinNav2.default, { nickname: this.state.nickname
-			}),
-			' ',
-			React.createElement(_PJoinInput2.default, null),
-			React.createElement(_Switch2.default, null)
-		);
-	}
-
-});
-
-module.exports = PAppJoin;
-
-},{"./joinComponents/JoinNav.jsx":235,"./joinComponents/PJoinInput.jsx":236,"./joinComponents/Switch.jsx":238,"react":228,"react-router":30}],232:[function(require,module,exports){
-'use strict';
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _Application = require('./roomComponents/Application.jsx');
-
-var _Application2 = _interopRequireDefault(_Application);
-
-var _Slider = require('./roomComponents/Slider.jsx');
-
-var _Slider2 = _interopRequireDefault(_Slider);
-
-var _PNavagationBar = require('./roomComponents/PNavagationBar.jsx');
-
-var _PNavagationBar2 = _interopRequireDefault(_PNavagationBar);
-
-var _NetTip = require('./roomComponents/NetTip.jsx');
-
-var _NetTip2 = _interopRequireDefault(_NetTip);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var PAppRoom = _react2.default.createClass({
-  displayName: 'PAppRoom',
-
-
-  componentWillMount: function componentWillMount() {
-    if (typeof Storage !== "undefined") {
-      if (sessionStorage.username) {
-        //PC端 session中没有账号密码 加入room，便随机账号密码
-      } else {
-        var username = "user_" + Math.random();
-        var password = "pass_" + Math.random();
-        sessionStorage.setItem("username", username);
-        sessionStorage.setItem("password", password);
-      }
-    }
-  },
-  render: function render() {
-    var text = this.props.params.id;
-    return _react2.default.createElement(
-      'div',
-      null,
-      _react2.default.createElement(_Slider2.default, { _roomid: text
-      }),
-      '  ',
-      _react2.default.createElement(_Application2.default, { _roomid: text
-      }),
-      ' ',
-      _react2.default.createElement(_PNavagationBar2.default, { _roomid: text
-      }),
-      '  ',
-      _react2.default.createElement(_NetTip2.default, null)
-    );
-  }
-
-});
-
-module.exports = PAppRoom;
-
-},{"./roomComponents/Application.jsx":241,"./roomComponents/NetTip.jsx":244,"./roomComponents/PNavagationBar.jsx":245,"./roomComponents/Slider.jsx":246,"react":228,"react-dom":3}],233:[function(require,module,exports){
-'use strict';
-
-var _reactRouter = require('react-router');
-
-var React = require('react');
-
-var PcLogin = React.createClass({
-	displayName: 'PcLogin',
-
-	getInitialState: function getInitialState() {
-		return {
+			language: language,
 			value: null,
 			width: '',
-			warning: ''
+			warning: '',
+			is_weixin: is_weixin
 		};
 	},
 	componentWillMount: function componentWillMount() {
 		this.calLogoSize();
-		if (sessionStorage.username) {
-			var once = sessionStorage.username.substring(0, 5);
-			var oncepw = sessionStorage.password.substring(0, 5);
-			if (once != 'user_' && oncepw != 'pass_') {
-				_reactRouter.hashHistory.replace('/join');
-			}
-		}
+		// if (sessionStorage.username) {
+		// 	var once = sessionStorage.username.substring(0, 5);
+		// 	var oncepw = sessionStorage.password.substring(0, 5);
+		// 	if (once != 'user_' && oncepw != 'pass_') {
+		// 		hashHistory.replace('/join');
+		// 	}
+		// } else {
+		// 	if(this.state.is_weixin){
+		// 		var code = req['code'];
+		// 		if (code != '' && code != undefined && appid != '' && appid != undefined) {
+		// 			hashHistory.replace('/wxlogin');
+		// 		}else{
+		// 			document.location = Config.REDIRECT_URI;
+		// 		}				
+		// 	}
+		// }
 	},
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
 			var thiz = this;
+			window.addEventListener('resize', function () {
+				thiz.calLogoSize;
+			}, false);
 			$('#guestlogin').on('click', function () {
-				_reactRouter.hashHistory.replace('/join/guest');
+				thiz.getcode("guest", "111111");
 			});
 			$('#login').on('click', function () {
 				var un = $('#us').val();
@@ -25879,7 +25612,7 @@ var PcLogin = React.createClass({
 					thiz.getcode(un, pw);
 				} else {
 					thiz.setState({
-						warning: '请输入账号密码！'
+						warning: thiz.state.language.nullInput
 					}, function () {
 						thiz.handleMsg();
 					});
@@ -25902,7 +25635,7 @@ var PcLogin = React.createClass({
 	},
 	getcode: function getcode(user, pass) {
 		var thiz = this;
-		$.post("http://www.pictoshare.net/index.php?controller=apis&action=login", {
+		$.post(Config.LOGIN_URL, {
 			login_info: user,
 			password: pass
 		}, function (data, status) {
@@ -25915,7 +25648,7 @@ var PcLogin = React.createClass({
 						thiz.getUserInfo(thiz.state.value.tokenkey);
 					} else {
 						thiz.setState({
-							warning: '账号密码输入有误！'
+							warning: thiz.state.language.wrong1
 						}, function () {
 							thiz.handleMsg();
 						});
@@ -25923,7 +25656,7 @@ var PcLogin = React.createClass({
 				});
 			} else {
 				thiz.setState({
-					warning: '密码位数不正确！'
+					warning: thiz.state.language.wrong2
 				}, function () {
 					thiz.handleMsg();
 				});
@@ -25932,7 +25665,7 @@ var PcLogin = React.createClass({
 	},
 	getUserInfo: function getUserInfo(token) {
 		var thiz = this;
-		$.post("http://www.pictoshare.net/index.php?controller=apis&action=getmemberinfo", {
+		$.post(Config.USERINFO_URL, {
 			tokenkey: token
 		}, function (data, status) {
 			var value = JSON.parse(data);
@@ -25945,7 +25678,7 @@ var PcLogin = React.createClass({
 				}
 			} else {
 				thiz.setState({
-					warning: '系统繁忙！'
+					warning: thiz.state.language.wrong3
 				}, function () {
 					thiz.handleMsg();
 				});
@@ -25964,6 +25697,52 @@ var PcLogin = React.createClass({
 			$('#warning').fadeOut();
 		}, 2000);
 	},
+	is_weixin: function is_weixin() {
+		var ua = navigator.userAgent.toLowerCase();
+		if (ua.match(/MicroMessenger/i) == "micromessenger") {
+			return true;
+		} else {
+			return false;
+		}
+	},
+	handleResize: function handleResize(e) {
+		this.calLogoSize();
+	},
+	getLanguage: function getLanguage() {
+		var language = navigator.browserLanguage || navigator.language;
+		if (language.substring(0, 2) == "zh") {
+			return false;
+		} else {
+			return true;
+		}
+	},
+	setLanguage: function setLanguage(isEnglish) {
+		if (isEnglish) {
+			return {
+				title: "PageShare",
+				usa: "Username",
+				pwd: "Password",
+				guest: "guest",
+				login: "Sign in",
+				nullInput: "Please enter your account number and password !",
+				wrong1: "Incorrect input ！",
+				wrong2: "The number of digits is incorrect ！",
+				wrong3: "The server is busy now ！"
+			};
+		} else {
+			return {
+				title: "PageShare",
+				usa: "用户名",
+				pwd: "密码",
+				guest: "游客登录",
+				login: "登录",
+				nullInput: "请输入账号和密码 ！",
+				wrong1: "输入有误 ！",
+				wrong2: "密码位数不正确 ！",
+				wrong3: "服务器繁忙 ！"
+			};
+		}
+	},
 	render: function render() {
 		return React.createElement(
 			'div',
@@ -25978,19 +25757,22 @@ var PcLogin = React.createClass({
 				React.createElement(
 					'h2',
 					{ className: 'form-signin-heading' },
-					' PageShare '
+					' ',
+					this.state.language.title,
+					' '
 				),
+				' ',
+				React.createElement('br', null),
 				' ',
 				React.createElement(
 					'label',
-					{
-						className: 'sr-only' },
+					{ className: 'sr-only' },
 					' Email address '
 				),
 				' ',
 				React.createElement('input', { id: 'us',
 					className: 'form-control',
-					placeholder: 'Username',
+					placeholder: this.state.language.usa,
 					required: '' }),
 				React.createElement(
 					'label',
@@ -26000,7 +25782,7 @@ var PcLogin = React.createClass({
 				' ',
 				React.createElement('input', { id: 'pw',
 					className: 'form-control',
-					placeholder: 'Password',
+					placeholder: this.state.language.pwd,
 					required: '',
 					type: 'password' }),
 				React.createElement(
@@ -26012,7 +25794,9 @@ var PcLogin = React.createClass({
 						React.createElement(
 							'a',
 							{ id: 'guestlogin' },
-							' guest '
+							' ',
+							this.state.language.guest,
+							' '
 						),
 						' '
 					),
@@ -26024,9 +25808,11 @@ var PcLogin = React.createClass({
 					{ className: 'btn btn-lg btn-primary btn-block',
 						type: 'submit',
 						id: 'login' },
-					' Sign in '
+					' ',
+					this.state.language.login,
+					' '
 				),
-				'  ',
+				' ',
 				React.createElement(
 					'div',
 					{ style: {
@@ -26047,13 +25833,236 @@ var PcLogin = React.createClass({
 						' '
 					)
 				)
+			),
+			this.state.is_weixin ? React.createElement(
+				'div',
+				null,
+				' ',
+				React.createElement(_WXIcon2.default, null),
+				' '
+			) : React.createElement(
+				'div',
+				null,
+				' '
 			)
 		);
 	}
 
 });
 
-module.exports = PcLogin;
+module.exports = Login;
+
+},{"./WXIcon.jsx":233,"react":228,"react-router":30}],232:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
+
+var ShareJoin = React.createClass({
+	displayName: "ShareJoin",
+
+	getInitialState: function getInitialState() {
+		var iswxin = this.is_weixin();
+		return {
+			is_weixin: iswxin
+		};
+	},
+	is_weixin: function is_weixin() {
+		var ua = navigator.userAgent.toLowerCase();
+		if (ua.match(/MicroMessenger/i) == "micromessenger") {
+			return true;
+		} else {
+			return false;
+		}
+	},
+	componentWillMount: function componentWillMount() {
+		if (this.state.is_weixin) {
+			$.ajax({
+				async: true,
+				url: Config.WX_JSAPI_URL,
+				type: "GET",
+				data: {
+					urll: document.location.href,
+					appid: Config.APPID
+				},
+				timeout: 5000,
+				success: function success(result) {
+					var url_now = document.location.href;
+					var arry = result.split(":");
+					var appid = arry[0],
+					    timestamp = arry[1],
+					    noncestr = arry[2],
+					    signature = arry[3];
+					//验证签名，监听分享
+					var title = '飞播云板',
+					    desc = '我有东西show你!',
+					    imgurl = 'http://h5.pageshare.net/dev/build/img/pageshare.png';
+					var is_hasData = setInterval(function () {
+						if (signature != undefined && signature != "" && signature != 'undefined') {
+							//微信分享接口
+							wx.config({
+								debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+								appId: appid, // 必填，公众号的唯一标识
+								timestamp: timestamp, // 必填，生成签名的时间戳
+								nonceStr: noncestr, // 必填，生成签名的随机串
+								signature: signature, // 必填，签名，见附录1
+								jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone', 'onMenuShareWeibo'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+							});
+
+							wx.ready(function () {
+								// config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+								wx.onMenuShareAppMessage({
+									title: title, // 分享标题
+									desc: desc, // 分享描述
+									link: url_now, // 分享链接
+									imgUrl: imgurl, // 分享图标
+									type: '', // 分享类型,music、video或link，不填默认为link
+									dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+									success: function success() {
+										// 用户确认分享后执行的回调函数
+
+									},
+									cancel: function cancel() {
+										// 用户取消分享后执行的回调函数
+
+									}
+								});
+
+								wx.onMenuShareTimeline({
+									title: title, // 分享标题
+									link: url_now, // 分享链接
+									imgUrl: imgurl, // 分享图标
+									success: function success() {
+										// 用户确认分享后执行的回调函数
+									},
+									cancel: function cancel() {
+										// 用户取消分享后执行的回调函数
+									}
+								});
+
+								wx.onMenuShareQQ({
+									title: title, // 分享标题
+									desc: desc, // 分享描述
+									link: url_now, // 分享链接
+									imgUrl: imgurl, // 分享图标
+									success: function success() {
+										// 用户确认分享后执行的回调函数
+									},
+									cancel: function cancel() {
+										// 用户取消分享后执行的回调函数
+									}
+								});
+
+								wx.onMenuShareWeibo({
+									title: title, // 分享标题
+									desc: desc, // 分享描述
+									link: url_now, // 分享链接
+									imgUrl: imgurl, // 分享图标
+									success: function success() {
+										// 用户确认分享后执行的回调函数
+									},
+									cancel: function cancel() {
+										// 用户取消分享后执行的回调函数
+									}
+								});
+
+								wx.onMenuShareQZone({
+									title: title, // 分享标题
+									desc: desc, // 分享描述
+									link: url_now, // 分享链接
+									imgUrl: imgurl, // 分享图标
+									success: function success() {
+										// 用户确认分享后执行的回调函数
+									},
+									cancel: function cancel() {
+										// 用户取消分享后执行的回调函数
+									}
+								});
+							});
+							wx.error(function (res) {
+
+								console.log('签名失败');
+								console.log(res);
+								// config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+							});
+
+							window.clearInterval(is_hasData);
+						}
+					}, 50);
+				}
+			});
+		}
+	},
+	componentDidMount: function componentDidMount() {},
+	render: function render() {
+		return React.createElement("div", null);
+	}
+
+});
+
+module.exports = ShareJoin;
+
+},{"react":228}],233:[function(require,module,exports){
+'use strict';
+
+var _reactRouter = require('react-router');
+
+var React = require('react');
+
+var WXIcon = React.createClass({
+	displayName: 'WXIcon',
+
+	getInitialState: function getInitialState() {
+		return {
+			down: false
+		};
+	},
+	componentDidMount: function componentDidMount() {
+		if (this.isMounted()) {
+			var login = this.refs.login;
+			var thiz = this;
+			var hastouch = "ontouchstart" in window ? true : false,
+			    //判断是否为移动设备
+			loginStart = hastouch ? "touchstart" : "mousedown",
+			    loginEnd = hastouch ? "touchend" : "mouseup";
+			login.addEventListener(loginStart, function (e) {
+				thiz.setState({
+					down: true
+				});
+			}, false);
+			login.addEventListener(loginEnd, function (e) {
+				thiz.setState({
+					down: false
+				});
+			}, false);
+		}
+	},
+	handleClick: function handleClick(e) {
+		document.location = Config.REDIRECT_URI;
+	},
+	render: function render() {
+		var image = this.state.down ? './img/downwechat.png' : './img/wechat.png';
+		return React.createElement(
+			'div',
+			{ className: 'navbar-fixed-bottom', style: { textAlign: "center" } },
+			React.createElement(
+				'a',
+				{ href: Config.REDIRECT_URI },
+				' ',
+				React.createElement('img', { ref: 'login',
+					src: image,
+
+					style: {
+						marginBottom: "20px",
+						width: "40px",
+						height: "40px"
+					} })
+			)
+		);
+	}
+
+});
+
+module.exports = WXIcon;
 
 },{"react":228,"react-router":30}],234:[function(require,module,exports){
 'use strict';
@@ -26070,272 +26079,10 @@ var React = require('react');
 var JoinInput = React.createClass({
 	displayName: 'JoinInput',
 
-
 	getInitialState: function getInitialState() {
+		var isEnglish = (navigator.language || navigator.browserLanguage).substring(0, 2) == "zh";
 		return {
-			text: '',
-			width: '',
-			isRead: false
-		};
-	},
-	componentWillMount: function componentWillMount() {
-		this.calLogoSize();
-	},
-	componentDidMount: function componentDidMount() {
-		if (this.isMounted()) {
-			var thiz = this;
-			$('#switch').on('click', function () {
-				var model = sessionStorage.getItem('model');
-				if (model == 'false') {
-					thiz.setState({
-						isRead: false
-					});
-					thiz.addEventtoinput();
-				} else {
-					thiz.setState({
-						isRead: true
-					});
-				}
-			});
-			this.addEventtoinput();
-			window.addEventListener('resize', thiz.handleResize);
-		}
-	},
-	addEventtoinput: function addEventtoinput() {
-		var thiz = this;
-		var input = this.refs.textinput;
-		//处理Input值是否为空
-		$('#go').on('click', function () {
-			thiz.handleClick();
-		});
-		//回车键提交
-		$('#roomid').keydown(function (e) {
-			var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
-			if (eCode == "13") {
-				//keyCode=13是回车键
-				thiz.handleClick();
-			}
-		});
-		//实时获取text
-		$(input).on('keyup', function () {
-			$(input).val($(input).val().replace(/\s/g, ''));
-			thiz.setState({
-				text: $(this).val().toLowerCase()
-			});
-		});
-	},
-	calLogoSize: function calLogoSize() {
-		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-		if (w > h) {
-			this.setState({
-				width: h * 0.4,
-				inputWidth: w * 0.6 + 'px'
-			});
-		} else {
-			this.setState({
-				width: w * 0.6,
-				inputWidth: w * 0.8 + 'px'
-			});
-		}
-	},
-	handleClick: function handleClick() {
-		if (this.state.text == '') {
-			$('#warn').fadeIn();
-			setTimeout(function () {
-				$('#warn').fadeOut();
-			}, 2000);
-		} else {
-			$(this.refs.textinput).blur();
-			_reactRouter.hashHistory.replace('/room/' + this.state.text);
-		}
-	},
-	render: function render() {
-		if (this.state.isRead) {
-			return React.createElement(
-				'div',
-				null,
-				React.createElement(
-					'div',
-					{ id: 'pageshare' },
-					React.createElement('img', { id: 'page',
-						src: 'img/pageshare.png',
-						style: {
-							width: this.state.width,
-							height: this.state.width
-						}
-					}),
-					' '
-				),
-				React.createElement(
-					'div',
-					{ className: 'container' },
-					React.createElement(
-						'div',
-						{ className: 'row' },
-						React.createElement(
-							'div',
-							{ id: 'input',
-								style: {
-									width: this.state.inputWidth
-								} },
-							React.createElement(_Select2.default, null)
-						),
-						' '
-					),
-					' '
-				),
-				'  '
-			);
-		} else {
-			return React.createElement(
-				'div',
-				{ id: 'bigScreen' },
-				React.createElement(
-					'div',
-					{ id: 'pageshare' },
-					React.createElement('img', { id: 'page',
-						src: 'img/pageshare.png',
-						style: {
-							width: this.state.width,
-							height: this.state.width
-						}
-					}),
-					' '
-				),
-				React.createElement(
-					'div',
-					{ className: 'container' },
-					React.createElement(
-						'div',
-						{ className: 'row' },
-						React.createElement(
-							'div',
-							{ id: 'input',
-								style: {
-									width: this.state.inputWidth
-								} },
-							React.createElement(
-								'div',
-								{ className: 'input-group' },
-								React.createElement('input', { type: 'text',
-									ref: 'textinput',
-									className: 'form-control',
-									id: 'roomid',
-									placeholder: 'roomID' }),
-								React.createElement(
-									'div',
-									{ className: 'input-group-btn' },
-									React.createElement(
-										'a',
-										{ className: 'btn btn-default',
-											tabIndex: '-1',
-											id: 'go' },
-										' Join '
-									)
-								),
-								'  '
-							),
-							' '
-						),
-						' '
-					),
-					' '
-				),
-				' ',
-				React.createElement(
-					'div',
-					{ style: {
-							textAlign: 'center',
-							textShadow: '2px 2px 5px #9B30FF',
-							marginTop: '35px',
-							display: 'none'
-						},
-						id: 'warn' },
-					' ',
-					React.createElement(
-						'font',
-						{ style: {
-								fontSize: '16px'
-							} },
-						' RoomID can not be empty！！！ '
-					)
-				)
-			);
-		}
-	}
-
-});
-
-module.exports = JoinInput;
-
-},{"./Select.jsx":237,"react":228,"react-router":30}],235:[function(require,module,exports){
-'use strict';
-
-var _reactRouter = require('react-router');
-
-var React = require('react');
-
-var JoinNav = React.createClass({
-	displayName: 'JoinNav',
-
-	render: function render() {
-		return React.createElement(
-			'nav',
-			{ className: 'navbar navbar-default',
-				role: 'navigation',
-				style: {
-					backgroundColor: '#d9edf7',
-					display: 'block'
-				} },
-			React.createElement(
-				'div',
-				{ className: 'navbar-header' },
-				React.createElement(
-					'a',
-					{ className: 'navbar-brand navbar-left',
-						href: '#',
-						id: 'headimage',
-						style: {
-							color: "#B452CD"
-						} },
-					' ',
-					React.createElement(
-						'span',
-						{ className: 'glyphicon glyphicon-user',
-							id: 'span' },
-						' ',
-						this.props.nickname,
-						' '
-					)
-				)
-			),
-			'  '
-		);
-	}
-
-});
-
-module.exports = JoinNav;
-
-},{"react":228,"react-router":30}],236:[function(require,module,exports){
-'use strict';
-
-var _Select = require('./Select.jsx');
-
-var _Select2 = _interopRequireDefault(_Select);
-
-var _reactRouter = require('react-router');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var React = require('react');
-var PJoinInput = React.createClass({
-	displayName: 'PJoinInput',
-
-
-	getInitialState: function getInitialState() {
-		return {
+			isEnglish: isEnglish,
 			text: '',
 			width: '',
 			inputWidth: '',
@@ -26494,7 +26241,7 @@ var PJoinInput = React.createClass({
 									ref: 'textinput',
 									className: 'form-control',
 									id: 'roomid',
-									placeholder: 'roomID' }),
+									placeholder: this.state.isEnglish ? "课堂号" : "roomID" }),
 								React.createElement(
 									'div',
 									{ className: 'input-group-btn' },
@@ -26503,7 +26250,8 @@ var PJoinInput = React.createClass({
 										{ className: 'btn btn-default',
 											tabIndex: '-1',
 											id: 'go' },
-										' Join '
+										' ',
+										this.state.isEnglish ? "加入" : "join"
 									)
 								),
 								'  '
@@ -26530,7 +26278,9 @@ var PJoinInput = React.createClass({
 						{ style: {
 								fontSize: '16px'
 							} },
-						' RoomID can not be empty！！！ '
+						' ',
+						this.state.isEnglish ? "课堂号不能为空 ！" : "The roomID cannot be empty !",
+						' '
 					)
 				)
 			);
@@ -26539,9 +26289,58 @@ var PJoinInput = React.createClass({
 
 });
 
-module.exports = PJoinInput;
+module.exports = JoinInput;
 
-},{"./Select.jsx":237,"react":228,"react-router":30}],237:[function(require,module,exports){
+},{"./Select.jsx":236,"react":228,"react-router":30}],235:[function(require,module,exports){
+'use strict';
+
+var _reactRouter = require('react-router');
+
+var React = require('react');
+
+var JoinNav = React.createClass({
+	displayName: 'JoinNav',
+
+	render: function render() {
+		return React.createElement(
+			'nav',
+			{ className: 'navbar navbar-default',
+				role: 'navigation',
+				style: {
+					backgroundColor: '#d9edf7',
+					display: 'block'
+				} },
+			React.createElement(
+				'div',
+				{ className: 'navbar-header' },
+				React.createElement(
+					'a',
+					{ className: 'navbar-brand navbar-left',
+						href: '#',
+						id: 'headimage',
+						style: {
+							color: "#B452CD"
+						} },
+					' ',
+					React.createElement(
+						'span',
+						{ className: 'glyphicon glyphicon-user',
+							id: 'span' },
+						' ',
+						this.props.nickname,
+						' '
+					)
+				)
+			),
+			'  '
+		);
+	}
+
+});
+
+module.exports = JoinNav;
+
+},{"react":228,"react-router":30}],236:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -26556,7 +26355,7 @@ var Select = React.createClass({
 		return {
 			// url_litLiv: 'http://203.195.173.135:9000/files/list?format=json',
 			url_litLiv: 'http://182.254.223.23:9000/play/list?format=json',
-			displayFile: []
+			displayFile: ["add_addss_Lesson-2017-06-01-14-52-30"]
 		};
 	},
 	componentDidMount: function componentDidMount() {
@@ -26564,7 +26363,7 @@ var Select = React.createClass({
 			var that = this;
 			var user = this.getUser();
 			if (user != null && user != undefined) {
-				this.queryAllLiv(user);
+				//this.queryAllLiv(user);
 			}
 			$('#toread').on('click', function () {
 				if ($('#liv_select').val() != '' && $('#liv_select').val() != null) {
@@ -26635,7 +26434,7 @@ var Select = React.createClass({
 	},
 	formatLivName: function formatLivName(name) {
 		var formatname;
-		//timestamp
+		//timestamp add_addss_Lesson-2017-05-08-14-52-30
 		if (name.split('-').length == 5 && name.split(':').length == 3) {
 			switch (name.split('_').length) {
 				case 2:
@@ -26652,7 +26451,7 @@ var Select = React.createClass({
 					formatname = name.split('-')[4].split(':')[0] + ':' + name.split('-')[4].split(':')[1] + '-' + name.split('_')[2].split('-')[0];
 			}
 		} else {
-			//no timestamp
+			//no timestamp add_addss_Lesson-2017-05-08-14-52-30
 			switch (name.split('_').length) {
 				case 2:
 					formatname = name.split('_')[1];
@@ -26679,18 +26478,16 @@ var Select = React.createClass({
 			React.createElement(
 				'select',
 				{ id: 'liv_select' },
-				' ',
-				this.state.displayFile.map(function (name) {
-					return React.createElement(
-						'option',
-						{ key: name,
-							value: name },
-						' ',
-						that.formatLivName(name),
-						' '
-					);
-				}),
-				' '
+				React.createElement(
+					'option',
+					{ value: 'add_addss_Lesson-2017-06-01-14-52-30' },
+					'青少年心理学'
+				),
+				React.createElement(
+					'option',
+					{ value: 'publesson' },
+					'2010年一级建工实务'
+				)
 			),
 			' ',
 			React.createElement(
@@ -26711,7 +26508,7 @@ var Select = React.createClass({
 
 module.exports = Select;
 
-},{"react":228,"react-router":30}],238:[function(require,module,exports){
+},{"react":228,"react-router":30}],237:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -26721,7 +26518,9 @@ var Switch = React.createClass({
 
 
 	getInitialState: function getInitialState() {
+		var isChinese = (navigator.language || navigator.browserLanguage).substring(0, 2) == "zh";
 		return {
+			isChinese: isChinese,
 			left: 50,
 			top: 140,
 			isMouseDown: false,
@@ -26793,7 +26592,11 @@ var Switch = React.createClass({
 	render: function render() {
 		var shadow = this.state.isMouseDown ? '0px 0px 20px #0AFFB6' : '0px 0px 20px #73FAFF';
 		var sClass = this.state.isRead ? 'glyphicon glyphicon-book' : 'glyphicon glyphicon-user';
-		var name = this.state.isRead ? '阅读' : '课堂';
+		if (this.state.isChinese) {
+			var name = this.state.isRead ? '阅读' : '课堂';
+		} else {
+			var name = this.state.isRead ? 'Reader' : 'Online';
+		}
 		var color = this.state.isRead ? '#F0F8FF' : '#F0FFFF';
 		return React.createElement(
 			"div",
@@ -26805,8 +26608,8 @@ var Switch = React.createClass({
 					backgroundColor: color,
 					textAlign: 'center',
 					lineHeight: '60px',
-					width: '60px',
-					height: '60px',
+					width: '65px',
+					height: '65px',
 					position: 'absolute',
 					left: this.state.left,
 					top: this.state.top,
@@ -26832,7 +26635,7 @@ var Switch = React.createClass({
 
 module.exports = Switch;
 
-},{"react":228}],239:[function(require,module,exports){
+},{"react":228}],238:[function(require,module,exports){
 'use strict';
 
 var _Slider = require('../roomComponents/Slider.jsx');
@@ -26895,7 +26698,7 @@ var EreadRoom = React.createClass({
 		return React.createElement(
 			'div',
 			null,
-			React.createElement(_Slider2.default, { _roomid: file.split('_')[2].split('-')[0]
+			React.createElement(_Slider2.default, { _roomid: file
 			}),
 			'  ',
 			React.createElement(_ReadApplication2.default, { file: file
@@ -27004,7 +26807,7 @@ var EreadRoom = React.createClass({
 
 module.exports = EreadRoom;
 
-},{"../roomComponents/ControlNav/ControlNav.jsx":242,"../roomComponents/Slider.jsx":246,"../roomComponents/navBar/Home.jsx":252,"../roomComponents/navBar/MyAudio.jsx":253,"../roomComponents/navBar/MyVideo.jsx":254,"../roomComponents/navBar/Share.jsx":255,"./ReadApplication.jsx":240,"react":228}],240:[function(require,module,exports){
+},{"../roomComponents/ControlNav/ControlNav.jsx":241,"../roomComponents/Slider.jsx":244,"../roomComponents/navBar/Home.jsx":251,"../roomComponents/navBar/MyAudio.jsx":252,"../roomComponents/navBar/MyVideo.jsx":253,"../roomComponents/navBar/Share.jsx":254,"./ReadApplication.jsx":239,"react":228}],239:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27027,10 +26830,21 @@ var _OpenAudio = require('../roomComponents/alertComponent/OpenAudio.jsx');
 
 var _OpenAudio2 = _interopRequireDefault(_OpenAudio);
 
+var _Loading = require('../roomComponents/alertComponent/Loading.jsx');
+
+var _Loading2 = _interopRequireDefault(_Loading);
+
 var _reactRouter = require('react-router');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/*
+ * 包裹canvas,bgimg的组件
+ * 连接websocket，handleMessage
+ * 计算尺寸大小位置以及resize以后重新计算
+ * 在handleMessage中播放video，audio。1、没有加入video子组件的原因是 导航栏按钮无法获取此子组件的DOM节点
+ * 2、没有放在canvas中处理视频的原因是 此组件任何state变化都会导致render方法执行，从而导致视频或音频重复播放
+ */
 var ReadApplication = _react2.default.createClass({
   displayName: 'ReadApplication',
 
@@ -27045,12 +26859,12 @@ var ReadApplication = _react2.default.createClass({
 
     return {
       //liv
-      url_getLiv: 'http://182.254.223.23/download/records/',
       livArry: [],
+      isLivLeft: false,
       livStop: false,
       pageTurn: false,
       lineIndex: 0,
-      pageIndex: 0,
+      pageIndex: -1,
       timeout: null,
       audio: audio,
       audioCollect: [],
@@ -27091,25 +26905,36 @@ var ReadApplication = _react2.default.createClass({
     var thiz = this;
     if (this.isMounted()) {
       //如果是分享出来的
-      var fileName = thiz.props.file;
+      var fileName = this.props.file;
       var url;
       var pageArry = [];
       //get test
-      $.get("http://182.254.223.23/download/records/zzz/LivDemo.liv", function (res) {
-        var livArry = res.split("\n");
+      $.get(Config.LIV_URL + fileName + ".liv", function (res) {
+        var livArry = res.split("\n"); //行数 Message
 
         for (var i = 0; i <= livArry.length; i++) {
           if (livArry[i] != "" && livArry[i] != undefined) {
             if (livArry[i].indexOf("!!##image##!!") > 0) {
-              pageArry.push(i);
+              pageArry.push(i); //页数获取
             }
           }
         }
         thiz.setState({
           livArry: livArry
         }, function () {
-          $("#liv_Nav").fadeIn();
-          thiz.readLineLiv(thiz.state.lineIndex);
+          $('#loading').fadeOut(1000, function () {
+            if (sessionStorage.getItem('openaudio') != 'isOpen') {
+              $('#openaudio').fadeIn(function () {
+                $('#openaudio').on('click', function () {
+                  $("#liv_Nav").fadeIn();
+                  thiz.readLineLiv(thiz.state.lineIndex);
+                });
+              });
+            } else {
+              $("#liv_Nav").fadeIn();
+              thiz.readLineLiv(thiz.state.lineIndex);
+            }
+          });
         });
       });
       //get test
@@ -27131,6 +26956,7 @@ var ReadApplication = _react2.default.createClass({
         if (thiz.state.pageIndex > 0) {
           thiz.setState({
             pageTurn: true,
+            isLivLeft: true,
             lineIndex: pageArry[thiz.state.pageIndex - 1]
           }, function () {
             thiz.readLineLiv(thiz.state.lineIndex);
@@ -27189,8 +27015,7 @@ var ReadApplication = _react2.default.createClass({
     switch (cmd) {
       case "imag":
         this.setState({
-          pageTurn: false,
-          pageIndex: strLine.split(":")[0] - 1
+          pageTurn: false
         });
         msg = {
           cmd: "image",
@@ -27259,8 +27084,7 @@ var ReadApplication = _react2.default.createClass({
               url: source[1]
             };
             break;
-
-          case "urlvideo":
+          case "video":
             msg = {
               cmd: "urlvideo",
               url: source[1]
@@ -27358,7 +27182,7 @@ var ReadApplication = _react2.default.createClass({
   playbothaudio: function playbothaudio() {
     var that = this;
     var audio = this.state.audio;
-    if (audio.ended) {
+    if (audio.ended || audio.paused) {
       if (this.state.audioCollect.length > 0) {
         audio.src = this.state.audioCollect.shift();
         audio.play();
@@ -27405,12 +27229,24 @@ var ReadApplication = _react2.default.createClass({
 
         case "image":
           //注意：换background的时候，需要将data置空
-          this.setState({
-            data: null,
-            audioCollect: []
-          }, function () {
-            this.state.audio.pause();
-          });
+          if (this.state.isLivLeft) {
+            this.setState({
+              data: null,
+              isLivLeft: false,
+              audioCollect: [],
+              pageIndex: this.state.pageIndex - 1
+            }, function () {
+              this.state.audio.pause();
+            });
+          } else {
+            this.setState({
+              data: null,
+              audioCollect: [],
+              pageIndex: this.state.pageIndex + 1
+            }, function () {
+              this.state.audio.pause();
+            });
+          }
           this.calculateImgProp('data:image/png;base64,' + value.image);
 
           break;
@@ -27506,20 +27342,17 @@ var ReadApplication = _react2.default.createClass({
       }),
       '   ',
       _react2.default.createElement(_OpenAudio2.default, null),
+      ' ',
+      _react2.default.createElement(_Loading2.default, null),
       ' '
     );
   }
 
-}); /*
-     * 包裹canvas,bgimg的组件
-     * 连接websocket，handleMessage
-     * 计算尺寸大小位置以及resize以后重新计算
-     * 在handleMessage中播放video，audio。1、没有加入video子组件的原因是 导航栏按钮无法获取此子组件的DOM节点
-     * 2、没有放在canvas中处理视频的原因是 此组件任何state变化都会导致render方法执行，从而导致视频或音频重复播放
-     */
+});
+
 exports.default = ReadApplication;
 
-},{"../roomComponents/alertComponent/OpenAudio.jsx":247,"../roomComponents/blackBoard/BgImage.jsx":248,"../roomComponents/blackBoard/Canvas.jsx":249,"react":228,"react-router":30}],241:[function(require,module,exports){
+},{"../roomComponents/alertComponent/Loading.jsx":245,"../roomComponents/alertComponent/OpenAudio.jsx":246,"../roomComponents/blackBoard/BgImage.jsx":248,"../roomComponents/blackBoard/Canvas.jsx":249,"react":228,"react-router":30}],240:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27542,21 +27375,18 @@ var _OpenAudio = require('./alertComponent/OpenAudio.jsx');
 
 var _OpenAudio2 = _interopRequireDefault(_OpenAudio);
 
-var _ChatView = require('./chatclient/ChatView.jsx');
+var _OpenShare = require('./alertComponent/OpenShare.jsx');
 
-var _ChatView2 = _interopRequireDefault(_ChatView);
+var _OpenShare2 = _interopRequireDefault(_OpenShare);
+
+var _Loading = require('./alertComponent/Loading.jsx');
+
+var _Loading2 = _interopRequireDefault(_Loading);
 
 var _reactRouter = require('react-router');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*
- * 包裹canvas,bgimg的组件
- * 连接websocket，handleMessage
- * 计算尺寸大小位置以及resize以后重新计算
- * 在handleMessage中播放video，audio。1、没有加入video子组件的原因是 导航栏按钮无法获取此子组件的DOM节点
- * 2、没有放在canvas中处理视频的原因是 此组件任何state变化都会导致render方法执行，从而导致视频或音频重复播放
- */
 var Application = _react2.default.createClass({
   displayName: 'Application',
 
@@ -27569,17 +27399,12 @@ var Application = _react2.default.createClass({
       // IE下禁止元素被选取        
       document.onselectstart = new Function("return false");
     }
-
-    var ws;
-    if (ws == null || ws.readyState != 1) {
-      ws = new WebSocket('ws://203.195.173.135:9999/ws');
-    }
     return {
-      //xmpp
-      bosh_service: '/http-bind/',
       connection: null,
       connected: false,
       //liv
+      user: '',
+      pwd: '',
       isStop: false,
       pageIndex: 0,
       pageNum: 0,
@@ -27591,10 +27416,9 @@ var Application = _react2.default.createClass({
       video: video,
       interTime: '',
       userName: null,
-      webSocket: ws,
       scaleX: null, //给canvas  X轴图片或笔迹伸缩量
       scaleY: null, //给canvas  Y轴图片或笔迹伸缩量
-      src: null, //给imgae的
+      src: "./img/welcome.png", //给imgae的
       width: null, //给image  canvse的
       height: null, //给image  canvse的
       left: null, //给image  canvse的
@@ -27607,29 +27431,6 @@ var Application = _react2.default.createClass({
     };
   },
 
-  //发送data打开连接
-  connectWebSocket: function connectWebSocket(ws, user, pw, id) {
-    var thiz = this;
-    ws.onerror = function (e) {
-      // console.log("error");
-      alert('websocket连接有异常...');
-      _reactRouter.hashHistory.replace('/');
-    };
-    ws.onopen = function (e) {
-      thiz.wsKeepConnect();
-      var UserMsg = {
-        'cmd': 'login',
-        'userName': user,
-        'passWord': pw,
-        'sessionID': id
-      };
-      ws.send(JSON.stringify(UserMsg));
-    };
-    ws.onclose = function (e) {
-      // console.log("closed");
-      $('#nettip').fadeIn();
-    };
-  },
   //搁置
   handleResize: function handleResize(e) {
     if (this.isMounted()) {
@@ -27637,8 +27438,8 @@ var Application = _react2.default.createClass({
     }
   },
   componentWillUnmount: function componentWillUnmount() {
+    var that = this;
     var username = this.state.username;
-    var ws = this.state.webSocket;
     var audio = document.getElementById('myaudio');
     var video = document.getElementById('myvideo');
     audio.pause();
@@ -27646,7 +27447,12 @@ var Application = _react2.default.createClass({
     video.pause();
     video.src = '';
     window.clearInterval(this.state.interTime);
-    ws.close(1000, username);
+    var roomid = this.props._roomid;
+    this.state.connection.send($pres({
+      from: that.state.user + "@" + Config.XMPP_DOMAIN,
+      to: roomid + "@conference." + Config.XMPP_DOMAIN + "/" + that.state.user,
+      type: "unavailable"
+    }).tree());
   },
 
 
@@ -27654,66 +27460,175 @@ var Application = _react2.default.createClass({
   componentDidMount: function componentDidMount() {
     var thiz = this;
     if (this.isMounted()) {
-      //ws连接
+      //
+      this.calculateImgProp(this.state.src);
+      //
       if (typeof Storage !== "undefined") {
         if (sessionStorage.username) {
-          var un = sessionStorage.getItem("username");
-          var pd = sessionStorage.getItem("password");
+          this.setState({
+            //user: sessionStorage.getItem("username"),
+            //pwd: sessionStorage.getItem("password")
+            user: "demo",
+            pwd: "111111"
+          }, function () {
+            var jid = this.state.user + "@" + Config.XMPP_DOMAIN;
+            this.state.connection = new Strophe.Connection(Config.XMPP_BOSH_SERVICE);
+            this.state.connection.connect(jid, thiz.state.pwd, thiz.onConnect);
+          });
         }
       }
-      var roomid = this.props._roomid;
-
-      var ws = this.state.webSocket;
-      this.connectWebSocket(ws, un, pd, roomid);
-      //xmpp
-      // if (!this.state.connected) {
-      //   var user1="u1@example.com";
-      //   //var jid=un+"@server.pictolive.net";
-      //  this.state.connection = new Strophe.Connection(this.state.bosh_service);
-      //   this.state.connection.connect(user1,"u1",thiz.onConnect);
-      // }
-      //xmpp
       window.addEventListener('resize', this.handleResize);
-      ws.onmessage = function (msg) {
-        thiz.handleMessage(JSON.parse(msg.data));
-      };
     }
   },
-  // onConnect: function(status) {
-  //   var that = this;
-  //   console.log(status);
-  //   if (status == Strophe.Status.CONNFAIL) {
-  //     console.log("连接失败！");
-  //   } else if (status == Strophe.Status.AUTHFAIL) {
-  //     console.log("登录失败！");
-  //   } else if (status == Strophe.Status.DISCONNECTED) {
-  //     console.log("连接断开！");
-  //     this.setState({
-  //       connected: false
-  //     });
-  //   } else if (status == Strophe.Status.CONNECTED) {
-  //     console.log("连接成功，可以开始聊天了！");
-  //     this.setState({
-  //       connected: true
-  //     });
+  onConnect: function onConnect(status) {
+    var roomid = this.props._roomid;
+    var that = this;
+    console.log(status);
+    if (status == Strophe.Status.CONNFAIL) {
+      console.log("连接失败！");
+    } else if (status == Strophe.Status.AUTHFAIL) {
+      console.log("登录失败！");
+    } else if (status == Strophe.Status.DISCONNECTED) {
+      console.log("连接断开！");
+      this.setState({
+        connected: false
+      });
+    } else if (status == Strophe.Status.CONNECTED) {
+      console.log("连接成功！");
+      $('#loading').fadeOut(1000, function () {
+        if (sessionStorage.getItem('openaudio') != 'isOpen') {
+          $('#openaudio').fadeIn();
+        }
+      });
+      this.setState({
+        connected: true
+      });
 
-  //     // 当接收到<message>节，调用onMessage回调函数
-  //     //this.state.connection.addHandler(that.onMessage, null, 'message', null, null, null);
+      // 当接收到<message>节，调用onMessage回调函数
+      this.state.connection.addHandler(that.onMessage, null, 'message', null, null, null);
 
-  //     // 首先要发送一个<presence>给服务器（initial presence）
-  //     //connection.send($pres().tree());
-  //   }
-  // },
-  wsKeepConnect: function wsKeepConnect() {
-    var ws = this.state.webSocket;
-    var heart = '';
-    var preventTimeOut = setInterval(function () {
-      ws.send(JSON.stringify(heart));
-    }, 300000);
-    this.setState({
-      interTime: preventTimeOut
-    });
+      // 首先要发送一个<presence>给服务器（initial presence）
+      this.state.connection.send($pres().tree());
+      // 发送<presence>元素，加入房间
+      this.state.connection.send($pres({
+        from: that.state.user + "@" + Config.XMPP_DOMAIN,
+        to: roomid + "@conference." + Config.XMPP_DOMAIN + "/" + that.state.user
+      }).c('x', {
+        xmlns: 'http://jabber.org/protocol/muc'
+      }).tree());
+
+      this.state.connection.send($iq({
+        from: that.state.user + "@" + Config.XMPP_DOMAIN + "/Smack",
+        to: roomid + "@conference." + Config.XMPP_DOMAIN + "/" + that.state.user,
+        id: "pageshare_unlockroom",
+        type: "set"
+      }).c('query', {
+        xmlns: 'http://jabber.org/protocol/muc#owner'
+      }).c('x', {
+        xmlns: "jabber:x:data",
+        type: "submit"
+      }).tree());
+    }
   },
+  onMessage: function onMessage(msg) {
+    // 解析出<message>的from、type属性，以及body子元素
+    var from = msg.getAttribute('from');
+    var type = msg.getAttribute('type');
+    var elems = msg.getElementsByTagName('body');
+    if (type == "groupchat" && elems.length > 0) {
+      var body = elems[0];
+      var obj = this.xmppToWs(Strophe.getText(body));
+      if (obj != undefined) {
+        this.handleMessage(obj);
+      }
+    }
+    return true;
+  },
+  xmppToWs: function xmppToWs(msg) {
+    var cmd = msg.split("##")[1].substring(0, 4);
+    var obj;
+    switch (cmd) {
+      case "imag":
+        obj = {
+          cmd: "image",
+          image: msg.split("!!##image##!!")[1]
+        };
+        break;
+      case "path":
+        var properties = msg.split("!!##path[")[1].split("]##!!")[0].split(",");
+        var oo = JSON.parse(window.atob(msg.split("]##!!")[1]));
+        oo.properties = {
+          color: properties[0],
+          weight: properties[1],
+          width: properties[2],
+          height: properties[3]
+        };
+        oo.cmd = "path";
+        obj = oo;
+        break;
+      case "text":
+        var stext = msg.split("!!##text[")[1].split("]")[0].split(",");
+        obj = {
+          cmd: "text",
+          stext: {
+            width: stext[2],
+            height: stext[3],
+            color: stext[4],
+            line: stext[5],
+            text: stext[6],
+            x: stext[0],
+            y: stext[1]
+          }
+        };
+        break;
+      case "icon":
+        var sicon = msg.split("!!##icon[")[1].split("]")[0].split(",");
+        obj = {
+          cmd: "icon",
+          sicon: {
+            rid: sicon[6],
+            width: sicon[4],
+            height: sicon[5],
+            x: sicon[0],
+            y: sicon[1],
+            x2: sicon[2],
+            y2: sicon[3]
+          }
+
+        };
+        break;
+      case "eras":
+        var properties = msg.split("!!##erase[")[1].split("]##!!")[0].split(",");
+        var oo = JSON.parse(window.atob(msg.split("]##!!")[1]));
+        oo.properties = {
+          width: properties[2],
+          height: properties[3]
+        };
+        oo.cmd = "erase";
+        obj = oo;
+        break;
+      case "sour":
+        var source = msg.split("!!##source[")[1].split("]##!!")[0].split(",");
+        switch (source[0]) {
+          case "voice":
+            obj = {
+              cmd: "urlvoice",
+              url: source[1]
+            };
+            break;
+
+          case "video":
+            obj = {
+              cmd: "urlvideo",
+              url: source[1]
+            };
+            break;
+        }
+        break;
+    }
+    return obj;
+  },
+
   getWindowSize: function getWindowSize() {
     var ww = window.innerWidth;
     var wh = window.innerHeight;
@@ -27793,7 +27708,7 @@ var Application = _react2.default.createClass({
   playbothaudio: function playbothaudio() {
     var that = this;
     var audio = this.state.audio;
-    if (audio.ended) {
+    if (audio.ended || audio.paused) {
       if (this.state.audioCollect.length > 0) {
         audio.src = this.state.audioCollect.shift();
         audio.play();
@@ -27947,15 +27862,21 @@ var Application = _react2.default.createClass({
       }),
       '   ',
       _react2.default.createElement(_OpenAudio2.default, null),
-      _react2.default.createElement(_ChatView2.default, null)
+      _react2.default.createElement(_Loading2.default, null),
+      _react2.default.createElement(_OpenShare2.default, null)
     );
   }
 
-});
-
+}); /*
+     * 包裹canvas,bgimg的组件
+     * 连接websocket，handleMessage
+     * 计算尺寸大小位置以及resize以后重新计算
+     * 在handleMessage中播放video，audio。1、没有加入video子组件的原因是 导航栏按钮无法获取此子组件的DOM节点
+     * 2、没有放在canvas中处理视频的原因是 此组件任何state变化都会导致render方法执行，从而导致视频或音频重复播放
+     */
 exports.default = Application;
 
-},{"./alertComponent/OpenAudio.jsx":247,"./blackBoard/BgImage.jsx":248,"./blackBoard/Canvas.jsx":249,"./chatclient/ChatView.jsx":250,"react":228,"react-router":30}],242:[function(require,module,exports){
+},{"./alertComponent/Loading.jsx":245,"./alertComponent/OpenAudio.jsx":246,"./alertComponent/OpenShare.jsx":247,"./blackBoard/BgImage.jsx":248,"./blackBoard/Canvas.jsx":249,"react":228,"react-router":30}],241:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -28029,7 +27950,7 @@ var ControlNav = React.createClass({
 
 module.exports = ControlNav;
 
-},{"react":228}],243:[function(require,module,exports){
+},{"react":228}],242:[function(require,module,exports){
 'use strict';
 
 var _MyVideo = require('./navBar/MyVideo.jsx');
@@ -28044,6 +27965,10 @@ var _Share = require('./navBar/Share.jsx');
 
 var _Share2 = _interopRequireDefault(_Share);
 
+var _Edit = require('./navBar/Edit.jsx');
+
+var _Edit2 = _interopRequireDefault(_Edit);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var React = require('react');
@@ -28051,10 +27976,24 @@ var React = require('react');
 var NavagationBar = React.createClass({
 	displayName: 'NavagationBar',
 
+	getInitialState: function getInitialState() {
+		var iswx = this.is_weixin();
+		return {
+			isWeixin: iswx
+		};
+	},
 	componentWillMount: function componentWillMount() {
 		document.body.addEventListener('touchstart', function () {
 			//绑定touch  IOS按钮active兼容性
 		});
+	},
+	is_weixin: function is_weixin() {
+		var ua = navigator.userAgent.toLowerCase();
+		if (ua.match(/MicroMessenger/i) == "micromessenger") {
+			return true;
+		} else {
+			return false;
+		}
 	},
 	render: function render() {
 		return React.createElement(
@@ -28100,12 +28039,12 @@ var NavagationBar = React.createClass({
 					'li',
 					null,
 					' ',
-					React.createElement(_Share2.default, null),
+					this.state.isWeixin ? React.createElement(_Share2.default, null) : React.createElement(_Edit2.default, null),
 					' '
 				),
 				' '
 			),
-			'  '
+			' '
 		);
 	}
 
@@ -28113,7 +28052,7 @@ var NavagationBar = React.createClass({
 
 module.exports = NavagationBar;
 
-},{"./navBar/Home.jsx":252,"./navBar/MyVideo.jsx":254,"./navBar/Share.jsx":255,"react":228}],244:[function(require,module,exports){
+},{"./navBar/Edit.jsx":250,"./navBar/Home.jsx":251,"./navBar/MyVideo.jsx":253,"./navBar/Share.jsx":254,"react":228}],243:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -28145,90 +28084,7 @@ var NetTip = React.createClass({
 
 module.exports = NetTip;
 
-},{"react":228}],245:[function(require,module,exports){
-'use strict';
-
-var _MyVideo = require('./navBar/MyVideo.jsx');
-
-var _MyVideo2 = _interopRequireDefault(_MyVideo);
-
-var _Home = require('./navBar/Home.jsx');
-
-var _Home2 = _interopRequireDefault(_Home);
-
-var _Edit = require('./navBar/Edit.jsx');
-
-var _Edit2 = _interopRequireDefault(_Edit);
-
-var _Share = require('./navBar/Share.jsx');
-
-var _Share2 = _interopRequireDefault(_Share);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var React = require('react');
-
-var PNavagationBar = React.createClass({
-	displayName: 'PNavagationBar',
-
-
-	render: function render() {
-		return React.createElement(
-			'div',
-			{ id: 'nnn',
-				style: {
-					zIndex: 10,
-					opacity: 0.7,
-					position: 'absolute',
-					left: '0px',
-					top: '0px',
-					width: '100%'
-				} },
-			React.createElement(
-				'ul',
-				{ className: 'nav nav-pills' },
-				React.createElement(
-					'li',
-					null,
-					' ',
-					React.createElement('img', { id: 'logo',
-						src: 'img/pageshare.png' }),
-					' '
-				),
-				'  ',
-				React.createElement(
-					'li',
-					null,
-					' ',
-					React.createElement(_Home2.default, null),
-					' '
-				),
-				' ',
-				React.createElement(
-					'li',
-					null,
-					' ',
-					React.createElement(_MyVideo2.default, null),
-					' '
-				),
-				'  ',
-				React.createElement(
-					'li',
-					null,
-					' ',
-					React.createElement(_Edit2.default, null),
-					' '
-				),
-				' '
-			)
-		);
-	}
-
-});
-
-module.exports = PNavagationBar;
-
-},{"./navBar/Edit.jsx":251,"./navBar/Home.jsx":252,"./navBar/MyVideo.jsx":254,"./navBar/Share.jsx":255,"react":228}],246:[function(require,module,exports){
+},{"react":228}],244:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -28303,13 +28159,16 @@ var Slider = React.createClass({
 		}
 	},
 	render: function render() {
+		var name;
 		var shadow = this.state.isMouseDown ? '0px 0px 20px #0AFFB6' : '0px 0px 20px #73FAFF';
 		var roomid = this.props._roomid;
 		return React.createElement(
 			"div",
 			{ ref: "slider",
 				id: "slider",
-				style: {
+				style: { overflow: "hidden",
+					textOverflow: "ellipsis",
+					whiteSpace: "nowrap",
 					boxShadow: shadow,
 					borderRadius: '30%',
 					backgroundColor: '#F0F8FF',
@@ -28331,7 +28190,6 @@ var Slider = React.createClass({
 				React.createElement(
 					"font",
 					{ color: "#A020F0" },
-					"课号： ",
 					roomid,
 					" "
 				),
@@ -28345,7 +28203,57 @@ var Slider = React.createClass({
 
 module.exports = Slider;
 
-},{"react":228}],247:[function(require,module,exports){
+},{"react":228}],245:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
+
+var Loading = React.createClass({
+	displayName: "Loading",
+
+
+	render: function render() {
+		return React.createElement(
+			"div",
+			{ className: "loading", id: "loading" },
+			React.createElement(
+				"div",
+				null,
+				" "
+			),
+			" ",
+			React.createElement(
+				"div",
+				null,
+				" "
+			),
+			" ",
+			React.createElement(
+				"div",
+				null,
+				" "
+			),
+			" ",
+			React.createElement(
+				"div",
+				null,
+				" "
+			),
+			" ",
+			React.createElement(
+				"div",
+				null,
+				" "
+			),
+			" "
+		);
+	}
+
+});
+
+module.exports = Loading;
+
+},{"react":228}],246:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -28360,19 +28268,12 @@ var OpenAudio = React.createClass({
 		    left = obj.left,
 		    top = obj.top;
 		return {
-			display: 'block',
+			display: 'none',
 			height: width + 'px',
 			width: height + 'px',
 			left: left + 'px',
 			top: top + 'px'
 		};
-	},
-	componentWillMount: function componentWillMount() {
-		if (sessionStorage.getItem('openaudio') == 'isOpen') {
-			this.setState({
-				display: 'none'
-			});
-		}
 	},
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
@@ -28382,7 +28283,7 @@ var OpenAudio = React.createClass({
 					var audio = document.getElementById("myaudio");
 					audio.src = './img/welcome.mp3';
 					audio.play();
-					$('#openaudio').fadeOut(500);
+					$('#openaudio').fadeOut();
 				}
 			});
 
@@ -28439,6 +28340,76 @@ var OpenAudio = React.createClass({
 
 module.exports = OpenAudio;
 
+},{"react":228}],247:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
+
+var OpenShare = React.createClass({
+    displayName: "OpenShare",
+
+    getInitialState: function getInitialState() {
+        var isChines = (navigator.language || navigator.browserLanguage).substring(0, 2) == "zh";
+        return {
+            isChines: isChines
+        };
+    },
+    render: function render() {
+        return React.createElement(
+            "div",
+            { className: "modal fade", id: "myInput", tabIndex: "-1", role: "dialog",
+                "aria-labelledby": "myModalLabel", "aria-hidden": "true" },
+            React.createElement(
+                "div",
+                { className: "modal-dialog" },
+                React.createElement(
+                    "div",
+                    { className: "modal-content" },
+                    React.createElement(
+                        "div",
+                        { className: "modal-header" },
+                        React.createElement(
+                            "button",
+                            { type: "button", className: "close", "data-dismiss": "modal",
+                                "aria-hidden": "true" },
+                            "×"
+                        ),
+                        React.createElement(
+                            "h4",
+                            { className: "modal-title", id: "myModalLabel" },
+                            this.state.isChines ? "请输入标题:" : "Please enter the title"
+                        )
+                    ),
+                    React.createElement(
+                        "div",
+                        { className: "modal-body" },
+                        React.createElement("input", { type: "text", className: "form-control", id: "shareMsg" })
+                    ),
+                    React.createElement(
+                        "div",
+                        { className: "modal-footer" },
+                        React.createElement(
+                            "button",
+                            { type: "button", className: "btn btn-default", "data-dismiss": "modal",
+                                id: "initShare" },
+                            this.state.isChines ? "取消" : "Cancel"
+                        ),
+                        React.createElement(
+                            "button",
+                            { type: "button", className: "btn btn-primary", "data-dismiss": "modal",
+                                id: "sureMsg" },
+                            this.state.isChines ? "提交" : "Commit"
+                        )
+                    )
+                )
+            )
+        );
+    }
+
+});
+
+module.exports = OpenShare;
+
 },{"react":228}],248:[function(require,module,exports){
 'use strict';
 
@@ -28484,24 +28455,23 @@ var BgImage = _react2.default.createClass({
 exports.default = BgImage;
 
 },{"react":228}],249:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _react = require("react");
+var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Canvas = _react2.default.createClass({
-    displayName: "Canvas",
+    displayName: 'Canvas',
 
     getInitialState: function getInitialState() {
         return {
-            iconArr: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "a_e.png", "a_f.png", "a_g.png", "a_k.png", "", "a_i.png", "", "smiley_63.png", "smiley_64.png", "smiley_65.png", "smiley_66.png", "smiley_68.png", "smiley_77.png", "smiley_79.png", "smiley_80.png", "smiley_81.png", "smiley_82.png", "", "", "", "", "smiley_87.png", "smiley_88.png", "smiley_89.png", "", "", "", "", "", "", "", "", "", "", "", "", "emoji_64.png", "", "emoji_67.png", "emoji_68.png", "emoji_69.png", "emoji_70.png", "emoji_71.png", "emoji_72.png", "emoji_73.png", "emoji_74.png", "emoji_75.png", "", "", "", "", "", "", "", "", "", "emoji_85.png", "emoji_86.png", "emoji_87.png", "emoji_88.png", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "star.png", "crown.png", "usa.png", "china.png", "sign.png"],
             canvas: null,
             clicked: false //监听状态隐藏显示导航栏
         };
@@ -28597,7 +28567,7 @@ var Canvas = _react2.default.createClass({
                         // console.log(oX + " " + oY);
                         canvas.beginPath();
                         // （Android系统色） 设置颜色先取补数 再转换为16进制
-                        //canvas.strokeStyle = this.getcolor(data.properties.color);
+                        canvas.strokeStyle = this.getcolor(data.properties.color);
                         canvas.lineWidth = 15;
                         canvas.lineCap = 'round';
                         canvas.lineJoin = 'round';
@@ -28636,7 +28606,8 @@ var Canvas = _react2.default.createClass({
                             img.onload = function draw() {
                                 canvas.drawImage(img, xpos - img.width * sX * oX / 2, ypos - img.height * sY * oY, img.width * sX * oX, img.height * sY * oY);
                             };
-                            img.src = "./img/" + this.state.iconArr[rid];
+                            var imgsrc = data.sicon.icon;
+                            img.src = 'data:image/png;base64,' + imgsrc;
                         }
                         break;
 
@@ -28729,8 +28700,8 @@ var Canvas = _react2.default.createClass({
             this.handleData('clearAll');
         }
         return _react2.default.createElement(
-            "canvas",
-            { ref: "myCanvas",
+            'canvas',
+            { ref: 'myCanvas',
                 width: this.props._width,
                 height: this.props._height,
                 style: {
@@ -28741,7 +28712,7 @@ var Canvas = _react2.default.createClass({
                     left: this.props._left,
                     top: this.props._top
                 } },
-            " 您的浏览器不支持Canvas, 请尽快升级 "
+            ' 您的浏览器不支持Canvas, 请尽快升级 '
         );
     }
 }); /**
@@ -28752,133 +28723,6 @@ var Canvas = _react2.default.createClass({
 exports.default = Canvas;
 
 },{"react":228}],250:[function(require,module,exports){
-'use strict';
-
-var React = require('react');
-
-var ChatView = React.createClass({
-	displayName: 'ChatView',
-
-	getInitialState: function getInitialState() {
-		var width, height;
-		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-		if (w > h) {
-			height = h + 'px';
-			width = h * 0.618 + 'px';
-		} else {
-			height = h;
-			width = w;
-		}
-		return {
-			width: width,
-			height: height
-		};
-	},
-	handleResize: function handleResize() {
-		var width, height;
-		var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-		var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-		if (w > h) {
-			height = h + 'px';
-			width = h * 0.618 + 'px';
-		} else {
-			height = h;
-			width = w;
-		}
-		this.setState({
-			height: height,
-			width: width
-		});
-	},
-	componentWillMount: function componentWillMount() {},
-	componentDidMount: function componentDidMount() {
-		if (this.isMounted()) {
-			$('#chat-cancel').on('click', function () {
-				$('#chat-room').fadeOut();
-			});
-			$('#chat-close').on('click', function () {
-				$('#chat-room').fadeOut();
-			});
-			$('#chat-send').on('click', function () {
-				console.log('send');
-			});
-
-			window.addEventListener('resize', this.handleResize);
-		}
-	},
-	render: function render() {
-		return React.createElement(
-			'div',
-			{ id: 'chat-room',
-				className: 'pull-right',
-				style: {
-					width: this.state.width,
-					height: this.state.height
-				} },
-			React.createElement(
-				'div',
-				{ id: 'chat-title' },
-				React.createElement(
-					'a',
-					{ className: 'pull-right', id: 'chat-close' },
-					' ',
-					React.createElement(
-						'span',
-						{ className: 'glyphicon glyphicon-remove',
-							style: {
-								color: '#FFFFFF',
-								fontSize: '25px'
-							} },
-						' '
-					)
-				)
-			),
-			' ',
-			React.createElement('div', { id: 'chat-message' }),
-			' ',
-			React.createElement('div', { id: 'chat-setting' }),
-			' ',
-			React.createElement(
-				'div',
-				{ id: 'chat-input' },
-				' ',
-				React.createElement('textarea', { defaultValue: '', style: {
-						width: '100%',
-						height: '100%'
-					} }),
-				' '
-			),
-			' ',
-			React.createElement(
-				'div',
-				{ id: 'chat-submit' },
-				React.createElement(
-					'div',
-					{ className: 'pull-right' },
-					React.createElement(
-						'button',
-						{ className: 'btn btn-default',
-							id: 'chat-cancel' },
-						' 关闭 '
-					),
-					React.createElement(
-						'button',
-						{ className: 'btn btn-default', id: 'chat-send' },
-						' 发送 '
-					),
-					' '
-				)
-			),
-			' '
-		);
-	}
-
-});
-
-module.exports = ChatView;
-
-},{"react":228}],251:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -28900,26 +28744,28 @@ var Edit = React.createClass({
 	componentDidMount: function componentDidMount() {
 		var thiz = this;
 		if (this.isMounted()) {
+
 			$('#edit').click(function () {
+				if (thiz.state.isIOS || thiz.state.isAndroid) {
+					$('#myopen').modal('toggle');
+				}
+			});
+
+			$('#app_download').on('click', function () {
 				if (thiz.state.isIOS) {
-					var clickedAt = +new Date();
-					var the_href = 'itms-apps://itunes.apple.com/us/app/pageshare/id1135319277?mt=8'; // 获得下载链接
-					document.location = "pageshare://www.pictoshare.net/app?roomID=public3001"; // 打开某手机上的某个app应用
-					setTimeout(function () {
-						if (+new Date() - clickedAt < 2000) {
-							document.location = the_href;
-						}
-					}, 1000);
+					var the_href = 'itms-apps://itunes.apple.com/us/app/pageshare/id1135319277?mt=8';
+					document.location = the_href;
 				}
 				if (thiz.state.isAndroid) {
 					var the_href = 'http://pictoshare.net/download/'; // 获得下载链接
-					var clickedAt = +new Date();
-					document.location = "pageshare://pictoshare.net/app?roomID=public3001"; // 打开某手机上的某个app应用
-					setTimeout(function () {
-						if (+new Date() - clickedAt < 2000) {
-							document.location = the_href;
-						}
-					}, 1000);
+					document.location = the_href;
+				}
+			});
+			$('#app_open').on('click', function () {
+				if ($('#app_roomid').val() != "" && $('#app_filepath').val() != "") {
+					document.location = "pageshare://pictoshare.net/course?roomID=" + $('#app_roomid').val() + "&filePath=" + $('#app_filepath').val();
+				} else {
+					document.location = "pageshare://pictoshare.net/app";
 				}
 			});
 		}
@@ -28953,7 +28799,7 @@ var Edit = React.createClass({
 
 module.exports = Edit;
 
-},{"react":228}],252:[function(require,module,exports){
+},{"react":228}],251:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -28967,7 +28813,7 @@ var Home = React.createClass({
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
 			$('#exit').on('click', function () {
-				_reactRouter.hashHistory.replace('/');
+				_reactRouter.hashHistory.replace('/join');
 			});
 		}
 	},
@@ -28990,7 +28836,7 @@ var Home = React.createClass({
 
 module.exports = Home;
 
-},{"react":228,"react-router":30}],253:[function(require,module,exports){
+},{"react":228,"react-router":30}],252:[function(require,module,exports){
 'use strict';
 
 /*
@@ -29068,7 +28914,7 @@ var MyAudio = React.createClass({
 
 module.exports = MyAudio;
 
-},{"react":228}],254:[function(require,module,exports){
+},{"react":228}],253:[function(require,module,exports){
 'use strict';
 
 /*
@@ -29138,7 +28984,7 @@ var MyVideo = React.createClass({
 
 module.exports = MyVideo;
 
-},{"react":228}],255:[function(require,module,exports){
+},{"react":228}],254:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -29150,7 +28996,7 @@ var Share = React.createClass({
 		return {
 			title: '飞播云板',
 			desc: '邀请你点击进入课堂',
-			imgUrl: 'http://pictoshare.net/dev/build/img/pageshare.png',
+			imgUrl: 'http://pictoshare.net/PageShare/build/img/pageshare.png',
 			url_now: document.location.href,
 			type: '',
 			dataUrl: ''
@@ -29159,45 +29005,47 @@ var Share = React.createClass({
 	componentDidMount: function componentDidMount() {
 		var thiz = this;
 		if (this.isMounted()) {
-			var u = navigator.userAgent;
-			var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
-			var appid = sessionStorage.getItem('appid');
-			if (!isiOS) {
-				$.ajax({
-					async: true,
-					url: "php/wx_share.php",
-					type: "GET",
-					data: {
-						urll: document.location.href,
-						appid: appid
-					},
-					timeout: 5000,
-					success: function success(result) {
-						var url_now = document.location.href;
-						var arry = result.split(":");
-						var appid = arry[0],
-						    timestamp = arry[1],
-						    noncestr = arry[2],
-						    signature = arry[3];
-						wx.config({
-							debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-							appId: appid, // 必填，公众号的唯一标识
-							timestamp: timestamp, // 必填，生成签名的时间戳
-							nonceStr: noncestr, // 必填，生成签名的随机串
-							signature: signature, // 必填，签名，见附录1
-							jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone', 'onMenuShareWeibo'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-						});
-						thiz.deal_wx_interface();
-						wx.error(function (res) {
+			// var u = navigator.userAgent;
+			// var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+			// if (!isiOS) {
+			// 	$.ajax({
+			// 		async: true,
+			// 		url: "php/wx_share.php",
+			// 		type: "GET",
+			// 		data: {
+			// 			urll: encodeURIComponent(document.location.href)
+			// 		},
+			// 		timeout: 5000,
+			// 		success: function(result) {
+			// 			var url_now = document.location.href;
+			// 			var arry = result.split(":");
+			// 			var appid = arry[0],
+			// 				timestamp = arry[1],
+			// 				noncestr = arry[2],
+			// 				signature = arry[3];
+			// 			wx.config({
+			// 				debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+			// 				appId: appid, // 必填，公众号的唯一标识
+			// 				timestamp: timestamp, // 必填，生成签名的时间戳
+			// 				nonceStr: noncestr, // 必填，生成签名的随机串
+			// 				signature: signature, // 必填，签名，见附录1
+			// 				jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone', 'onMenuShareWeibo'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+			// 			});
+			// 			wx.ready(function() {
+			// 				thiz.deal_wx_interface();
+			// 			});
+			// 			wx.error(function(res) {
 
-							console.log('room签名失败' + res);
-							// config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-						});
-					}
-				});
-			} else {
-				thiz.deal_wx_interface();
-			}
+			// 				console.log('room签名失败' + res);
+			// 				// config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+
+			// 			});
+			// 		}
+			// 	});
+			// } else {
+			thiz.deal_wx_interface();
+			// }
+
 
 			//微信分享接口
 			$('#share').click(function () {
@@ -29269,75 +29117,73 @@ var Share = React.createClass({
 		    type = this.state.type,
 		    dataUrl = this.state.dataUrl,
 		    url_now = this.state.url_now;
-		wx.ready(function () {
-			// config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
-			wx.onMenuShareAppMessage({
-				title: title, // 分享标题
-				desc: desc, // 分享描述
-				link: url_now, // 分享链接
-				imgUrl: imgurl, // 分享图标
-				type: type, // 分享类型,music、video或link，不填默认为link
-				dataUrl: dataUrl, // 如果type是music或video，则要提供数据链接，默认为空
-				success: function success() {
-					// 用户确认分享后执行的回调函数
+		// config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+		wx.onMenuShareAppMessage({
+			title: title, // 分享标题
+			desc: desc, // 分享描述
+			link: url_now, // 分享链接
+			imgUrl: imgurl, // 分享图标
+			type: type, // 分享类型,music、video或link，不填默认为link
+			dataUrl: dataUrl, // 如果type是music或video，则要提供数据链接，默认为空
+			success: function success() {
+				// 用户确认分享后执行的回调函数
 
-				},
-				cancel: function cancel() {
-					// 用户取消分享后执行的回调函数
+			},
+			cancel: function cancel() {
+				// 用户取消分享后执行的回调函数
 
-				}
-			});
+			}
+		});
 
-			wx.onMenuShareTimeline({
-				title: title, // 分享标题
-				link: url_now, // 分享链接
-				imgUrl: imgurl, // 分享图标
-				success: function success() {
-					// 用户确认分享后执行的回调函数
-				},
-				cancel: function cancel() {
-					// 用户取消分享后执行的回调函数
-				}
-			});
+		wx.onMenuShareTimeline({
+			title: title, // 分享标题
+			link: url_now, // 分享链接
+			imgUrl: imgurl, // 分享图标
+			success: function success() {
+				// 用户确认分享后执行的回调函数
+			},
+			cancel: function cancel() {
+				// 用户取消分享后执行的回调函数
+			}
+		});
 
-			wx.onMenuShareQQ({
-				title: title, // 分享标题
-				desc: desc, // 分享描述
-				link: url_now, // 分享链接
-				imgUrl: imgurl, // 分享图标
-				success: function success() {
-					// 用户确认分享后执行的回调函数
-				},
-				cancel: function cancel() {
-					// 用户取消分享后执行的回调函数
-				}
-			});
+		wx.onMenuShareQQ({
+			title: title, // 分享标题
+			desc: desc, // 分享描述
+			link: url_now, // 分享链接
+			imgUrl: imgurl, // 分享图标
+			success: function success() {
+				// 用户确认分享后执行的回调函数
+			},
+			cancel: function cancel() {
+				// 用户取消分享后执行的回调函数
+			}
+		});
 
-			wx.onMenuShareWeibo({
-				title: title, // 分享标题
-				desc: desc, // 分享描述
-				link: url_now, // 分享链接
-				imgUrl: imgurl, // 分享图标
-				success: function success() {
-					// 用户确认分享后执行的回调函数
-				},
-				cancel: function cancel() {
-					// 用户取消分享后执行的回调函数
-				}
-			});
+		wx.onMenuShareWeibo({
+			title: title, // 分享标题
+			desc: desc, // 分享描述
+			link: url_now, // 分享链接
+			imgUrl: imgurl, // 分享图标
+			success: function success() {
+				// 用户确认分享后执行的回调函数
+			},
+			cancel: function cancel() {
+				// 用户取消分享后执行的回调函数
+			}
+		});
 
-			wx.onMenuShareQZone({
-				title: title, // 分享标题
-				desc: desc, // 分享描述
-				link: url_now, // 分享链接
-				imgUrl: imgurl, // 分享图标
-				success: function success() {
-					// 用户确认分享后执行的回调函数
-				},
-				cancel: function cancel() {
-					// 用户取消分享后执行的回调函数
-				}
-			});
+		wx.onMenuShareQZone({
+			title: title, // 分享标题
+			desc: desc, // 分享描述
+			link: url_now, // 分享链接
+			imgUrl: imgurl, // 分享图标
+			success: function success() {
+				// 用户确认分享后执行的回调函数
+			},
+			cancel: function cancel() {
+				// 用户取消分享后执行的回调函数
+			}
 		});
 	},
 	render: function render() {
@@ -29358,7 +29204,7 @@ var Share = React.createClass({
 
 module.exports = Share;
 
-},{"react":228}],256:[function(require,module,exports){
+},{"react":228}],255:[function(require,module,exports){
 'use strict';
 
 var _reactRouter = require('react-router');
@@ -29372,76 +29218,48 @@ var wxLogin = React.createClass({
 
 	getInitialState: function getInitialState() {
 		return {
-			code: '',
-			isLogin: false,
-			appid: '',
-			release: 'dev'
+			code: ''
 		};
 	},
 	componentDidMount: function componentDidMount() {
 		if (this.isMounted()) {
-			if (sessionStorage.nickname) {
-				_reactRouter.hashHistory.replace('/join');
-			} else {
-				var req = new Object();
-				req = this.getRequest();
-				var code = req['code'];
-				var appid = req['state'];
-				if (code != '' && code != undefined && appid != '' && appid != undefined) {
-					this.setState({
-						code: code,
-						isLogin: true,
-						appid: appid
-					}, function () {
-						this.getuserinfo();
-						sessionStorage.setItem("appid", this.state.appid);
-					});
-				}
+			var req = new Object();
+			req = this.getRequest();
+			var code = req['code'];
+			if (code != '' && code != undefined) {
+				this.setState({
+					code: code
+				}, function () {
+					this.getuserinfo();
+				});
 			}
 		}
 	},
 	getuserinfo: function getuserinfo() {
-		if (this.state.isLogin) {
-			var cc = this.state.code;
-			var appid = this.state.appid;
-			$.ajax({
-				async: false,
-				url: "php/oauth2_sub.php",
-				type: "GET",
-				data: {
-					code: cc,
-					appid: appid
-				},
-				timeout: 5000,
-				success: function (result) {
-					var arry = result.split(":");
-					var subscribe = arry[3];
-					this.localSave(arry[2], arry[3], arry[0], arry[1]);
-					if (subscribe == 0 && subscribe != '' && subscribe != undefined && subscribe != 'undefined') {
-						document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=" + arry[4] + "==&scene=110#&wechat_redirect";
-					}
+		var cc = this.state.code;
+		var appid = this.state.appid;
+		$.ajax({
+			async: true,
+			url: Config.WX_USERINFO_URL,
+			type: "POST",
+			data: {
+				code: cc,
+				appid: Config.APPID
+			},
+			timeout: 5000,
+			success: function (result) {
+				var arry = result.split(":");
+				var subscribe = arry[3];
+				if (subscribe == 0 && subscribe != "") {
+					document.location = "http://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=" + arry[4] + "==&scene=110#&wechat_redirect";
+				} else {
 					if (arry[2] != '' && arry[0] != '' && arry[1] != '' && arry[3] != '') {
+						this.localSave(arry[2], arry[3], arry[0], arry[1]);
 						_reactRouter.hashHistory.replace('/join');
-					} else {
-						this.toWhere();
 					}
-				}.bind(this)
-			});
-		} else {
-			this.toWhere();
-		}
-	},
-	toWhere: function toWhere() {
-		switch (this.state.appid) {
-			//oneplus
-			case 'wxe818778f16e4400d':
-				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe818778f16e4400d&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2f' + this.state.release + '%2fbuild&response_type=code&scope=snsapi_userinfo&state=' + this.state.appid + '#wechat_redirect';
-				break;
-			//eClass
-			case 'wx6573103bb78bec40':
-				document.location = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6573103bb78bec40&redirect_uri=http%3a%2f%2fwww.pictoshare.net%2f' + this.state.release + '%2fbuild&response_type=code&scope=snsapi_userinfo&state=' + this.state.appid + '#wechat_redirect';
-				break;
-		}
+				}
+			}.bind(this)
+		});
 	},
 	localSave: function localSave(n, s, o, t) {
 		if (typeof Storage !== "undefined") {

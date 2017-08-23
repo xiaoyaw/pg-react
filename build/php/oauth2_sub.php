@@ -1,6 +1,6 @@
 <?php
-$code = $_GET['code'];//前端传来的code值
-$app =$_GET['appid'];//前端传来的appid值
+$code = $_POST['code'];//前端传来的code值
+$app =$_POST['appid'];//前端传来的appid值
 
 switch ($app) {
   //奕甲飞播
